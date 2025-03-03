@@ -1,0 +1,66 @@
+(node:30320) [MONGOOSE] DeprecationWarning: Mongoose: the `strictQuery` option will be switched back to `false` by default in Mongoose 7. Use `mongoose.set('strictQuery', false);` if you want to prepare for this change. Or use `mongoose.set('strictQuery', true);` to suppress this warning.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Server running on port 5000
+[0mGET / [32m200[0m 3.140 ms - 27[0m
+[0mGET /favicon.ico [33m404[0m 4.145 ms - 150[0m
+MongoDB Connection Error: MongooseServerSelectionError: connect ECONNREFUSED 127.0.0.1:27017
+    at Connection.openUri (/home/toebot/dog-services-saas/backend/node_modules/mongoose/lib/connection.js:825:32)
+    at /home/toebot/dog-services-saas/backend/node_modules/mongoose/lib/index.js:414:10
+    at /home/toebot/dog-services-saas/backend/node_modules/mongoose/lib/helpers/promiseOrCallback.js:41:5
+    at new Promise (<anonymous>)
+    at promiseOrCallback (/home/toebot/dog-services-saas/backend/node_modules/mongoose/lib/helpers/promiseOrCallback.js:40:10)
+    at Mongoose._promiseOrCallback (/home/toebot/dog-services-saas/backend/node_modules/mongoose/lib/index.js:1290:10)
+    at Mongoose.connect (/home/toebot/dog-services-saas/backend/node_modules/mongoose/lib/index.js:413:20)
+    at Object.<anonymous> (/home/toebot/dog-services-saas/backend/index.js:27:4)
+    at Module._compile (node:internal/modules/cjs/loader:1554:14)
+    at Object..js (node:internal/modules/cjs/loader:1706:10) {
+  reason: TopologyDescription {
+    type: 'Unknown',
+    servers: Map(1) { 'localhost:27017' => [ServerDescription] },
+    stale: false,
+    compatible: true,
+    heartbeatFrequencyMS: 10000,
+    localThresholdMS: 15,
+    setName: null,
+    maxElectionId: null,
+    maxSetVersion: null,
+    commonWireVersion: 0,
+    logicalSessionTimeoutMinutes: null
+  },
+  code: undefined
+}
+[0mGET /api/services [32m200[0m 1.038 ms - 398[0m
+[0mGET /api/services [36m304[0m 0.436 ms - -[0m
+[0mGET /api/services [36m304[0m 0.532 ms - -[0m
+[0mGET /api/services [36m304[0m 0.375 ms - -[0m
+[0mGET /api/services [36m304[0m 0.579 ms - -[0m
+[0mGET /api/services [36m304[0m 0.434 ms - -[0m
+[0mGET /api/services [36m304[0m 0.381 ms - -[0m
+[0mGET /api/services [36m304[0m 0.470 ms - -[0m
+[0mGET /api/services [36m304[0m 0.556 ms - -[0m
+[0mGET /api/services [36m304[0m 0.297 ms - -[0m
+[0mGET /api/services [36m304[0m 0.682 ms - -[0m
+[0mGET /api/services [36m304[0m 0.611 ms - -[0m
+[0mGET /api/services [36m304[0m 0.596 ms - -[0m
+[0mGET /api/services [36m304[0m 0.453 ms - -[0m
+[0mGET /api/services [36m304[0m 0.275 ms - -[0m
+[0mGET /api/services [36m304[0m 0.251 ms - -[0m
+[0mGET /api/services [36m304[0m 0.524 ms - -[0m
+[0mGET /api/services [36m304[0m 0.434 ms - -[0m
+[0mGET /api/services [36m304[0m 0.300 ms - -[0m
+[0mGET /api/services [36m304[0m 0.232 ms - -[0m
+[0mGET /api/services [36m304[0m 0.479 ms - -[0m
+[0mGET /api/services [36m304[0m 0.362 ms - -[0m
+[0mGET /api/users/me [33m401[0m 1.831 ms - 49[0m
+[0mGET /api/users/me [33m401[0m 0.392 ms - 49[0m
+[0mGET /api/users/me [33m401[0m 0.431 ms - 49[0m
+[0mGET /api/users/me [33m401[0m 0.393 ms - 49[0m
+[0mGET /api/users/me [33m401[0m 0.366 ms - 49[0m
+[0mGET /api/users/me [33m401[0m 0.393 ms - 49[0m
+[0mGET /api/users/me [33m401[0m 0.380 ms - 49[0m
+[0mGET /api/users/me [33m401[0m 0.336 ms - 49[0m
+[0mGET /api/users/me [33m401[0m 0.512 ms - 49[0m
+[0mGET /api/users/me [33m401[0m 0.364 ms - 49[0m
+[0mGET /api/users/me [33m401[0m 0.360 ms - 49[0m
+[0mGET /api/users/me [33m401[0m 0.303 ms - 49[0m
+[0mGET /api/users/me [33m401[0m 0.321 ms - 49[0m
