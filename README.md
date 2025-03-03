@@ -1,36 +1,36 @@
-# Dog Services SaaS Platform
+# BookingPro SaaS Platform
 
-A comprehensive platform for booking and managing dog-related services, including grooming, boarding, training, and daycare.
+A comprehensive platform for businesses to manage bookings and services across any industry, including salons, consulting, training, events, and more.
 
 ## Features
 
-- **User Roles**: Pet owners, service providers, and admins
-- **Booking System**: Real-time availability and booking management
-- **Payments**: Integrated payment processing
-- **User Profiles**: Profile management for users and pets
-- **Messaging**: In-app communication
-- **Service Management**: List and manage services with pricing
-- **Reviews**: Verified reviews and ratings
-- **Widget Integration**: Embed a booking widget on your existing website
+- **Multi-Service Management**: Create and manage multiple service types with flexible parameters
+- **Advanced Availability**: Calendar-based scheduling with custom hours and resource allocation
+- **Comprehensive Booking Flow**: Service selection, intake forms, payments, and notifications
+- **Business Dashboard**: Centralized management of bookings, services, and customers
+- **Client Features**: Self-service booking, account management, and notifications
+- **Admin Capabilities**: Multi-business management, templates, and custom integrations
+- **Mobile Experience**: Responsive design for all devices with native mobile app
+- **Widget Integration**: Embed a booking widget on your existing business website
 
 ## Widget Integration
 
-One of the key features of this platform is the ability for service providers to embed a booking widget directly into their existing websites. This allows them to maintain their brand presence while leveraging our booking infrastructure.
+The key feature of our platform is the ability for businesses to embed a customizable booking widget directly into their existing websites. This allows them to maintain brand consistency while leveraging our powerful booking infrastructure.
 
 ### How It Works
 
-1. Service providers generate an API key from their dashboard
-2. They add a simple code snippet to their website
+1. Businesses generate an API key from their dashboard
+2. They add a simple JavaScript snippet to their website
 3. The widget loads and displays their services, availability, and booking options
-4. Customers can book and pay for services without leaving the provider's website
+4. Customers can book and pay for services without leaving the business's website
 
 ### Widget Features
 
-- Fully customizable to match the provider's website design
-- Responsive for all device sizes
-- Real-time availability checking
-- Secure payment processing
-- Booking confirmation with email notifications
+- Fully customizable to match your website design and branding
+- Responsive for optimal experience on all device sizes
+- Real-time availability display with dynamic time slots
+- Secure payment processing integration
+- Automated booking confirmations with email/SMS notifications
 
 ## Tech Stack
 

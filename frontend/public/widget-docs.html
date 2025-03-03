@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dog Services Widget - Integration Guide</title>
+  <title>BookingPro Widget - Integration Guide</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       line-height: 1.6;
       color: #333;
       max-width: 800px;
@@ -14,102 +14,137 @@
       padding: 20px;
     }
     h1 {
-      color: #4a90e2;
-      border-bottom: 2px solid #4a90e2;
+      color: #2563eb;
+      border-bottom: 2px solid #2563eb;
       padding-bottom: 10px;
     }
     h2 {
-      color: #4a90e2;
+      color: #2563eb;
       margin-top: 30px;
     }
     h3 {
       margin-top: 25px;
     }
     pre {
-      background-color: #f5f5f5;
+      background-color: #f8fafc;
       padding: 15px;
-      border-radius: 5px;
+      border-radius: 6px;
       overflow-x: auto;
+      border: 1px solid #e2e8f0;
     }
     code {
-      font-family: 'Courier New', Courier, monospace;
-      background-color: #f5f5f5;
+      font-family: 'Fira Code', 'Courier New', Courier, monospace;
+      background-color: #f1f5f9;
       padding: 2px 5px;
-      border-radius: 3px;
+      border-radius: 4px;
     }
     .note {
-      background-color: #fff8e1;
-      border-left: 4px solid #ffc107;
+      background-color: #f0f9ff;
+      border-left: 4px solid #0ea5e9;
       padding: 15px;
       margin: 20px 0;
+      border-radius: 0 4px 4px 0;
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin: 20px 0;
+      border-radius: 6px;
+      overflow: hidden;
     }
     th, td {
-      padding: 10px;
-      border: 1px solid #ddd;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
       text-align: left;
     }
     th {
-      background-color: #f5f5f5;
+      background-color: #f8fafc;
+      font-weight: 600;
     }
     .demo-section {
       margin-top: 40px;
       padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+    }
+    a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .btn {
+      display: inline-block;
+      background-color: #2563eb;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      margin-top: 10px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    .btn:hover {
+      background-color: #1d4ed8;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <h1>Dog Services Widget - Integration Guide</h1>
+  <h1>BookingPro Widget - Integration Guide</h1>
   
   <p>
-    This guide explains how to integrate the Dog Services booking widget into your website. 
-    The widget allows your customers to book dog services directly from your website 
-    without being redirected to another page.
+    This guide explains how to integrate the BookingPro booking widget into your existing business website. 
+    The widget allows your customers to book services directly from your website 
+    without being redirected to another platform.
   </p>
 
   <h2>Quick Start</h2>
   
   <p>Add the following code to your website where you want the booking widget to appear:</p>
   
-  <pre><code>&lt;!-- Dog Services Widget --&gt;
-&lt;div id="dog-services-widget"&gt;&lt;/div&gt;
+  <pre><code>&lt;!-- BookingPro Widget --&gt;
+&lt;div id="bookingpro-widget"&gt;&lt;/div&gt;
 &lt;script&gt;
   (function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) return;
     js = d.createElement(s); js.id = id;
-    js.src = "https://api.dogservices.com/widget.js";
+    js.src = "https://api.bookingpro.io/widget.js";
     js.setAttribute('data-api-key', 'YOUR_API_KEY');
     fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'dog-services-widget-js'));
+  }(document, 'script', 'bookingpro-widget-js'));
 &lt;/script&gt;
-&lt;!-- End Dog Services Widget --&gt;</code></pre>
+&lt;!-- End BookingPro Widget --&gt;</code></pre>
 
   <div class="note">
-    <strong>Note:</strong> Replace <code>YOUR_API_KEY</code> with the API key provided to you after registering as a service provider.
+    <strong>Note:</strong> Replace <code>YOUR_API_KEY</code> with the API key provided in your Business Dashboard.
   </div>
 
   <h2>Getting Started</h2>
 
-  <h3>1. Create a Service Provider Account</h3>
+  <h3>1. Create a Business Account</h3>
   <p>
-    Before integrating the widget, you need to create a service provider account at 
-    <a href="https://dogservices.com/register" target="_blank">dogservices.com/register</a>.
+    Before integrating the widget, you need to create a business account at 
+    <a href="https://bookingpro.io/register" target="_blank">bookingpro.io/register</a>.
   </p>
 
-  <h3>2. Generate API Key</h3>
+  <h3>2. Set Up Your Services</h3>
   <p>
-    After creating an account, go to your dashboard and navigate to "Integration" section. 
-    Click "Generate API Key" and save both the API key and API secret.
+    After creating an account, go to your dashboard and set up your services, availability, 
+    and booking options. These services will be displayed in your booking widget.
   </p>
 
-  <h3>3. Add Widget to Your Website</h3>
+  <h3>3. Generate API Key</h3>
+  <p>
+    Navigate to the "Integration" section of your dashboard. 
+    Click "Generate API Key" and save your API key securely.
+  </p>
+
+  <h3>4. Add Widget to Your Website</h3>
   <p>
     Copy the code snippet provided in the Quick Start section and add it to your website. 
     You can place it anywhere you want the booking widget to appear.
@@ -118,7 +153,7 @@
   <h2>Customization Options</h2>
   
   <p>
-    The widget supports several customization options to match your website's look and feel.
+    The widget supports extensive customization options to match your website's branding and design.
   </p>
 
   <h3>Appearance</h3>
@@ -126,13 +161,15 @@
   <p>You can customize the widget's appearance by adding data attributes to the script tag:</p>
   
   <pre><code>&lt;script 
-  src="https://api.dogservices.com/widget.js"
+  src="https://api.bookingpro.io/widget.js"
   data-api-key="YOUR_API_KEY"
-  data-color="#FF5733"
-  data-text-color="#333333"
-  data-font-family="Arial, sans-serif"
+  data-primary-color="#2563eb"
+  data-secondary-color="#4f46e5"
+  data-text-color="#1e293b"
+  data-font-family="Inter, sans-serif"
   data-border-radius="8px"
-  id="dog-services-widget-js"&gt;&lt;/script&gt;</code></pre>
+  data-layout="standard"
+  id="bookingpro-widget-js"&gt;&lt;/script&gt;</code></pre>
 
   <table>
     <tr>
@@ -141,86 +178,84 @@
       <th>Default</th>
     </tr>
     <tr>
-      <td>data-color</td>
-      <td>Primary color for buttons and headings</td>
-      <td>#4a90e2</td>
+      <td>data-primary-color</td>
+      <td>Primary color for buttons and interactive elements</td>
+      <td>#2563eb</td>
+    </tr>
+    <tr>
+      <td>data-secondary-color</td>
+      <td>Secondary color for highlights and accents</td>
+      <td>#4f46e5</td>
     </tr>
     <tr>
       <td>data-text-color</td>
-      <td>Text color</td>
-      <td>#333333</td>
+      <td>Main text color</td>
+      <td>#1e293b</td>
     </tr>
     <tr>
       <td>data-font-family</td>
-      <td>Font family</td>
-      <td>Arial, sans-serif</td>
+      <td>Font family (uses web-safe fonts or Google Fonts)</td>
+      <td>system-ui, sans-serif</td>
     </tr>
     <tr>
       <td>data-border-radius</td>
-      <td>Border radius for buttons and cards</td>
-      <td>8px</td>
+      <td>Border radius for cards, buttons, and inputs</td>
+      <td>6px</td>
+    </tr>
+    <tr>
+      <td>data-layout</td>
+      <td>Widget layout (standard, compact, expanded)</td>
+      <td>standard</td>
     </tr>
   </table>
 
-  <h3>Service Filtering</h3>
+  <h3>Content Filtering</h3>
   
-  <p>You can filter the services displayed in the widget by adding service filters:</p>
+  <p>You can filter the services displayed in the widget:</p>
   
   <pre><code>&lt;script 
-  src="https://api.dogservices.com/widget.js"
+  src="https://api.bookingpro.io/widget.js"
   data-api-key="YOUR_API_KEY"
-  data-service-category="grooming,walking"
-  id="dog-services-widget-js"&gt;&lt;/script&gt;</code></pre>
+  data-service-category="consultation,treatment"
+  data-staff-id="12345,67890"
+  id="bookingpro-widget-js"&gt;&lt;/script&gt;</code></pre>
 
   <p>
-    This will only show services in the "grooming" and "walking" categories. 
-    Available categories: grooming, boarding, daycare, training, walking, sitting, other.
+    This will only show services in the specified categories and/or offered by the specified staff members.
   </p>
+
+  <h3>Advanced Customization</h3>
+  
+  <p>
+    For more advanced customization options, you can use the BookingPro Dashboard to:
+  </p>
+  
+  <ul>
+    <li>Create custom CSS themes</li>
+    <li>Configure custom form fields for each service</li>
+    <li>Set up pre-filled booking information</li>
+    <li>Customize confirmation emails and notifications</li>
+    <li>Define special hours, holidays, and buffer times</li>
+  </ul>
 
   <h2>Security Considerations</h2>
 
   <div class="note">
-    <strong>Important:</strong> Never include your API secret in client-side code. The API secret should 
-    only be used in server-to-server communications.
+    <strong>Important:</strong> Your API key is unique to your business and should be kept secure. 
+    While it's safe to use in the widget code snippet, never share it publicly or expose it in unrelated areas.
   </div>
 
-  <h3>Server-Side Integration</h3>
+  <h3>Domain Restrictions</h3>
   
   <p>
-    For enhanced security, you can implement a server-side component to generate 
-    a valid signature for widget requests:
+    For enhanced security, you can restrict your API key to specific domains in your dashboard settings.
+    This prevents unauthorized use of your widget on other websites.
   </p>
-
-  <pre><code>// Node.js example
-const crypto = require('crypto');
-
-function generateWidgetSignature(apiSecret, payload) {
-  return crypto
-    .createHmac('sha256', apiSecret)
-    .update(JSON.stringify(payload))
-    .digest('hex');
-}
-
-// Example payload
-const payload = {
-  timestamp: Date.now(),
-  origin: 'https://yourwebsite.com'
-};
-
-const signature = generateWidgetSignature('YOUR_API_SECRET', payload);
-
-// Now you can pass this signature to your frontend
-</code></pre>
-
-  <p>
-    This approach prevents tampering with widget requests and ensures that only 
-    your website can make valid booking requests.
-  </p>
-
+  
   <h2>API Reference</h2>
 
   <p>
-    The widget communicates with the Dog Services API to fetch available services, 
+    The widget communicates with the BookingPro API to fetch available services, 
     check availability, and create bookings.
   </p>
 
@@ -240,7 +275,12 @@ const signature = generateWidgetSignature('YOUR_API_SECRET', payload);
     <tr>
       <td>/api/widget/services</td>
       <td>GET</td>
-      <td>Get available services for the provider</td>
+      <td>Get available services for the business</td>
+    </tr>
+    <tr>
+      <td>/api/widget/staff</td>
+      <td>GET</td>
+      <td>Get staff members and their availability</td>
     </tr>
     <tr>
       <td>/api/widget/availability</td>
@@ -258,36 +298,36 @@ const signature = generateWidgetSignature('YOUR_API_SECRET', payload);
   
   <div class="demo-section">
     <h3>Widget Preview</h3>
-    <div id="dog-services-widget-demo"></div>
+    <div id="bookingpro-widget-demo"></div>
     
     <script>
       // This is just a mock widget for demo purposes
-      document.getElementById('dog-services-widget-demo').innerHTML = `
-        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <h2 style="color: #4a90e2; margin-bottom: 10px;">Book a Dog Service</h2>
-            <p>Select a service to get started</p>
+      document.getElementById('bookingpro-widget-demo').innerHTML = `
+        <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; font-family: Inter, system-ui, sans-serif; max-width: 500px; margin: 0 auto; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+          <div style="text-align: center; margin-bottom: 24px;">
+            <h2 style="color: #2563eb; margin-bottom: 10px; font-weight: 600;">Book an Appointment</h2>
+            <p style="color: #64748b;">Select a service to get started</p>
           </div>
           <div>
-            <div style="padding: 15px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 8px; cursor: pointer;">
-              <h3 style="margin-top: 0; color: #4a90e2;">Premium Dog Grooming</h3>
-              <p>Full service grooming including bath, haircut, nail trimming, and ear cleaning.</p>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: bold;">$65 USD</span>
-                <span>90 minutes</span>
+            <div style="padding: 16px; margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0, 0, 0, 0.05)';" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none';">
+              <h3 style="margin-top: 0; color: #2563eb; font-weight: 600;">Business Consultation</h3>
+              <p style="color: #64748b;">Initial consultation to discuss your business needs and objectives.</p>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                <span style="font-weight: 600; color: #1e293b;">$125 USD</span>
+                <span style="color: #64748b;">60 minutes</span>
               </div>
             </div>
-            <div style="padding: 15px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 8px; cursor: pointer;">
-              <h3 style="margin-top: 0; color: #4a90e2;">Dog Walking</h3>
-              <p>Professional dog walking service for your furry friend.</p>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: bold;">$25 USD</span>
-                <span>30 minutes</span>
+            <div style="padding: 16px; margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(0, 0, 0, 0.05)';" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none';">
+              <h3 style="margin-top: 0; color: #2563eb; font-weight: 600;">Strategic Planning Session</h3>
+              <p style="color: #64748b;">In-depth planning session to define your strategic roadmap.</p>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                <span style="font-weight: 600; color: #1e293b;">$250 USD</span>
+                <span style="color: #64748b;">90 minutes</span>
               </div>
             </div>
           </div>
-          <div style="text-align: center; margin-top: 20px; font-size: 12px;">
-            <p>Powered by <a href="#" style="color: #4a90e2;">Dog Services</a></p>
+          <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #94a3b8;">
+            <p>Powered by <a href="#" style="color: #2563eb;">BookingPro</a></p>
           </div>
         </div>
       `;
@@ -297,54 +337,57 @@ const signature = generateWidgetSignature('YOUR_API_SECRET', payload);
   <h2>Support</h2>
 
   <p>
-    If you have any questions or need assistance with the integration, please contact our support team at:
+    If you have any questions or need assistance with the integration, please contact our support team:
   </p>
 
   <ul>
-    <li>Email: <a href="mailto:support@dogservices.com">support@dogservices.com</a></li>
+    <li>Email: <a href="mailto:support@bookingpro.io">support@bookingpro.io</a></li>
     <li>Phone: (555) 123-4567</li>
-    <li>Support Hours: Monday - Friday, 9am - 5pm EST</li>
+    <li>Support Hours: Monday - Friday, 9am - 6pm ET</li>
   </ul>
 
   <p>
-    For detailed API documentation, visit our 
-    <a href="https://api.dogservices.com/docs" target="_blank">Developer Portal</a>.
+    For detailed API documentation and advanced integration options, visit our 
+    <a href="https://developers.bookingpro.io" target="_blank">Developer Portal</a>.
   </p>
+
+  <a href="https://bookingpro.io/contact" class="btn">Contact Our Integration Team</a>
 
   <h2>FAQ</h2>
 
   <h3>Can I use multiple widgets on the same page?</h3>
   <p>
     Yes, you can have multiple widgets on the same page by using different container IDs.
-    Make sure each widget has a unique container ID.
+    Make sure each widget has a unique container ID and targets different services or staff members.
   </p>
 
   <h3>Does the widget work on mobile devices?</h3>
   <p>
-    Yes, the widget is fully responsive and works on all devices including mobile phones and tablets.
-  </p>
-
-  <h3>Can I customize the services displayed in the widget?</h3>
-  <p>
-    Yes, you can specify which services to display using the <code>data-service-category</code>
-    attribute or by setting up service filtering in your dashboard.
-  </p>
-
-  <h3>How are bookings confirmed?</h3>
-  <p>
-    When a customer makes a booking through the widget, both the customer and you 
-    (the service provider) will receive email confirmations. You can also see and 
-    manage all bookings in your dashboard.
+    Yes, the widget is fully responsive and optimized for all devices including mobile phones and tablets.
+    We use modern responsive design principles to ensure a consistent experience across all screen sizes.
   </p>
 
   <h3>Can I customize the booking flow?</h3>
   <p>
-    Yes, you can customize certain aspects of the booking flow through your dashboard 
-    settings. For more advanced customizations, please contact our support team.
+    Yes, you can customize the booking flow through your dashboard settings. Options include:
+    single-page or multi-step flow, custom form fields, payment requirements, and confirmation settings.
   </p>
 
-  <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; font-size: 14px;">
-    &copy; 2025 Dog Services, Inc. All rights reserved.
+  <h3>How are bookings confirmed?</h3>
+  <p>
+    When a customer makes a booking through the widget, both the customer and your business 
+    receive instant notifications (email and/or SMS). All bookings appear in your 
+    dashboard for easy management.
+  </p>
+
+  <h3>Can I integrate with my Google Calendar or other calendars?</h3>
+  <p>
+    Yes, BookingPro offers integrations with Google Calendar, Outlook, iCal, and other calendar systems.
+    These can be configured in your dashboard's integration settings.
+  </p>
+
+  <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 14px; color: #64748b;">
+    &copy; 2025 BookingPro. All rights reserved.
   </footer>
 </body>
 </html>

@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['pet_owner', 'service_provider', 'admin'],
-      default: 'pet_owner',
+      enum: ['client', 'business', 'admin'],
+      default: 'client',
     },
     phone: {
       type: String,
@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    // Fields for service providers
+    // Fields for business users
     businessName: {
       type: String,
       trim: true,
@@ -51,14 +51,37 @@ const userSchema = new mongoose.Schema(
     businessDescription: {
       type: String,
     },
+    businessCategory: {
+      type: String,
+      trim: true,
+    },
+    website: {
+      type: String,
+      trim: true,
+    },
     servicesOffered: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Service',
     }],
-    // Fields for pet owners
-    pets: [{
+    businessHours: {
+      monday: [{ start: String, end: String }],
+      tuesday: [{ start: String, end: String }],
+      wednesday: [{ start: String, end: String }],
+      thursday: [{ start: String, end: String }],
+      friday: [{ start: String, end: String }],
+      saturday: [{ start: String, end: String }],
+      sunday: [{ start: String, end: String }],
+    },
+    staff: [{
+      name: String,
+      email: String,
+      role: String,
+      schedule: Map,
+    }],
+    // Fields for clients
+    clients: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Pet',
+      ref: 'Client',
     }],
     ratings: {
       average: {
@@ -77,6 +100,22 @@ const userSchema = new mongoose.Schema(
     }],
     stripeCustomerId: String,
     stripeAccountId: String,
+    apiKeys: [{
+      key: String,
+      name: String,
+      createdAt: Date,
+      lastUsed: Date,
+    }],
+    widgetSettings: {
+      theme: {
+        primaryColor: String,
+        secondaryColor: String,
+        fontFamily: String,
+        borderRadius: String,
+      },
+      layout: String,
+      customCss: String,
+    },
   },
   { timestamps: true }
 );

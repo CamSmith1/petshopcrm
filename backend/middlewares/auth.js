@@ -37,18 +37,18 @@ exports.authenticate = async (req, res, next) => {
   }
 };
 
-// Middleware to check if user is service provider
-exports.isServiceProvider = (req, res, next) => {
-  if (req.user.role !== 'service_provider' && req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Access denied. Service provider role required.' });
+// Middleware to check if user is a business
+exports.isBusiness = (req, res, next) => {
+  if (req.user.role !== 'business' && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Access denied. Business role required.' });
   }
   next();
 };
 
-// Middleware to check if user is pet owner
-exports.isPetOwner = (req, res, next) => {
-  if (req.user.role !== 'pet_owner' && req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Access denied. Pet owner role required.' });
+// Middleware to check if user is a client
+exports.isClient = (req, res, next) => {
+  if (req.user.role !== 'client' && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Access denied. Client role required.' });
   }
   next();
 };
@@ -59,6 +59,32 @@ exports.isAdmin = (req, res, next) => {
     return res.status(403).json({ error: 'Access denied. Admin role required.' });
   }
   next();
+};
+
+// Middleware to check if user owns a business
+exports.isBusinessOwner = async (req, res, next) => {
+  try {
+    const businessId = req.params.businessId || req.body.businessId;
+    
+    if (!businessId) {
+      return res.status(400).json({ error: 'Business ID is required.' });
+    }
+    
+    const business = await User.findById(businessId);
+    
+    if (!business || business.role !== 'business') {
+      return res.status(404).json({ error: 'Business not found.' });
+    }
+    
+    if (business._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Access denied. You are not the owner of this business.' });
+    }
+    
+    req.business = business;
+    next();
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Middleware to check if user owns a resource
@@ -89,4 +115,36 @@ exports.isResourceOwner = (model) => {
       next(error);
     }
   };
+};
+
+// Middleware to verify API key for widget
+exports.verifyApiKey = async (req, res, next) => {
+  try {
+    const apiKey = req.headers['x-api-key'] || req.query.apiKey;
+    
+    if (!apiKey) {
+      return res.status(401).json({ error: 'API key is required.' });
+    }
+    
+    const business = await User.findOne({
+      'apiKeys.key': apiKey,
+      role: 'business'
+    });
+    
+    if (!business) {
+      return res.status(401).json({ error: 'Invalid API key.' });
+    }
+    
+    // Update lastUsed timestamp for the API key
+    const keyIndex = business.apiKeys.findIndex(k => k.key === apiKey);
+    if (keyIndex !== -1) {
+      business.apiKeys[keyIndex].lastUsed = new Date();
+      await business.save();
+    }
+    
+    req.business = business;
+    next();
+  } catch (error) {
+    next(error);
+  }
 };

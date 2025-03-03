@@ -1,20 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const { authenticate, isServiceProvider } = require('../middlewares/auth');
+const { authenticate, isBusiness, verifyApiKey } = require('../middlewares/auth');
 const widgetIntegration = require('../utils/widgetIntegration');
 
 /**
  * Generate API key for widget integration
  * POST /api/widget/api-key
- * Required role: service_provider
+ * Required role: business
  */
-router.post('/api-key', authenticate, isServiceProvider, async (req, res) => {
+router.post('/api-key', authenticate, isBusiness, async (req, res) => {
   try {
-    const apiCredentials = await widgetIntegration.generateApiKey(req.user.userId);
+    const keyName = req.body.name || 'Widget API Key';
+    const apiKey = await widgetIntegration.generateApiKey(req.user._id, keyName);
     
     res.status(201).json({
-      message: 'API credentials generated successfully',
-      apiCredentials
+      message: 'API key generated successfully',
+      apiKey
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -24,13 +25,13 @@ router.post('/api-key', authenticate, isServiceProvider, async (req, res) => {
 /**
  * Get widget embed code
  * GET /api/widget/embed-code
- * Required role: service_provider
+ * Required role: business
  */
-router.get('/embed-code', authenticate, isServiceProvider, async (req, res) => {
+router.get('/embed-code', authenticate, isBusiness, async (req, res) => {
   try {
     // Find the user's API key
-    const user = await require('../models/User').findById(req.user.userId);
-    const apiKey = user?.apiCredentials?.key;
+    const user = await require('../models/User').findById(req.user._id);
+    const apiKey = req.query.apiKey || (user.apiKeys && user.apiKeys.length > 0 ? user.apiKeys[0].key : null);
     
     if (!apiKey) {
       return res.status(400).json({ 
@@ -38,7 +39,13 @@ router.get('/embed-code', authenticate, isServiceProvider, async (req, res) => {
       });
     }
     
-    const embedCode = await widgetIntegration.getEmbedCode(apiKey);
+    // Get customization options
+    const options = {
+      primaryColor: req.query.primaryColor || user.widgetSettings?.theme?.primaryColor,
+      layout: req.query.layout || user.widgetSettings?.layout
+    };
+    
+    const embedCode = await widgetIntegration.getEmbedCode(apiKey, options);
     
     res.status(200).json({
       message: 'Embed code generated successfully',
@@ -56,23 +63,27 @@ router.get('/embed-code', authenticate, isServiceProvider, async (req, res) => {
  */
 router.post('/token', async (req, res) => {
   try {
-    const { apiKey, signature, payload, customization } = req.body;
+    const { apiKey, customization } = req.body;
     
-    // Validate the request
-    const isValid = await widgetIntegration.validateWidgetRequest(
-      apiKey, 
-      signature, 
-      payload
-    );
+    if (!apiKey) {
+      return res.status(400).json({ error: 'API key is required' });
+    }
     
-    if (!isValid) {
-      return res.status(401).json({ error: 'Invalid widget request' });
+    // Validate API key
+    const business = await widgetIntegration.validateWidgetRequest(apiKey);
+    
+    if (!business) {
+      return res.status(401).json({ error: 'Invalid API key' });
     }
     
     // Generate widget token
     const token = await widgetIntegration.generateWidgetToken(apiKey, customization);
     
-    res.status(200).json({ token });
+    res.status(200).json({ 
+      token,
+      businessName: business.businessName,
+      businessId: business._id
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -104,7 +115,7 @@ router.get('/verify-token', async (req, res) => {
     
     res.status(200).json({
       valid: true,
-      providerId: decoded.providerId,
+      businessId: decoded.businessId,
       customization: decoded.customization || {}
     });
   } catch (error) {
@@ -136,13 +147,23 @@ router.get('/services', async (req, res) => {
       return res.status(401).json({ error: 'Invalid widget token' });
     }
     
-    // Get services for this provider
+    // Get services for this business
     const services = await require('../models/Service').find({
-      provider: decoded.providerId,
+      provider: decoded.businessId,
       isPaused: false
     });
     
-    res.status(200).json({ services });
+    // Get business info
+    const business = await require('../models/User').findById(decoded.businessId, 'businessName businessDescription');
+    
+    res.status(200).json({ 
+      services,
+      business: {
+        id: business._id,
+        name: business.businessName,
+        description: business.businessDescription
+      }
+    });
   } catch (error) {
     res.status(401).json({ error: error.message });
   }
