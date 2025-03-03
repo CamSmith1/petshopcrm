@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const petSchema = new mongoose.Schema(
+const clientSchema = new mongoose.Schema(
   {
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -14,53 +14,41 @@ const petSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      default: 'dog',
-      enum: ['dog', 'other'],
+      default: 'person',
     },
-    breed: {
+    category: {
+      type: String,
+      trim: true,
+    },
+    email: {
+      type: String,
+      trim: true,
+    },
+    phone: {
       type: String,
       trim: true,
     },
     age: {
       type: Number,
     },
-    weight: {
-      type: Number,
-    },
     gender: {
       type: String,
-      enum: ['male', 'female', 'unknown'],
+      enum: ['male', 'female', 'other', 'unspecified'],
+      default: 'unspecified',
     },
-    microchipId: {
+    specialRequirements: {
       type: String,
-      trim: true,
     },
-    isNeutered: {
-      type: Boolean,
-      default: false,
-    },
-    medicalConditions: [{
-      condition: String,
-      notes: String,
-    }],
-    allergies: [{
-      type: String,
-      trim: true,
-    }],
-    medications: [{
+    preferences: [{
       name: String,
-      dosage: String,
-      frequency: String,
+      value: String,
     }],
-    vaccinations: [{
-      name: String,
-      dateAdministered: Date,
-      expiryDate: Date,
-    }],
-    dietaryRestrictions: {
-      type: String,
+    customFields: {
+      type: Map,
+      of: mongoose.Schema.Types.Mixed,
+      default: {},
     },
-    behavioralNotes: {
+    notes: {
       type: String,
     },
     emergencyContact: {
@@ -78,6 +66,6 @@ const petSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Pet = mongoose.model('Pet', petSchema);
+const Client = mongoose.model('Client', clientSchema);
 
-module.exports = Pet;
+module.exports = Client;

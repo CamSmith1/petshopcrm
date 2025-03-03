@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticate, isServiceProvider } = require('../middlewares/auth');
+const { authenticate, isBusiness } = require('../middlewares/auth');
 
 // Service controllers will be imported here
 // const serviceController = require('../controllers/serviceController');
@@ -56,8 +56,8 @@ router.get('/:id', (req, res) => {
   });
 });
 
-// Create new service (service provider only)
-router.post('/', authenticate, isServiceProvider, (req, res) => {
+// Create new service (business only)
+router.post('/', authenticate, isBusiness, (req, res) => {
   // Temporary placeholder until serviceController is implemented
   res.status(201).json({ 
     message: 'Service created successfully',
@@ -75,8 +75,8 @@ router.post('/', authenticate, isServiceProvider, (req, res) => {
   });
 });
 
-// Update service (service provider only)
-router.put('/:id', authenticate, isServiceProvider, (req, res) => {
+// Update service (business only)
+router.put('/:id', authenticate, isBusiness, (req, res) => {
   // Temporary placeholder until serviceController is implemented
   res.status(200).json({ 
     message: 'Service updated successfully',
@@ -94,8 +94,8 @@ router.put('/:id', authenticate, isServiceProvider, (req, res) => {
   });
 });
 
-// Delete service (service provider only)
-router.delete('/:id', authenticate, isServiceProvider, (req, res) => {
+// Delete service (business only)
+router.delete('/:id', authenticate, isBusiness, (req, res) => {
   // Temporary placeholder until serviceController is implemented
   res.status(200).json({ 
     message: 'Service deleted successfully',

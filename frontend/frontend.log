@@ -5482,3 +5482,4 @@ src/services/api.js
   Line 60:1:  Assign object to a variable before exporting as module default  import/no-anonymous-default-export
 
 webpack compiled with 1 warning
+Terminated

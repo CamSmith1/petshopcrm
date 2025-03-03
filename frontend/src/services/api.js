@@ -30,8 +30,9 @@ api.interceptors.response.use(
       
       // Handle 401 Unauthorized
       if (status === 401) {
-        // If token is expired or invalid, remove it from local storage
-        if (localStorage.getItem('token')) {
+        // If token is expired or invalid, and not a demo token, remove it
+        const token = localStorage.getItem('token');
+        if (token && !token.startsWith('mock-bypass-token-')) {
           localStorage.removeItem('token');
           window.location.href = '/login';
         }

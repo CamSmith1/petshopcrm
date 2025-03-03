@@ -5,7 +5,7 @@ const { sendEmail } = require('../utils/emailService');
 // Register a new user
 exports.register = async (req, res, next) => {
   try {
-    const { email, password, name, role } = req.body;
+    const { email, password, name, role, businessName, businessCategory, phone, address } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -13,13 +13,31 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ error: 'User already exists with this email' });
     }
 
-    // Create new user
+    // Create new user with basic fields
     const user = new User({
       email,
       password,
       name,
-      role: role || 'pet_owner',
+      role: role || 'client',
+      phone,
+      address,
     });
+
+    // Add business-specific fields if role is business
+    if (role === 'business') {
+      user.businessName = businessName;
+      user.businessCategory = businessCategory;
+      user.businessDescription = req.body.businessDescription;
+      user.website = req.body.website;
+      
+      // Generate API key for business accounts
+      const apiKey = generateApiKey();
+      user.apiKeys = [{
+        key: apiKey,
+        name: 'Default API Key',
+        createdAt: new Date(),
+      }];
+    }
 
     await user.save();
 
@@ -45,7 +63,8 @@ exports.register = async (req, res, next) => {
       { expiresIn: '30d' }
     );
 
-    res.status(201).json({
+    // Prepare response object
+    const responseData = {
       message: 'User registered successfully. Please verify your email.',
       user: {
         id: user._id,
@@ -54,11 +73,31 @@ exports.register = async (req, res, next) => {
         role: user.role,
       },
       token,
-    });
+    };
+
+    // Add API key to response if business account
+    if (role === 'business') {
+      responseData.apiKey = user.apiKeys[0].key;
+      responseData.user.businessName = user.businessName;
+    }
+
+    res.status(201).json(responseData);
   } catch (error) {
     next(error);
   }
 };
+
+// Helper function to generate API key
+function generateApiKey() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let apiKey = 'bpro_';
+  
+  for (let i = 0; i < 32; i++) {
+    apiKey += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  
+  return apiKey;
+}
 
 // Login user
 exports.login = async (req, res, next) => {

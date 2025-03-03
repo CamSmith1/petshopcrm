@@ -17,10 +17,12 @@ const bookingSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    pet: {
+    subject: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Pet',
-      required: true,
+      ref: 'Client',
+    },
+    assignedStaff: {
+      type: String,
     },
     startTime: {
       type: Date,
@@ -32,7 +34,7 @@ const bookingSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'completed', 'cancelled', 'no_show'],
+      enum: ['pending', 'confirmed', 'completed', 'cancelled', 'no_show', 'rescheduled'],
       default: 'pending',
     },
     totalPrice: {
@@ -47,11 +49,19 @@ const bookingSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ['pending', 'paid', 'refunded', 'failed'],
+      enum: ['pending', 'paid', 'refunded', 'partially_refunded', 'failed'],
       default: 'pending',
     },
     paymentId: {
       type: String,
+    },
+    paymentMethod: {
+      type: String,
+    },
+    customFormData: {
+      type: Map,
+      of: mongoose.Schema.Types.Mixed,
+      default: {},
     },
     notes: {
       client: {
@@ -60,11 +70,17 @@ const bookingSchema = new mongoose.Schema(
       provider: {
         type: String,
       },
+      internal: {
+        type: String,
+      },
     },
     location: {
       type: String,
-      enum: ['at_provider', 'at_client'],
+      enum: ['at_provider', 'at_client', 'virtual', 'other'],
       required: true,
+    },
+    meetingLink: {
+      type: String,
     },
     cancellationReason: {
       type: String,
@@ -75,6 +91,10 @@ const bookingSchema = new mongoose.Schema(
     cancellationBy: {
       type: String,
       enum: ['client', 'provider', 'admin', 'system'],
+    },
+    rescheduledFrom: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Booking',
     },
     isRecurring: {
       type: Boolean,
@@ -88,9 +108,24 @@ const bookingSchema = new mongoose.Schema(
       endDate: {
         type: Date,
       },
+      occurrences: {
+        type: Number,
+      },
+      linkedBookings: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Booking',
+      }],
     },
+    remindersSent: [{
+      type: {
+        type: String,
+        enum: ['email', 'sms'],
+      },
+      sentAt: Date,
+    }],
     attachments: [{
       type: String,
+      description: String,
     }],
     review: {
       rating: {

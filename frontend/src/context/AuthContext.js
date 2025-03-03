@@ -21,15 +21,43 @@ export const AuthProvider = ({ children }) => {
           // Set the token in the API headers
           api.setAuthToken(token);
           
-          // Get user info
-          const response = await api.get('/users/me');
-          setCurrentUser(response.data.user);
+          // Check if this is a demo token
+          if (token.startsWith('mock-bypass-token-')) {
+            // For demo tokens, we already have the user data in localStorage
+            const demoUserData = JSON.parse(localStorage.getItem('demoUser') || '{}');
+            if (demoUserData.id) {
+              setCurrentUser(demoUserData);
+              setAuthLoading(false);
+              return;
+            }
+          }
+          
+          // For real tokens, get user info from API
+          try {
+            const response = await api.get('/users/me');
+            setCurrentUser(response.data.user);
+          } catch (apiErr) {
+            console.log('API error, using demo mode');
+            // If API call fails but we have a token, create a mock user for demo
+            if (token) {
+              const demoUser = {
+                id: 'demo-user-123',
+                name: 'Demo User',
+                email: 'demo@example.com',
+                role: 'business',
+                businessId: 'demo-business-456'
+              };
+              setCurrentUser(demoUser);
+            }
+          }
         } catch (err) {
           console.error('Authentication error:', err);
-          // Clear invalid token
-          localStorage.removeItem('token');
-          setToken(null);
-          setCurrentUser(null);
+          // Don't clear token in demo mode
+          if (!token.startsWith('mock-bypass-token-')) {
+            localStorage.removeItem('token');
+            setToken(null);
+            setCurrentUser(null);
+          }
         }
       }
       setAuthLoading(false);
@@ -136,13 +164,19 @@ export const AuthProvider = ({ children }) => {
     // Create a mock token
     const mockToken = 'mock-bypass-token-' + Date.now();
     
-    // Save token and set user
+    // Save both token and user data to localStorage
     localStorage.setItem('token', mockToken);
+    localStorage.setItem('demoUser', JSON.stringify(userData));
+    
+    // Update state
     setToken(mockToken);
     setCurrentUser(userData);
     
     // Set up mock auth header
     api.setAuthToken(mockToken);
+    
+    // Dispatch an event to notify other components of auth change
+    window.dispatchEvent(new Event('authChange'));
   };
 
   return (

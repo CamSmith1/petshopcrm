@@ -15,7 +15,6 @@ const serviceSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ['grooming', 'boarding', 'daycare', 'training', 'walking', 'sitting', 'other'],
     },
     description: {
       type: String,
@@ -43,7 +42,7 @@ const serviceSchema = new mongoose.Schema(
     location: {
       type: {
         type: String,
-        enum: ['at_provider', 'at_client', 'both'],
+        enum: ['at_provider', 'at_client', 'virtual', 'other'],
         default: 'at_provider',
       },
       address: {
@@ -57,6 +56,7 @@ const serviceSchema = new mongoose.Schema(
         latitude: Number,
         longitude: Number,
       },
+      meetingLink: String,
     },
     images: [{
       type: String,
@@ -90,6 +90,13 @@ const serviceSchema = new mongoose.Schema(
         start: String,
         end: String,
       }],
+      customDates: [{
+        date: Date,
+        slots: [{
+          start: String,
+          end: String,
+        }],
+      }],
     },
     isPaused: {
       type: Boolean,
@@ -102,6 +109,31 @@ const serviceSchema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
+    bufferTime: {
+      before: {
+        type: Number,
+        default: 0,
+      },
+      after: {
+        type: Number,
+        default: 0,
+      },
+    },
+    customForms: [{
+      title: String,
+      description: String,
+      fields: [{
+        name: String,
+        label: String,
+        type: String,
+        required: Boolean,
+        options: [String],
+      }],
+    }],
+    staffMembers: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User.staff',
+    }],
     ratings: {
       average: {
         type: Number,

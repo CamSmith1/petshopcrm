@@ -64,3 +64,6 @@ MongoDB Connection Error: MongooseServerSelectionError: connect ECONNREFUSED 127
 [0mGET /api/users/me [33m401[0m 0.360 ms - 49[0m
 [0mGET /api/users/me [33m401[0m 0.303 ms - 49[0m
 [0mGET /api/users/me [33m401[0m 0.321 ms - 49[0m
+[0mGET /api/services [32m200[0m 0.574 ms - 398[0m
+[0mGET /api/services [36m304[0m 0.305 ms - -[0m
+[0mGET /api/services [36m304[0m 0.294 ms - -[0m

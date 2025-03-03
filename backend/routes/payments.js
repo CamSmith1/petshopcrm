@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { authenticate, isPetOwner } = require('../middlewares/auth');
+const { authenticate, isClient, isAdmin } = require('../middlewares/auth');
 
 // Payment controllers will be imported here
 // const paymentController = require('../controllers/paymentController');
 
-// Create payment intent for booking (pet owner only)
-router.post('/create-intent', authenticate, isPetOwner, (req, res) => {
+// Create payment intent for booking (client only)
+router.post('/create-intent', authenticate, isClient, (req, res) => {
   // Temporary placeholder until paymentController is implemented
   res.status(200).json({ 
     message: 'Payment intent created successfully',
@@ -42,8 +42,7 @@ router.get('/history', authenticate, (req, res) => {
 });
 
 // Process refund (admin only)
-router.post('/refund', authenticate, (req, res) => {
-  // Check if user is admin will be handled by controller
+router.post('/refund', authenticate, isAdmin, (req, res) => {
   // Temporary placeholder until paymentController is implemented
   res.status(200).json({ 
     message: 'Refund processed successfully',

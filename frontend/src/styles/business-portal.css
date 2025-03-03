@@ -1,26 +1,114 @@
-/* Business Portal Styles */
+/* Business Portal Styles - Updated for BookingPro */
 
 /* Base Styles & Variables */
 :root {
-  --primary-color: #4a90e2;
-  --primary-light: #edf5ff;
-  --primary-dark: #2e6fc9;
-  --secondary-color: #5fcea1;
-  --accent-color: #f8ac3a;
-  --warning-color: #f76c5e;
-  --dark-text: #333333;
-  --medium-text: #666666;
-  --light-text: #999999;
-  --border-color: #e0e0e0;
-  --background-light: #f8f9fa;
-  --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  /* Color palette - Light theme */
+  --primary-color: #2563eb;
+  --primary-light: #3b82f6;
+  --primary-dark: #1d4ed8;
+  --secondary-color: #6366f1;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --info-color: #0ea5e9;
+  
+  /* Neutral colors */
+  --bg-color: #ffffff;
+  --content-bg: #f9fafb;
+  --card-bg: #ffffff;
+  --border-color: #e5e7eb;
+  --divider-color: #f3f4f6;
+  
+  /* Text colors */
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-tertiary: #9ca3af;
+  --text-light: #ffffff;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  
+  /* Border radius */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  /* Animation */
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow: 500ms ease;
+  
+  /* Sidebar */
   --sidebar-width: 250px;
   --sidebar-collapsed-width: 70px;
-  --header-height: 60px;
-  --border-radius: 8px;
-  --transition-speed: 0.3s;
+  
+  /* Layout */
+  --header-height: 64px;
+  --footer-height: 60px;
+  
+  /* Z-index layers */
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal-backdrop: 40;
+  --z-modal: 50;
+  --z-popover: 60;
+  --z-tooltip: 70;
+  --z-toast: 80;
+  
+  /* Legacy variables for backward compatibility */
+  --dark-text: var(--text-primary);
+  --medium-text: var(--text-secondary);
+  --light-text: var(--text-tertiary);
+  --background-light: var(--content-bg);
+  --card-shadow: var(--shadow-md);
+  --border-radius: var(--border-radius-md);
+  --transition-speed: var(--transition-normal);
 }
 
+/* Dark theme variables */
+.dark-theme {
+  --bg-color: #0f172a;
+  --content-bg: #1e293b;
+  --card-bg: #1e293b;
+  --border-color: #334155;
+  --divider-color: #1e293b;
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #64748b;
+  
+  --primary-color: #3b82f6;
+  --primary-light: #60a5fa;
+  --primary-dark: #2563eb;
+  
+  /* Shadow adjustments for dark theme */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+  
+  /* Legacy variable updates */
+  --dark-text: var(--text-primary);
+  --medium-text: var(--text-secondary);
+  --light-text: var(--text-tertiary);
+  --background-light: var(--content-bg);
+}
+
+/* Global styles */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -28,16 +116,23 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  color: var(--dark-text);
-  background-color: var(--background-light);
-  font-size: 14px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 16px;
   line-height: 1.5;
+  color: var(--text-primary);
+  background-color: var(--content-bg);
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 a {
   color: var(--primary-color);
   text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
 }
 
 button {
@@ -45,35 +140,41 @@ button {
   font-family: inherit;
 }
 
-ul {
-  list-style-type: none;
+ul, ol {
+  list-style: none;
 }
 
-/* Layout Components */
+/* Business Portal Layout */
 .business-portal {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
-  overflow: hidden;
 }
 
 .main-container {
   flex: 1;
   margin-left: var(--sidebar-width);
-  transition: margin-left var(--transition-speed);
-  overflow: hidden;
+  transition: margin-left var(--transition-normal);
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 .main-container.expanded {
   margin-left: var(--sidebar-collapsed-width);
 }
 
+.main-container.auth-page {
+  margin-left: 0;
+  background-color: var(--content-bg);
+}
+
 .content-container {
   flex: 1;
-  padding: 20px;
-  overflow-y: auto;
+  padding: var(--spacing-xl);
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 /* Sidebar */

@@ -1,13 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/MockAuthContext';
+import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 
-const Sidebar = ({ collapsed }) => {
+const Sidebar = ({ collapsed, userRole = 'business' }) => {
   const location = useLocation();
   const { currentUser, logout } = useAuth();
+  const { theme } = useTheme();
+  const [expandedMenus, setExpandedMenus] = useState({
+    dashboard: false,
+    scheduling: false,
+    appointments: false,
+    customers: false,
+    services: false,
+    integrations: false,
+    settings: false,
+    admin: false
+  });
+  
+  const toggleMenuExpand = (menu) => {
+    setExpandedMenus({
+      ...expandedMenus,
+      [menu]: !expandedMenus[menu]
+    });
+  };
   
   const isActiveRoute = (route) => {
-    return location.pathname === route;
+    if (route === '/dashboard' && location.pathname === '/dashboard') {
+      return true;
+    }
+    
+    return location.pathname === route || location.pathname.startsWith(`${route}/`);
+  };
+  
+  const isMenuActive = (routes) => {
+    return routes.some(route => location.pathname.startsWith(route));
   };
   
   // Get user initials for avatar
@@ -21,91 +48,368 @@ const Sidebar = ({ collapsed }) => {
     
     return nameParts[0][0].toUpperCase();
   };
+  
+  // Menu item component for reuse
+  const MenuItem = ({ to, icon, text, active, onClick, submenu = false }) => (
+    <Link 
+      to={to} 
+      className={`menu-item ${active ? 'active' : ''} ${submenu ? 'submenu-item' : ''}`}
+      onClick={onClick}
+    >
+      <span className="menu-icon">{icon}</span>
+      <span className="menu-text">{text}</span>
+    </Link>
+  );
+  
+  // Menu toggle component for expandable sections
+  const MenuToggle = ({ title, icon, expanded, onToggle, active }) => (
+    <div 
+      className={`menu-toggle ${active ? 'active' : ''} ${expanded ? 'expanded' : ''}`}
+      onClick={onToggle}
+    >
+      <div className="menu-toggle-content">
+        <span className="menu-icon">{icon}</span>
+        <span className="menu-text">{title}</span>
+      </div>
+      <span className="toggle-icon">{expanded ? '▼' : '▶'}</span>
+    </div>
+  );
 
   return (
-    <div className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+    <div className={`sidebar ${collapsed ? 'collapsed' : ''} ${theme === 'dark' ? 'dark-theme' : ''}`}>
       <div className="sidebar-header">
         <div className="logo">
-          <span className="logo-icon">🐾</span>
-          <span className="logo-text">DogServices</span>
+          <span className="logo-icon">📅</span>
+          <span className="logo-text">BookingPro</span>
         </div>
       </div>
       
       <div className="sidebar-menu">
-        <Link 
-          to="/dashboard" 
-          className={`menu-item ${isActiveRoute('/dashboard') ? 'active' : ''}`}
-        >
-          <span className="menu-icon">📊</span>
-          <span className="menu-text">Dashboard</span>
-        </Link>
+        {/* Dashboard Section */}
+        {userRole === 'admin' ? (
+          <>
+            <MenuToggle
+              title="Admin Dashboard"
+              icon="⚡"
+              expanded={expandedMenus.admin}
+              onToggle={() => toggleMenuExpand('admin')}
+              active={isMenuActive(['/admin'])}
+            />
+            
+            {expandedMenus.admin && (
+              <div className="submenu">
+                <MenuItem 
+                  to="/admin/dashboard" 
+                  icon="📊" 
+                  text="Overview" 
+                  active={isActiveRoute('/admin/dashboard')}
+                  submenu
+                />
+                <MenuItem 
+                  to="/admin/businesses" 
+                  icon="🏢" 
+                  text="Businesses" 
+                  active={isActiveRoute('/admin/businesses')}
+                  submenu
+                />
+                <MenuItem 
+                  to="/admin/subscriptions" 
+                  icon="💰" 
+                  text="Subscriptions" 
+                  active={isActiveRoute('/admin/subscriptions')}
+                  submenu
+                />
+                <MenuItem 
+                  to="/admin/white-label" 
+                  icon="🏷️" 
+                  text="White Label" 
+                  active={isActiveRoute('/admin/white-label')}
+                  submenu
+                />
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <MenuToggle
+              title="Dashboard"
+              icon="📊"
+              expanded={expandedMenus.dashboard}
+              onToggle={() => toggleMenuExpand('dashboard')}
+              active={isMenuActive(['/dashboard', '/analytics', '/revenue'])}
+            />
+            
+            {expandedMenus.dashboard && (
+              <div className="submenu">
+                <MenuItem 
+                  to="/dashboard" 
+                  icon="🏠" 
+                  text="Overview" 
+                  active={isActiveRoute('/dashboard')}
+                  submenu
+                />
+                <MenuItem 
+                  to="/analytics" 
+                  icon="📈" 
+                  text="Analytics" 
+                  active={isActiveRoute('/analytics')}
+                  submenu
+                />
+                <MenuItem 
+                  to="/revenue" 
+                  icon="💰" 
+                  text="Revenue" 
+                  active={isActiveRoute('/revenue')}
+                  submenu
+                />
+              </div>
+            )}
+          </>
+        )}
         
-        <Link 
-          to="/calendar" 
-          className={`menu-item ${isActiveRoute('/calendar') ? 'active' : ''}`}
-        >
-          <span className="menu-icon">📅</span>
-          <span className="menu-text">Schedule</span>
-        </Link>
+        {/* Calendar/Scheduling Section */}
+        <MenuToggle
+          title="Scheduling"
+          icon="📅"
+          expanded={expandedMenus.scheduling}
+          onToggle={() => toggleMenuExpand('scheduling')}
+          active={isMenuActive(['/calendar', '/staff-scheduling', '/holidays'])}
+        />
         
-        <Link 
-          to="/appointments" 
-          className={`menu-item ${isActiveRoute('/appointments') ? 'active' : ''}`}
-        >
-          <span className="menu-icon">📝</span>
-          <span className="menu-text">Appointments</span>
-        </Link>
+        {expandedMenus.scheduling && (
+          <div className="submenu">
+            <MenuItem 
+              to="/calendar" 
+              icon="📆" 
+              text="Calendar" 
+              active={isActiveRoute('/calendar')}
+              submenu
+            />
+            <MenuItem 
+              to="/staff-scheduling" 
+              icon="👥" 
+              text="Staff Scheduling" 
+              active={isActiveRoute('/staff-scheduling')}
+              submenu
+            />
+            <MenuItem 
+              to="/holidays" 
+              icon="🎉" 
+              text="Holidays & Closures" 
+              active={isActiveRoute('/holidays')}
+              submenu
+            />
+          </div>
+        )}
         
-        <div className="menu-section">Customers</div>
+        {/* Appointments Section */}
+        <MenuToggle
+          title="Appointments"
+          icon="📝"
+          expanded={expandedMenus.appointments}
+          onToggle={() => toggleMenuExpand('appointments')}
+          active={isMenuActive(['/appointments', '/recurring-appointments'])}
+        />
         
-        <Link 
-          to="/customers" 
-          className={`menu-item ${isActiveRoute('/customers') ? 'active' : ''}`}
-        >
-          <span className="menu-icon">👥</span>
-          <span className="menu-text">Customers</span>
-        </Link>
+        {expandedMenus.appointments && (
+          <div className="submenu">
+            <MenuItem 
+              to="/appointments" 
+              icon="📋" 
+              text="All Appointments" 
+              active={location.pathname === '/appointments'}
+              submenu
+            />
+            <MenuItem 
+              to="/appointments?status=upcoming" 
+              icon="⏳" 
+              text="Upcoming" 
+              active={location.pathname === '/appointments' && location.search.includes('status=upcoming')}
+              submenu
+            />
+            <MenuItem 
+              to="/recurring-appointments" 
+              icon="🔄" 
+              text="Recurring" 
+              active={isActiveRoute('/recurring-appointments')}
+              submenu
+            />
+          </div>
+        )}
         
-        <Link 
-          to="/pets" 
-          className={`menu-item ${isActiveRoute('/pets') ? 'active' : ''}`}
-        >
-          <span className="menu-icon">🐕</span>
-          <span className="menu-text">Pets</span>
-        </Link>
+        {/* Customers Section */}
+        <MenuToggle
+          title="Customers"
+          icon="👥"
+          expanded={expandedMenus.customers}
+          onToggle={() => toggleMenuExpand('customers')}
+          active={isMenuActive(['/customers', '/pets'])}
+        />
         
-        <div className="menu-section">Business</div>
+        {expandedMenus.customers && (
+          <div className="submenu">
+            <MenuItem 
+              to="/customers" 
+              icon="👤" 
+              text="Customers" 
+              active={location.pathname === '/customers'}
+              submenu
+            />
+            <MenuItem 
+              to="/pets" 
+              icon="🐕" 
+              text="Pets" 
+              active={location.pathname === '/pets'}
+              submenu
+            />
+          </div>
+        )}
         
-        <Link 
-          to="/services" 
-          className={`menu-item ${isActiveRoute('/services') ? 'active' : ''}`}
-        >
-          <span className="menu-icon">🛠️</span>
-          <span className="menu-text">Services</span>
-        </Link>
+        {/* Services Section */}
+        <MenuToggle
+          title="Services"
+          icon="🛠️"
+          expanded={expandedMenus.services}
+          onToggle={() => toggleMenuExpand('services')}
+          active={isMenuActive(['/services', '/service-categories', '/service-templates', '/custom-fields'])}
+        />
         
-        <Link 
-          to="/widget-integration" 
-          className={`menu-item ${isActiveRoute('/widget-integration') ? 'active' : ''}`}
-        >
-          <span className="menu-icon">🔌</span>
-          <span className="menu-text">Widget Integration</span>
-        </Link>
+        {expandedMenus.services && (
+          <div className="submenu">
+            <MenuItem 
+              to="/services" 
+              icon="📋" 
+              text="All Services" 
+              active={location.pathname === '/services'}
+              submenu
+            />
+            <MenuItem 
+              to="/service-categories" 
+              icon="🗂️" 
+              text="Categories" 
+              active={isActiveRoute('/service-categories')}
+              submenu
+            />
+            <MenuItem 
+              to="/service-templates" 
+              icon="📑" 
+              text="Templates" 
+              active={isActiveRoute('/service-templates')}
+              submenu
+            />
+            <MenuItem 
+              to="/custom-fields" 
+              icon="✏️" 
+              text="Custom Fields" 
+              active={isActiveRoute('/custom-fields')}
+              submenu
+            />
+          </div>
+        )}
         
-        <div className="menu-section">Account</div>
+        {/* Integration Section */}
+        <MenuToggle
+          title="Integrations"
+          icon="🔌"
+          expanded={expandedMenus.integrations}
+          onToggle={() => toggleMenuExpand('integrations')}
+          active={isMenuActive(['/widget-integration', '/widget-preview', '/api-access', '/webhooks'])}
+        />
         
-        <Link 
-          to="/settings" 
-          className={`menu-item ${isActiveRoute('/settings') ? 'active' : ''}`}
-        >
-          <span className="menu-icon">⚙️</span>
-          <span className="menu-text">Settings</span>
-        </Link>
+        {expandedMenus.integrations && (
+          <div className="submenu">
+            <MenuItem 
+              to="/widget-integration" 
+              icon="🧩" 
+              text="Widget" 
+              active={isActiveRoute('/widget-integration')}
+              submenu
+            />
+            <MenuItem 
+              to="/widget-preview" 
+              icon="👁️" 
+              text="Preview" 
+              active={isActiveRoute('/widget-preview')}
+              submenu
+            />
+            <MenuItem 
+              to="/api-access" 
+              icon="🔑" 
+              text="API Access" 
+              active={isActiveRoute('/api-access')}
+              submenu
+            />
+            <MenuItem 
+              to="/webhooks" 
+              icon="🪝" 
+              text="Webhooks" 
+              active={isActiveRoute('/webhooks')}
+              submenu
+            />
+          </div>
+        )}
         
+        {/* Settings Section */}
+        <MenuToggle
+          title="Settings"
+          icon="⚙️"
+          expanded={expandedMenus.settings}
+          onToggle={() => toggleMenuExpand('settings')}
+          active={isMenuActive(['/settings', '/profile', '/business-profile', '/staff', '/locations', '/notifications'])}
+        />
+        
+        {expandedMenus.settings && (
+          <div className="submenu">
+            <MenuItem 
+              to="/profile" 
+              icon="👤" 
+              text="Your Profile" 
+              active={isActiveRoute('/profile')}
+              submenu
+            />
+            <MenuItem 
+              to="/business-profile" 
+              icon="🏢" 
+              text="Business Profile" 
+              active={isActiveRoute('/business-profile')}
+              submenu
+            />
+            <MenuItem 
+              to="/staff" 
+              icon="👥" 
+              text="Staff Management" 
+              active={isActiveRoute('/staff')}
+              submenu
+            />
+            <MenuItem 
+              to="/locations" 
+              icon="📍" 
+              text="Locations" 
+              active={isActiveRoute('/locations')}
+              submenu
+            />
+            <MenuItem 
+              to="/notifications" 
+              icon="🔔" 
+              text="Notifications" 
+              active={isActiveRoute('/notifications')}
+              submenu
+            />
+            <MenuItem 
+              to="/settings" 
+              icon="⚙️" 
+              text="General Settings" 
+              active={isActiveRoute('/settings')}
+              submenu
+            />
+          </div>
+        )}
+        
+        {/* Logout button */}
         <div 
-          className="menu-item"
+          className="menu-item logout-item"
           onClick={logout}
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: 'pointer', marginTop: 'auto' }}
         >
           <span className="menu-icon">🚪</span>
           <span className="menu-text">Logout</span>

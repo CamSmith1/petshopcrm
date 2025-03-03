@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticate, isPetOwner, isServiceProvider } = require('../middlewares/auth');
+const { authenticate, isClient, isBusiness } = require('../middlewares/auth');
 
 // Booking controllers will be imported here
 // const bookingController = require('../controllers/bookingController');
@@ -61,8 +61,8 @@ router.get('/:id', authenticate, (req, res) => {
   });
 });
 
-// Create new booking (pet owner only)
-router.post('/', authenticate, isPetOwner, (req, res) => {
+// Create new booking (client only)
+router.post('/', authenticate, isClient, (req, res) => {
   // Temporary placeholder until bookingController is implemented
   res.status(201).json({ 
     message: 'Booking created successfully',
@@ -70,11 +70,11 @@ router.post('/', authenticate, isPetOwner, (req, res) => {
       id: 'new-id',
       service: {
         id: req.body.serviceId || '1',
-        title: 'Dog Grooming Service'
+        title: 'Professional Service'
       },
-      pet: {
-        id: req.body.petId || '1',
-        name: 'Buddy'
+      subject: {
+        id: req.body.subjectId || '1',
+        name: req.body.subjectName || 'Default Subject'
       },
       startTime: req.body.startTime || new Date().toISOString(),
       endTime: req.body.endTime || new Date(Date.now() + 3600000).toISOString(),
@@ -115,13 +115,13 @@ router.put('/:id/cancel', authenticate, (req, res) => {
       status: 'cancelled',
       cancellationReason: req.body.reason || 'No reason provided',
       cancellationTime: new Date().toISOString(),
-      cancellationBy: req.user.role === 'pet_owner' ? 'client' : 'provider'
+      cancellationBy: req.user.role === 'client' ? 'client' : 'business'
     }
   });
 });
 
-// Complete booking (service provider only)
-router.put('/:id/complete', authenticate, isServiceProvider, (req, res) => {
+// Complete booking (business only)
+router.put('/:id/complete', authenticate, isBusiness, (req, res) => {
   // Temporary placeholder until bookingController is implemented
   res.status(200).json({ 
     message: 'Booking marked as completed',
@@ -132,8 +132,8 @@ router.put('/:id/complete', authenticate, isServiceProvider, (req, res) => {
   });
 });
 
-// Add review to booking (pet owner only)
-router.post('/:id/review', authenticate, isPetOwner, (req, res) => {
+// Add review to booking (client only)
+router.post('/:id/review', authenticate, isClient, (req, res) => {
   // Temporary placeholder until bookingController is implemented
   res.status(201).json({ 
     message: 'Review added successfully',
