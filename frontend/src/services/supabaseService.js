@@ -76,38 +76,62 @@ export const auth = {
   login: async (credentials) => {
     const { email, password } = credentials;
     
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-    
-    if (error) {
-      throw new Error(error.message);
+    // Validate required fields
+    if (!email) {
+      console.error('Login error: Missing email');
+      throw new Error('Email is required');
     }
     
-    // Get user profile data
-    const { data: userData, error: profileError } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', data.user.id)
-      .single();
+    if (!password) {
+      console.error('Login error: Missing password');
+      throw new Error('Password is required');
+    }
+    
+    console.log('Attempting to sign in with email:', email);
+    
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
       
-    if (profileError) {
-      console.error('Error fetching user profile:', profileError);
+      if (error) {
+        console.error('Supabase auth error:', error);
+        throw new Error(error.message);
+      }
+      
+      if (!data || !data.user) {
+        console.error('No user data returned from auth');
+        throw new Error('Authentication failed');
+      }
+      
+      // Get user profile data
+      const { data: userData, error: profileError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+        
+      if (profileError) {
+        console.error('Error fetching user profile:', profileError);
+      }
+      
+      return {
+        user: {
+          id: data.user.id,
+          name: userData?.name || data.user.user_metadata?.name,
+          email: data.user.email,
+          role: userData?.role || data.user.user_metadata?.role || 'client',
+          isVerified: data.user.email_confirmed_at ? true : false,
+          avatar: userData?.avatar_url,
+          businessName: userData?.business_name
+        },
+        session: data.session
+      };
+    } catch (err) {
+      console.error('Login error in supabaseService:', err);
+      throw err;
     }
-    
-    return {
-      user: {
-        id: data.user.id,
-        name: userData?.name || data.user.user_metadata?.name,
-        email: data.user.email,
-        role: userData?.role || data.user.user_metadata?.role || 'client',
-        isVerified: data.user.email_confirmed_at ? true : false,
-        avatar: userData?.avatar_url,
-        businessName: userData?.business_name
-      },
-      session: data.session
-    };
   },
   
   // Sign out

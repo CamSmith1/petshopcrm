@@ -165,16 +165,28 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       setAuthLoading(true);
       
+      // Validate credentials
+      if (!credentials.email) {
+        throw new Error('Email is required');
+      }
+      
+      if (!credentials.password) {
+        throw new Error('Password is required');
+      }
+      
+      console.log('AuthContext: Attempting login with email:', credentials.email);
+      
       const result = await supabaseService.auth.login(credentials);
       
       setSession(result.session);
       setCurrentUser(result.user);
       
       setAuthLoading(false);
-      return result;
+      return { success: true, user: result.user };
     } catch (err) {
       setAuthLoading(false);
       setError(err.message || 'Invalid credentials. Please try again.');
+      console.error('Login failed:', err.message);
       throw err;
     }
   };
