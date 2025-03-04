@@ -23,7 +23,7 @@ const Login = () => {
       setLoading(true);
       
       // Call login function from auth context
-      const result = await login(email, password, rememberMe);
+      const result = await login({ email, password, rememberMe });
       
       if (result.success) {
         toast.success('Login successful!');
