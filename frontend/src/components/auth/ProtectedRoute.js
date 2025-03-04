@@ -17,11 +17,11 @@ const ProtectedRoute = ({
   requiredRole = null,
   redirectPath = '/login'
 }) => {
-  const { isAuthenticated, userRole, isLoading } = useAuth();
+  const { isAuthenticated, currentUser, authLoading } = useAuth();
   const location = useLocation();
   
   // Show loading state if auth is still being checked
-  if (isLoading) {
+  if (authLoading) {
     return (
       <div className="auth-loading">
         <div className="spinner"></div>
@@ -37,12 +37,18 @@ const ProtectedRoute = ({
   }
   
   // If a specific role is required, check user's role
-  if (requiredRole && userRole !== requiredRole) {
-    // Redirect based on role
-    if (userRole === 'admin') {
-      return <Navigate to="/admin/dashboard" replace />;
-    } else {
-      return <Navigate to="/dashboard" replace />;
+  if (requiredRole && currentUser?.role !== requiredRole) {
+    // Special case: if the route requires 'client' role and the user is 'admin',
+    // allow access as admin can view client-specific routes
+    if (!(requiredRole === 'client' && currentUser?.role === 'admin')) {
+      // Redirect based on role
+      if (currentUser?.role === 'admin') {
+        return <Navigate to="/admin/dashboard" replace />;
+      } else if (currentUser?.role === 'business') {
+        return <Navigate to="/dashboard" replace />;
+      } else {
+        return <Navigate to="/appointments" replace />;
+      }
     }
   }
   

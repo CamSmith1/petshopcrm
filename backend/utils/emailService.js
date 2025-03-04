@@ -1,16 +1,8 @@
+const supabase = require('../config/supabase');
 const nodemailer = require('nodemailer');
 
-// Create transporter
-const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
 /**
- * Send email using nodemailer
+ * Send email using Supabase Edge Functions or Nodemailer fallback
  * @param {Object} options - Email options
  * @param {string} options.to - Recipient email
  * @param {string} options.subject - Email subject
@@ -19,17 +11,44 @@ const transporter = nodemailer.createTransport({
  */
 exports.sendEmail = async (options) => {
   try {
-    const mailOptions = {
-      from: `Dog Services <${process.env.EMAIL_USER}>`,
-      to: options.to,
-      subject: options.subject,
-      html: options.html,
-      text: options.text,
-    };
+    // Check if we're using Supabase Edge Functions for email
+    if (process.env.USE_SUPABASE_EMAIL === 'true') {
+      // Call Supabase Edge Function for email
+      const { error } = await supabase.functions.invoke('send-email', {
+        body: {
+          to: options.to,
+          subject: options.subject,
+          html: options.html,
+          text: options.text,
+        },
+      });
+      
+      if (error) throw new Error(error.message);
+      console.log('Email sent via Supabase Edge Function');
+      return { success: true };
+      
+    } else {
+      // Fallback to traditional nodemailer
+      const transporter = nodemailer.createTransport({
+        service: process.env.EMAIL_SERVICE,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+      
+      const mailOptions = {
+        from: `Dog Services <${process.env.EMAIL_USER}>`,
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
+        text: options.text,
+      };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent: ', info.messageId);
-    return info;
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Email sent via Nodemailer: ', info.messageId);
+      return info;
+    }
   } catch (error) {
     console.error('Email error: ', error);
     throw new Error('Email could not be sent');
@@ -47,8 +66,10 @@ exports.sendEmail = async (options) => {
 exports.sendBookingConfirmation = async (options) => {
   const { to, booking, service, pet } = options;
 
-  const startDate = new Date(booking.startTime).toLocaleString();
-  const endDate = new Date(booking.endTime).toLocaleString();
+  const startDate = new Date(booking.start_time || booking.startTime).toLocaleString();
+  const endDate = new Date(booking.end_time || booking.endTime).toLocaleString();
+  const price = booking.total_price_amount || booking.totalPrice?.amount;
+  const bookingId = booking.id || booking._id;
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -61,10 +82,10 @@ exports.sendBookingConfirmation = async (options) => {
         <li><strong>Pet:</strong> ${pet.name}</li>
         <li><strong>Start Time:</strong> ${startDate}</li>
         <li><strong>End Time:</strong> ${endDate}</li>
-        <li><strong>Total Price:</strong> $${booking.totalPrice.amount}</li>
+        <li><strong>Total Price:</strong> $${price}</li>
       </ul>
       
-      <p>You can view your booking details and make changes by <a href="${process.env.CLIENT_URL}/bookings/${booking._id}">clicking here</a>.</p>
+      <p>You can view your booking details and make changes by <a href="${process.env.CLIENT_URL}/bookings/${bookingId}">clicking here</a>.</p>
       
       <p>Thank you for using our platform!</p>
     </div>
@@ -88,7 +109,13 @@ exports.sendBookingConfirmation = async (options) => {
 exports.sendBookingReminder = async (options) => {
   const { to, booking, service, pet } = options;
 
-  const startDate = new Date(booking.startTime).toLocaleString();
+  const startDate = new Date(booking.start_time || booking.startTime).toLocaleString();
+  const bookingId = booking.id || booking._id;
+  const location = booking.location;
+  const locationText = 
+    location === 'at_provider' ? 'Service Provider Location' : 
+    location === 'at_client' ? 'Your Location' :
+    location === 'virtual' ? 'Virtual Meeting' : 'Other';
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -100,10 +127,10 @@ exports.sendBookingReminder = async (options) => {
         <li><strong>Service:</strong> ${service.title}</li>
         <li><strong>Pet:</strong> ${pet.name}</li>
         <li><strong>Start Time:</strong> ${startDate}</li>
-        <li><strong>Location:</strong> ${booking.location === 'at_provider' ? 'Service Provider Location' : 'Your Location'}</li>
+        <li><strong>Location:</strong> ${locationText}</li>
       </ul>
       
-      <p>You can view your booking details and make changes by <a href="${process.env.CLIENT_URL}/bookings/${booking._id}">clicking here</a>.</p>
+      <p>You can view your booking details and make changes by <a href="${process.env.CLIENT_URL}/bookings/${bookingId}">clicking here</a>.</p>
       
       <p>Thank you for using our platform!</p>
     </div>

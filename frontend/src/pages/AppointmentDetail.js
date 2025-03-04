@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import PageHeader from '../components/common/PageHeader';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import api from '../services/api';
 
 const AppointmentDetail = () => {
   const { appointmentId } = useParams();
@@ -10,52 +11,103 @@ const AppointmentDetail = () => {
   const [appointment, setAppointment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [confirmingCancel, setConfirmingCancel] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
 
   useEffect(() => {
-    // Simulated data for now
-    // In a real implementation, this would fetch from API
-    const mockAppointment = {
-      id: appointmentId,
-      customerName: 'John Smith',
-      customerId: 'cust123',
-      customerEmail: 'john.smith@example.com',
-      customerPhone: '(555) 123-4567',
-      petName: 'Buddy',
-      petId: 'pet456',
-      petBreed: 'Golden Retriever',
-      petAge: '3 years',
-      service: 'Dog Walking',
-      serviceId: 'srv789',
-      serviceDuration: '30 minutes',
-      servicePrice: '$25.00',
-      date: '2025-03-05T10:00:00',
-      status: 'confirmed',
-      notes: 'Please bring treats. Buddy loves to walk in the park.',
-      paymentStatus: 'paid',
-      createdAt: '2025-02-28T15:45:22'
-    };
-    
-    setTimeout(() => {
-      setAppointment(mockAppointment);
-      setLoading(false);
-    }, 800);
+    fetchAppointmentDetails();
   }, [appointmentId]);
 
-  const handleStatusChange = (newStatus) => {
-    setAppointment({
-      ...appointment,
-      status: newStatus
-    });
-    toast.success(`Appointment status updated to ${newStatus}`);
+  const fetchAppointmentDetails = async () => {
+    setLoading(true);
+    try {
+      const response = await api.getBooking(appointmentId);
+      const booking = response.data.booking;
+      
+      // Transform the booking data to fit our component
+      const formattedAppointment = {
+        id: booking._id,
+        customerName: booking.client?.name || 'Unknown Client',
+        customerId: booking.client?._id || '',
+        customerEmail: booking.client?.email || '',
+        customerPhone: booking.client?.phone || '',
+        petName: booking.subject?.name || 'No pet specified',
+        petId: booking.subject?._id || '',
+        petBreed: booking.subject?.breed || '',
+        petAge: booking.subject?.age || '',
+        service: booking.service?.title || 'Unknown Service',
+        serviceId: booking.service?._id || '',
+        serviceDuration: calculateDuration(booking.startTime, booking.endTime),
+        servicePrice: formatPrice(booking.totalPrice),
+        date: booking.startTime,
+        endTime: booking.endTime,
+        status: booking.status,
+        notes: booking.notes?.client || booking.notes?.provider || '',
+        paymentStatus: booking.paymentStatus || 'pending',
+        location: booking.location,
+        createdAt: booking.createdAt,
+        assignedStaff: booking.assignedStaff,
+      };
+      
+      setAppointment(formattedAppointment);
+    } catch (error) {
+      console.error('Error fetching appointment details:', error);
+      toast.error('Failed to load appointment details');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (newStatus) => {
+    try {
+      await api.updateBooking(appointmentId, { status: newStatus });
+      setAppointment({
+        ...appointment,
+        status: newStatus
+      });
+      toast.success(`Appointment status updated to ${newStatus}`);
+    } catch (error) {
+      console.error('Error updating appointment status:', error);
+      toast.error('Failed to update appointment status');
+    }
   };
 
   const handleCancelClick = () => {
     setConfirmingCancel(true);
   };
 
-  const confirmCancel = () => {
-    handleStatusChange('cancelled');
-    setConfirmingCancel(false);
+  const confirmCancel = async () => {
+    try {
+      await api.cancelBooking(appointmentId, cancelReason);
+      setAppointment({
+        ...appointment,
+        status: 'cancelled'
+      });
+      toast.success('Appointment cancelled successfully');
+      setConfirmingCancel(false);
+    } catch (error) {
+      console.error('Error cancelling appointment:', error);
+      toast.error('Failed to cancel appointment');
+    }
+  };
+  
+  const calculateDuration = (start, end) => {
+    const startTime = new Date(start);
+    const endTime = new Date(end);
+    const durationMs = endTime - startTime;
+    const durationMinutes = Math.round(durationMs / 60000);
+    
+    if (durationMinutes < 60) {
+      return `${durationMinutes} minutes`;
+    } else {
+      const hours = Math.floor(durationMinutes / 60);
+      const minutes = durationMinutes % 60;
+      return `${hours} hour${hours > 1 ? 's' : ''}${minutes > 0 ? ` ${minutes} min` : ''}`;
+    }
+  };
+  
+  const formatPrice = (price) => {
+    if (!price || !price.amount) return 'N/A';
+    return `${price.currency || '$'}${price.amount.toFixed(2)}`;
   };
 
   const formatDate = (dateString) => {
