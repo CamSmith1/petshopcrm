@@ -1,16 +1,16 @@
-# BookingPro SaaS Platform
+# Dog Services SaaS Platform (Powered by Supabase)
 
-A comprehensive platform for businesses to manage bookings and services across any industry, including salons, consulting, training, events, and more.
+A comprehensive platform for pet service businesses to manage bookings, designed to run entirely on Supabase.
 
 ## Features
 
-- **Multi-Service Management**: Create and manage multiple service types with flexible parameters
+- **Pet Service Management**: Create and manage multiple service types with flexible parameters
 - **Advanced Availability**: Calendar-based scheduling with custom hours and resource allocation
 - **Comprehensive Booking Flow**: Service selection, intake forms, payments, and notifications
 - **Business Dashboard**: Centralized management of bookings, services, and customers
 - **Client Features**: Self-service booking, account management, and notifications
 - **Admin Capabilities**: Multi-business management, templates, and custom integrations
-- **Mobile Experience**: Responsive design for all devices with native mobile app
+- **Mobile Experience**: Responsive design for all devices
 - **Widget Integration**: Embed a booking widget on your existing business website
 
 ## Widget Integration
@@ -36,18 +36,20 @@ The key feature of our platform is the ability for businesses to embed a customi
 
 - **Frontend**: React.js
 - **Backend**: Node.js + Express.js
-- **Database**: MongoDB with Mongoose
-- **Authentication**: JWT-based auth
+- **Database**: PostgreSQL via Supabase
+- **Authentication**: Supabase Auth
+- **Storage**: Supabase Storage
+- **Serverless Functions**: Supabase Edge Functions
 - **Payments**: Stripe integration
-- **Email**: Nodemailer for notifications
+- **Email**: Nodemailer with Supabase Edge Function integration
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v14+)
-- MongoDB
+- Node.js (v16+)
 - npm or yarn
+- Supabase account
 
 ### Installation
 
@@ -63,9 +65,13 @@ The key feature of our platform is the ability for businesses to embed a customi
    npm install
    ```
 
-3. Create a `.env` file based on `.env.example` and update with your values.
+3. Create a Supabase project and run the schema SQL:
+   - Create a new Supabase project
+   - Run the SQL script in `backend/models/supabase/schema.sql` to set up the database schema
 
-4. Start the development server:
+4. Create a `.env` file based on `.env.example` and update with your Supabase values.
+
+5. Start the development server:
    ```
    npm run dev
    ```
@@ -93,11 +99,11 @@ The key feature of our platform is the ability for businesses to embed a customi
 dog-services-saas/
 ├── backend/
 │   ├── controllers/    # Request handlers
-│   ├── models/         # Database models
+│   ├── models/         # Database models and Supabase schema
 │   ├── routes/         # API routes
 │   ├── middlewares/    # Custom middlewares
 │   ├── config/         # Configuration files
-│   └── utils/          # Utility functions
+│   └── utils/          # Utility functions and Supabase client
 └── frontend/
     └── src/
         ├── components/ # Reusable components
@@ -151,9 +157,29 @@ dog-services-saas/
 
 - `POST /api/widget/api-key` - Generate API key for widget integration
 - `GET /api/widget/embed-code` - Get widget embed code
-- `POST /api/widget/token` - Get widget session token 
-- `GET /api/widget/verify-token` - Verify widget token
 - `GET /api/widget/services` - Get available services for widget
+
+## Supabase Features Used
+
+- **Auth**: User authentication and management
+- **Database**: PostgreSQL for data storage
+- **Storage**: For pet photos and business assets
+- **Edge Functions**: For email notifications and scheduled tasks
+- **Row Level Security**: For data access control
+- **Realtime**: For live booking updates
+- **Foreign Data Wrappers**: For integrations with external systems
+
+## Migrating from MongoDB to Supabase
+
+This project was migrated from a MongoDB backend to Supabase. Key migration steps included:
+
+1. Designing a relational schema from document-based models
+2. Creating PostgreSQL tables with proper relationships
+3. Implementing RLS policies for security
+4. Updating authentication to use Supabase Auth
+5. Creating database functions and triggers for business logic
+6. Migrating from JWT to Supabase session management
+7. Implementing email notifications with Edge Functions
 
 ## License
 

@@ -1,49 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import PageHeader from '../components/common/PageHeader';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import api from '../services/api';
 
 const AppointmentsList = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('upcoming');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Simulated data for now
-    // In a real implementation, this would fetch from API
-    const mockAppointments = [
-      {
-        id: 'apt1',
-        customerName: 'John Smith',
-        petName: 'Buddy',
-        service: 'Dog Walking',
-        date: '2025-03-05T10:00:00',
-        status: 'confirmed'
-      },
-      {
-        id: 'apt2',
-        customerName: 'Sarah Johnson',
-        petName: 'Max',
-        service: 'Grooming',
-        date: '2025-03-06T14:30:00',
-        status: 'pending'
-      },
-      {
-        id: 'apt3',
-        customerName: 'Michael Brown',
-        petName: 'Luna',
-        service: 'Training Session',
-        date: '2025-03-04T09:00:00',
-        status: 'completed'
+    fetchAppointments();
+  }, [filter]);
+
+  const fetchAppointments = async () => {
+    setLoading(true);
+    try {
+      const params = {};
+      if (filter === 'upcoming') {
+        params.startDate = new Date().toISOString();
+        params.status = ['pending', 'confirmed'];
+      } else if (filter === 'past') {
+        params.endDate = new Date().toISOString();
+        params.status = ['completed', 'cancelled'];
+      } else if (filter === 'pending') {
+        params.status = 'pending';
       }
-    ];
-    
-    setTimeout(() => {
-      setAppointments(mockAppointments);
+
+      const response = await api.getBookings(params);
+      const formattedAppointments = response.data.bookings.map(booking => ({
+        id: booking._id,
+        customerName: booking.client?.name || 'Unknown',
+        petName: booking.subject?.name || 'No pet specified',
+        service: booking.service?.title || 'Unknown service',
+        date: booking.startTime,
+        endTime: booking.endTime,
+        status: booking.status,
+        location: booking.location,
+        totalPrice: booking.totalPrice
+      }));
+      
+      setAppointments(formattedAppointments);
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+      toast.error('Failed to load appointments. Please try again.');
+    } finally {
       setLoading(false);
-    }, 800);
-  }, []);
+    }
+  };
+
+  const handleCreateAppointment = () => {
+    navigate('/appointments/new');
+  };
 
   const filteredAppointments = appointments.filter(appointment => {
     const appointmentDate = new Date(appointment.date);
@@ -77,6 +87,8 @@ const AppointmentsList = () => {
       case 'pending': return 'badge-warning';
       case 'completed': return 'badge-info';
       case 'cancelled': return 'badge-danger';
+      case 'no_show': return 'badge-danger';
+      case 'rescheduled': return 'badge-secondary';
       default: return 'badge-secondary';
     }
   };
@@ -118,7 +130,10 @@ const AppointmentsList = () => {
             </button>
           </div>
           <div className="card-actions">
-            <button className="btn btn-primary">
+            <button 
+              className="btn btn-primary"
+              onClick={handleCreateAppointment}
+            >
               + New Appointment
             </button>
           </div>

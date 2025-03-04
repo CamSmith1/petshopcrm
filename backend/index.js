@@ -1,9 +1,9 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const path = require('path');
+const cron = require('node-cron');
 
 // Routes
 const authRoutes = require('./routes/auth');
@@ -16,6 +16,11 @@ const widgetRoutes = require('./routes/widget');
 // Initialize environment variables
 dotenv.config();
 
+// Initialize Supabase connection
+const supabase = require('./config/supabase');
+const supabaseClient = require('./utils/supabaseClient');
+const { sendEmail } = require('./utils/emailService');
+
 // Initialize app
 const app = express();
 
@@ -23,7 +28,7 @@ const app = express();
 app.use(cors({
   origin: '*', // Allow all origins for widget embed (customize in production)
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key']
 }));
 app.use(express.json());
 app.use(morgan('dev'));
@@ -31,14 +36,105 @@ app.use(morgan('dev'));
 // Serve widget.js as a static file
 app.use(express.static(path.join(__dirname, '..', 'frontend', 'public')));
 
-// Database Connection
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log('MongoDB Connected'))
-  .catch((err) => console.log('MongoDB Connection Error:', err));
+// Verify Supabase connection
+(async () => {
+  try {
+    const { data, error } = await supabase.from('users').select('count').limit(1);
+    if (error) throw error;
+    console.log('Supabase connection successful');
+  } catch (err) {
+    console.error('Supabase connection error:', err.message);
+  }
+})();
+
+// Set up scheduled tasks
+// Schedule reminders for upcoming bookings (runs every hour)
+cron.schedule('0 * * * *', async () => {
+  try {
+    console.log('Running scheduled task: sending booking reminders');
+    
+    // Get bookings that are happening within the next 24 hours
+    const tomorrow = new Date();
+    tomorrow.setHours(tomorrow.getHours() + 24);
+    
+    const today = new Date();
+    
+    // Get confirmed bookings between now and tomorrow
+    const { data: upcomingBookings, error } = await supabase
+      .from('bookings')
+      .select(`
+        *,
+        services(title),
+        pets(name)
+      `)
+      .eq('status', 'confirmed')
+      .gte('start_time', today.toISOString())
+      .lte('start_time', tomorrow.toISOString());
+    
+    if (error) {
+      console.error('Error fetching upcoming bookings:', error.message);
+      return;
+    }
+    
+    // Check if already reminded
+    for (const booking of upcomingBookings) {
+      // Check if reminder already sent
+      const { data: reminderSent, error: reminderError } = await supabase
+        .from('booking_reminders')
+        .select('id')
+        .eq('booking_id', booking.id)
+        .eq('type', 'email')
+        .single();
+      
+      if (reminderError && reminderError.code !== 'PGRST116') {
+        console.error(`Error checking reminder for booking ${booking.id}:`, reminderError.message);
+        continue;
+      }
+      
+      // Send reminder if not already sent
+      if (!reminderSent) {
+        // Get client details
+        const { data: client, error: clientError } = await supabase
+          .from('users')
+          .select('email')
+          .eq('id', booking.client_id)
+          .single();
+        
+        if (clientError) {
+          console.error(`Error fetching client for booking ${booking.id}:`, clientError.message);
+          continue;
+        }
+        
+        if (client && client.email) {
+          // Send reminder email
+          try {
+            await sendEmail.sendBookingReminder({
+              to: client.email,
+              booking: booking,
+              service: booking.services,
+              pet: booking.pets
+            });
+            
+            // Record that reminder was sent
+            await supabase
+              .from('booking_reminders')
+              .insert({
+                booking_id: booking.id,
+                type: 'email',
+                sent_at: new Date().toISOString()
+              });
+            
+            console.log(`Reminder sent for booking ${booking.id}`);
+          } catch (emailError) {
+            console.error(`Error sending reminder email for booking ${booking.id}:`, emailError.message);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Error running scheduled task:', err.message);
+  }
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -55,11 +151,12 @@ app.get('/widget-docs', (req, res) => {
 
 // Base route
 app.get('/', (req, res) => {
-  res.send('Dog Services API is running');
+  res.send('Dog Services API is running (Supabase Edition)');
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
+  console.error(err.stack);
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal Server Error';
   res.status(statusCode).json({ error: message });

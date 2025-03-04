@@ -99,32 +99,35 @@ function App() {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
   
-  // For demo/development purposes - check token in localStorage and listen for changes
+  // Check for Supabase session and listen for changes
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsAuthenticated(!!token);
-    
-    // Listen for storage events to update auth state when token changes
-    const handleStorageChange = (e) => {
-      if (e.key === 'token') {
-        setIsAuthenticated(!!e.newValue);
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also create a custom event listener for same-tab updates
-    const handleAuthChange = () => {
-      const token = localStorage.getItem('token');
-      setIsAuthenticated(!!token);
-    };
-    
-    window.addEventListener('authChange', handleAuthChange);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('authChange', handleAuthChange);
-    };
+    import('./services/supabaseClient').then(({ default: supabase }) => {
+      // Get initial session
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setIsAuthenticated(!!session);
+        if (session?.user) {
+          // Get user role from metadata
+          const role = session.user.user_metadata?.role || 'business';
+          setUserRole(role);
+        }
+      });
+      
+      // Listen for auth changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          setIsAuthenticated(!!session);
+          if (session?.user) {
+            // Get user role from metadata
+            const role = session.user.user_metadata?.role || 'business';
+            setUserRole(role);
+          }
+        }
+      );
+      
+      return () => {
+        subscription.unsubscribe();
+      };
+    });
   }, []);
 
   // Main application UI with auth flow and responsive design
