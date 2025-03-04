@@ -22,18 +22,21 @@ const Login = () => {
     try {
       setLoading(true);
       
-      // Call login function from auth context
-      const result = await login({ email, password, rememberMe });
+      // Call login function from auth context with properly trimmed data
+      const credentials = {
+        email: email.trim(),
+        password: password,
+        rememberMe
+      };
       
-      if (result.success) {
-        toast.success('Login successful!');
-        navigate('/dashboard');
-      } else {
-        toast.error(result.error || 'Login failed. Please try again.');
-      }
+      console.log('Login credentials:', { ...credentials, password: '****' });
+      const result = await login(credentials);
+      
+      toast.success('Login successful!');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
-      toast.error('An unexpected error occurred. Please try again.');
+      toast.error(error.message || 'An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
