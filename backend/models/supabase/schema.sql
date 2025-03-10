@@ -35,34 +35,9 @@ CREATE TABLE IF NOT EXISTS users (
   rating_count INTEGER DEFAULT 0
 );
 
--- Business Hours table
-CREATE TABLE IF NOT EXISTS business_hours (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  business_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  day_of_week TEXT NOT NULL,
-  start_time TIME,
-  end_time TIME
-);
+-- Business Hours table removed
 
--- Staff table 
-CREATE TABLE IF NOT EXISTS staff (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  business_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  role TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Staff Schedule table
-CREATE TABLE IF NOT EXISTS staff_schedule (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  staff_id UUID REFERENCES staff(id) ON DELETE CASCADE,
-  day_of_week TEXT NOT NULL,
-  start_time TIME,
-  end_time TIME
-);
+-- Staff tables removed
 
 -- API Keys table
 CREATE TABLE IF NOT EXISTS api_keys (
@@ -74,44 +49,9 @@ CREATE TABLE IF NOT EXISTS api_keys (
   last_used TIMESTAMP WITH TIME ZONE
 );
 
--- Widget Settings table
-CREATE TABLE IF NOT EXISTS widget_settings (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  business_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
-  primary_color TEXT,
-  secondary_color TEXT,
-  font_family TEXT,
-  border_radius TEXT,
-  layout TEXT,
-  custom_css TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+-- Widget Settings table removed
 
--- Pets table 
-CREATE TABLE IF NOT EXISTS pets (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  owner_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  type TEXT NOT NULL,
-  breed TEXT,
-  age INTEGER,
-  gender TEXT,
-  special_requirements TEXT,
-  photo_url TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Pet Emergency Contacts table
-CREATE TABLE IF NOT EXISTS pet_emergency_contacts (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  pet_id UUID REFERENCES pets(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  phone TEXT NOT NULL,
-  email TEXT,
-  relationship TEXT
-);
+-- Pets tables removed
 
 -- Services table 
 CREATE TABLE IF NOT EXISTS services (
@@ -148,12 +88,7 @@ CREATE TABLE IF NOT EXISTS service_custom_forms (
   form_schema JSONB NOT NULL
 );
 
--- Service Staff Assignments table
-CREATE TABLE IF NOT EXISTS service_staff_assignments (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  service_id UUID REFERENCES services(id) ON DELETE CASCADE,
-  staff_id UUID REFERENCES staff(id) ON DELETE CASCADE
-);
+-- Service Staff Assignments table removed
 
 -- Bookings table 
 CREATE TABLE IF NOT EXISTS bookings (
@@ -161,8 +96,6 @@ CREATE TABLE IF NOT EXISTS bookings (
   service_id UUID REFERENCES services(id) ON DELETE SET NULL,
   provider_id UUID REFERENCES users(id) ON DELETE SET NULL,
   client_id UUID REFERENCES users(id) ON DELETE SET NULL,
-  pet_id UUID REFERENCES pets(id) ON DELETE SET NULL,
-  assigned_staff_id UUID REFERENCES staff(id) ON DELETE SET NULL,
   start_time TIMESTAMP WITH TIME ZONE NOT NULL,
   end_time TIMESTAMP WITH TIME ZONE NOT NULL,
   status TEXT NOT NULL DEFAULT 'pending',
@@ -246,12 +179,10 @@ CREATE TABLE IF NOT EXISTS reviews (
 
 -- Create RLS policies
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE pets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE services ENABLE ROW LEVEL SECURITY;
 ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE api_keys ENABLE ROW LEVEL SECURITY;
-ALTER TABLE widget_settings ENABLE ROW LEVEL SECURITY;
 
 -- Create auth triggers for users table to sync with auth.users
 CREATE OR REPLACE FUNCTION public.handle_new_user() 
@@ -290,9 +221,7 @@ CREATE TRIGGER update_bookings_timestamp
   BEFORE UPDATE ON bookings
   FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
 
-CREATE TRIGGER update_widget_settings_timestamp
-  BEFORE UPDATE ON widget_settings
-  FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
+-- Widget settings trigger removed
 
 -- Function to update user average rating when a new review is added
 CREATE OR REPLACE FUNCTION update_user_rating() 

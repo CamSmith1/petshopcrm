@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/MockAuthContext';
+import { useAuth } from '../context/AuthContext';
 
 const BusinessDashboard = () => {
   const { currentUser } = useAuth();

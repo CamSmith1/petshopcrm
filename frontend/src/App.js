@@ -22,19 +22,17 @@ import RevenueTracking from './pages/RevenueTracking';
 
 // Page Components - Scheduling
 import ScheduleCalendar from './pages/ScheduleCalendar';
-import StaffScheduling from './pages/StaffScheduling';
-import HolidayManagement from './pages/HolidayManagement';
 
 // Page Components - Appointments
 import AppointmentsList from './pages/AppointmentsList';
 import AppointmentDetail from './pages/AppointmentDetail';
+import AppointmentForm from './pages/AppointmentForm';
 import RecurringAppointments from './pages/RecurringAppointments';
 
 // Page Components - Customers
 import CustomersList from './pages/CustomersList';
 import CustomerDetail from './pages/CustomerDetail';
-import PetsList from './pages/PetsList';
-import PetDetail from './pages/PetDetail';
+import CustomerForm from './pages/CustomerForm';
 
 // Page Components - Services
 import ServicesList from './pages/ServicesList';
@@ -43,11 +41,9 @@ import ServiceCategories from './pages/ServiceCategories';
 import ServiceTemplates from './pages/ServiceTemplates';
 import CustomFields from './pages/CustomFields';
 
-// Page Components - Integration
-import WidgetIntegration from './pages/WidgetIntegration';
-import WidgetPreview from './pages/WidgetPreview';
-import APIIntegration from './pages/APIIntegration';
-import WebhooksManagement from './pages/WebhooksManagement';
+// Booking Page Components
+import BookingPageSetup from './pages/BookingPageSetup';
+import BookingPage from './pages/BookingPage';
 
 // Page Components - Settings
 import Settings from './pages/Settings';
@@ -81,8 +77,9 @@ function App() {
   const [userRole, setUserRole] = useState('business'); // business, admin, client
   const location = useLocation();
   
-  // Check if current route is auth related
+  // Check if current route is auth related or booking page
   const isAuthRoute = ['/login', '/signup', '/forgot-password'].includes(location.pathname);
+  const isBookingRoute = location.pathname === '/booking'; // Only the standalone booking page
   
   // Toggle sidebar
   const toggleSidebar = () => {
@@ -101,34 +98,48 @@ function App() {
   
   // Check for Supabase session and listen for changes
   useEffect(() => {
-    import('./services/supabaseClient').then(({ default: supabase }) => {
-      // Get initial session
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setIsAuthenticated(!!session);
-        if (session?.user) {
-          // Get user role from metadata
-          const role = session.user.user_metadata?.role || 'business';
-          setUserRole(role);
-        }
-      });
-      
-      // Listen for auth changes
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        (event, session) => {
+    // In development mode, set authenticated by default
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    
+    if (isDevelopment) {
+      // Set as authenticated with business role in development
+      setIsAuthenticated(true);
+      setUserRole('business');
+      console.log('Development mode: Authentication bypassed');
+    } else {
+      // Normal authentication flow for production
+      import('./services/supabaseClient').then(({ default: supabase }) => {
+        // Get initial session
+        supabase.auth.getSession().then(({ data: { session } }) => {
           setIsAuthenticated(!!session);
           if (session?.user) {
             // Get user role from metadata
             const role = session.user.user_metadata?.role || 'business';
             setUserRole(role);
           }
-        }
-      );
-      
-      return () => {
-        subscription.unsubscribe();
-      };
-    });
+        });
+        
+        // Listen for auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          (event, session) => {
+            setIsAuthenticated(!!session);
+            if (session?.user) {
+              // Get user role from metadata
+              const role = session.user.user_metadata?.role || 'business';
+              setUserRole(role);
+            }
+          }
+        );
+        
+        return () => {
+          subscription.unsubscribe();
+        };
+      });
+    }
   }, []);
+
+  // Check if we're in development mode
+  const isDevelopment = process.env.NODE_ENV === 'development';
 
   // Main application UI with auth flow and responsive design
   return (
@@ -138,7 +149,8 @@ function App() {
           <div className="business-portal">
             <ToastContainer position="top-right" autoClose={3000} />
             
-            {!isAuthRoute && isAuthenticated && (
+            {/* Show sidebar for authenticated users or in development mode, but never on booking page */}
+            {(!isAuthRoute && !isBookingRoute && (isAuthenticated || isDevelopment)) && (
               <>
                 <Sidebar 
                   collapsed={isSidebarCollapsed} 
@@ -153,8 +165,9 @@ function App() {
               </>
             )}
             
-            <div className={`main-container ${isSidebarCollapsed ? 'expanded' : ''} ${isAuthRoute ? 'auth-page' : ''}`}>
-              {!isAuthRoute && isAuthenticated && (
+            <div className={`main-container ${isSidebarCollapsed ? 'expanded' : ''} ${isAuthRoute || isBookingRoute ? 'auth-page' : ''}`}>
+              {/* Show navigation for authenticated users or in development mode, but never on booking page */}
+              {(!isAuthRoute && !isBookingRoute && (isAuthenticated || isDevelopment)) && (
                 <TopNav 
                   toggleSidebar={toggleSidebar} 
                   toggleMobileMenu={toggleMobileMenu}
@@ -202,21 +215,21 @@ function App() {
                       <ScheduleCalendar />
                     </ProtectedRoute>
                   } />
-                  <Route path="/staff-scheduling" element={
-                    <ProtectedRoute>
-                      <StaffScheduling />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/holidays" element={
-                    <ProtectedRoute>
-                      <HolidayManagement />
-                    </ProtectedRoute>
-                  } />
                   
                   {/* Appointment Routes */}
                   <Route path="/appointments" element={
                     <ProtectedRoute>
                       <AppointmentsList />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/appointments/new" element={
+                    <ProtectedRoute>
+                      <AppointmentForm />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/appointments/:appointmentId/edit" element={
+                    <ProtectedRoute>
+                      <AppointmentForm />
                     </ProtectedRoute>
                   } />
                   <Route path="/appointments/:appointmentId" element={
@@ -236,19 +249,19 @@ function App() {
                       <CustomersList />
                     </ProtectedRoute>
                   } />
+                  <Route path="/customers/add" element={
+                    <ProtectedRoute>
+                      <CustomerForm />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/customers/:customerId/edit" element={
+                    <ProtectedRoute>
+                      <CustomerForm />
+                    </ProtectedRoute>
+                  } />
                   <Route path="/customers/:customerId" element={
                     <ProtectedRoute>
                       <CustomerDetail />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/pets" element={
-                    <ProtectedRoute>
-                      <PetsList />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/pets/:petId" element={
-                    <ProtectedRoute>
-                      <PetDetail />
                     </ProtectedRoute>
                   } />
                   
@@ -279,27 +292,13 @@ function App() {
                     </ProtectedRoute>
                   } />
                   
-                  {/* Integration Routes */}
-                  <Route path="/widget-integration" element={
+                  {/* Booking Page Routes */}
+                  <Route path="/booking-page-setup" element={
                     <ProtectedRoute>
-                      <WidgetIntegration />
+                      <BookingPageSetup />
                     </ProtectedRoute>
                   } />
-                  <Route path="/widget-preview" element={
-                    <ProtectedRoute>
-                      <WidgetPreview />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/api-access" element={
-                    <ProtectedRoute>
-                      <APIIntegration />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/webhooks" element={
-                    <ProtectedRoute>
-                      <WebhooksManagement />
-                    </ProtectedRoute>
-                  } />
+                  <Route path="/booking" element={<BookingPage standalone={true} />} />
                   
                   {/* Settings Routes */}
                   <Route path="/settings" element={
@@ -360,7 +359,7 @@ function App() {
                 </Routes>
               </div>
               
-              {!isAuthRoute && isAuthenticated && <Footer />}
+              {!isAuthRoute && !isBookingRoute && isAuthenticated && <Footer />}
             </div>
           </div>
         </BusinessProvider>
