@@ -20,8 +20,11 @@ const ProtectedRoute = ({
   const { isAuthenticated, currentUser, authLoading } = useAuth();
   const location = useLocation();
   
-  // Show loading state if auth is still being checked
-  if (authLoading) {
+  // In development mode, always allow access regardless of authentication
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  
+  // Show loading state if auth is still being checked (but not in development)
+  if (authLoading && !isDevelopment) {
     return (
       <div className="auth-loading">
         <div className="spinner"></div>
@@ -30,14 +33,14 @@ const ProtectedRoute = ({
     );
   }
   
-  // Check if user is authenticated
-  if (!isAuthenticated) {
+  // Check if user is authenticated (skip in development)
+  if (!isAuthenticated && !isDevelopment) {
     // Redirect to login, but save the attempted location
     return <Navigate to={redirectPath} state={{ from: location }} replace />;
   }
   
-  // If a specific role is required, check user's role
-  if (requiredRole && currentUser?.role !== requiredRole) {
+  // If a specific role is required, check user's role (skip in development)
+  if (requiredRole && currentUser?.role !== requiredRole && !isDevelopment) {
     // Special case: if the route requires 'client' role and the user is 'admin',
     // allow access as admin can view client-specific routes
     if (!(requiredRole === 'client' && currentUser?.role === 'admin')) {

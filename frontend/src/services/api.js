@@ -83,7 +83,80 @@ export default {
   deletePet: (id) => api.delete(`/pets/${id}`),
   
   // Service endpoints
-  getServices: (params) => api.get('/services', { params }),
+  getServices: (params) => {
+    // In development mode, return mock services if requested
+    if (process.env.NODE_ENV === 'development') {
+      return Promise.resolve({
+        data: {
+          services: [
+            {
+              _id: 'service1',
+              title: 'Basic Dog Grooming',
+              description: 'Complete grooming service including bath, brush, nail trim, ear cleaning, and basic haircut.',
+              category: 'Grooming',
+              price: { amount: 45.00, currency: 'USD' },
+              duration: 60,
+              location_options: ['In-store'],
+              capacity: 1
+            },
+            {
+              _id: 'service2',
+              title: 'Deluxe Dog Grooming',
+              description: 'Premium grooming package with specialized shampoo, conditioner, teeth brushing, and styled haircut.',
+              category: 'Grooming',
+              price: { amount: 65.00, currency: 'USD' },
+              duration: 90,
+              location_options: ['In-store'],
+              capacity: 1
+            },
+            {
+              _id: 'service3',
+              title: 'Dog Walking - 30 min',
+              description: 'A 30-minute walk for your dog with personalized attention and exercise.',
+              category: 'Exercise',
+              price: { amount: 25.00, currency: 'USD' },
+              duration: 30,
+              location_options: ['Home visit'],
+              capacity: 3
+            },
+            {
+              _id: 'service4',
+              title: 'Dog Training Session',
+              description: 'One-hour training session focusing on basic commands, leash training, and behavior correction.',
+              category: 'Training',
+              price: { amount: 75.00, currency: 'USD' },
+              duration: 60,
+              location_options: ['In-store', 'Home visit'],
+              capacity: 1
+            },
+            {
+              _id: 'service5',
+              title: 'Nail Trim',
+              description: 'Quick and stress-free nail trimming service for your dog.',
+              category: 'Grooming',
+              price: { amount: 15.00, currency: 'USD' },
+              duration: 15,
+              location_options: ['In-store'],
+              capacity: 1
+            },
+            {
+              _id: 'service6',
+              title: 'Teeth Cleaning',
+              description: "Professional teeth cleaning to maintain your dog's dental health and fresh breath.",
+              category: 'Health',
+              price: { amount: 40.00, currency: 'USD' },
+              duration: 30,
+              location_options: ['In-store'],
+              capacity: 1
+            }
+          ]
+        }
+      });
+    }
+    
+    // Otherwise, make the actual API call
+    return api.get('/services', { params });
+  },
   getService: (id) => api.get(`/services/${id}`),
   createService: (serviceData) => api.post('/services', serviceData),
   updateService: (id, serviceData) => api.put(`/services/${id}`, serviceData),
@@ -92,7 +165,25 @@ export default {
   // Booking endpoints
   getBookings: (params) => api.get('/bookings', { params }),
   getBooking: (id) => api.get(`/bookings/${id}`),
-  createBooking: (bookingData) => api.post('/bookings', bookingData),
+  createBooking: (bookingData) => {
+    // In development mode, return mock booking confirmation
+    if (process.env.NODE_ENV === 'development') {
+      const mockBookingId = 'booking-' + Math.random().toString(36).substring(2, 9);
+      return Promise.resolve({
+        data: {
+          booking: {
+            _id: mockBookingId,
+            ...bookingData,
+            status: 'confirmed',
+            createdAt: new Date().toISOString()
+          }
+        }
+      });
+    }
+    
+    // Otherwise, make the actual API call
+    return api.post('/bookings', bookingData);
+  },
   updateBooking: (id, bookingData) => api.put(`/bookings/${id}`, bookingData),
   cancelBooking: (id, reason) => 
     api.put(`/bookings/${id}/cancel`, { reason }),
@@ -105,6 +196,26 @@ export default {
   // Reviews
   createReview: (bookingId, reviewData) => 
     api.post(`/bookings/${bookingId}/review`, reviewData),
+    
+  // Customer endpoints
+  createOrUpdateCustomer: (customerData) => {
+    // In development mode, return mock customer data
+    if (process.env.NODE_ENV === 'development') {
+      return Promise.resolve({
+        data: {
+          customer: {
+            _id: 'mock-customer-id',
+            name: customerData.name,
+            email: customerData.email,
+            phone: customerData.phone
+          }
+        }
+      });
+    }
+    
+    // Otherwise, make the actual API call
+    return api.post('/customers', customerData);
+  },
   
   // Direct axios methods for custom requests
   get: (url, config) => api.get(url, config),

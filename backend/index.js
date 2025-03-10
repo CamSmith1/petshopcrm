@@ -11,7 +11,7 @@ const userRoutes = require('./routes/users');
 const serviceRoutes = require('./routes/services');
 const bookingRoutes = require('./routes/bookings');
 const paymentRoutes = require('./routes/payments');
-const widgetRoutes = require('./routes/widget');
+const customerRoutes = require('./routes/customers');
 
 // Initialize environment variables
 dotenv.config();
@@ -20,28 +20,32 @@ dotenv.config();
 const supabase = require('./config/supabase');
 const supabaseClient = require('./utils/supabaseClient');
 const { sendEmail } = require('./utils/emailService');
+const { addDemoData } = require('./demo-data');
 
 // Initialize app
 const app = express();
 
 // Middleware
 app.use(cors({
-  origin: '*', // Allow all origins for widget embed (customize in production)
+  origin: '*', // Allow all origins (customize in production)
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key']
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Serve widget.js as a static file
+// Serve static files
 app.use(express.static(path.join(__dirname, '..', 'frontend', 'public')));
 
-// Verify Supabase connection
+// Verify Supabase connection and add demo data
 (async () => {
   try {
     const { data, error } = await supabase.from('users').select('count').limit(1);
     if (error) throw error;
     console.log('Supabase connection successful');
+    
+    // Add demo data
+    await addDemoData();
   } catch (err) {
     console.error('Supabase connection error:', err.message);
   }
@@ -64,8 +68,7 @@ cron.schedule('0 * * * *', async () => {
       .from('bookings')
       .select(`
         *,
-        services(title),
-        pets(name)
+        services(title)
       `)
       .eq('status', 'confirmed')
       .gte('start_time', today.toISOString())
@@ -111,8 +114,7 @@ cron.schedule('0 * * * *', async () => {
             await sendEmail.sendBookingReminder({
               to: client.email,
               booking: booking,
-              service: booking.services,
-              pet: booking.pets
+              service: booking.services
             });
             
             // Record that reminder was sent
@@ -142,12 +144,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);
-app.use('/api/widget', widgetRoutes);
+app.use('/api/customers', customerRoutes);
 
-// Widget documentation
-app.get('/widget-docs', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'public', 'widget-docs.html'));
-});
 
 // Base route
 app.get('/', (req, res) => {
@@ -166,7 +164,6 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Widget script available at: http://localhost:${PORT}/widget.js`);
 });
 
 module.exports = app;

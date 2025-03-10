@@ -157,7 +157,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
                 icon="📊"
                 expanded={expandedMenus.dashboard}
                 onToggle={() => toggleMenuExpand('dashboard')}
-                active={isMenuActive(['/dashboard', '/analytics', '/revenue'])}
+                active={isMenuActive(['/dashboard'])}
               />
               
               {expandedMenus.dashboard && (
@@ -169,59 +169,18 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
                     active={isActiveRoute('/dashboard')}
                     submenu
                   />
-                  <MenuItem 
-                    to="/analytics" 
-                    icon="📈" 
-                    text="Analytics" 
-                    active={isActiveRoute('/analytics')}
-                    submenu
-                  />
-                  <MenuItem 
-                    to="/revenue" 
-                    icon="💰" 
-                    text="Revenue" 
-                    active={isActiveRoute('/revenue')}
-                    submenu
-                  />
                 </div>
               )}
             </>
           )}
           
           {/* Calendar/Scheduling Section */}
-          <MenuToggle
-            title="Scheduling"
-            icon="📅"
-            expanded={expandedMenus.scheduling}
-            onToggle={() => toggleMenuExpand('scheduling')}
-            active={isMenuActive(['/calendar', '/staff-scheduling', '/holidays'])}
+          <MenuItem 
+            to="/calendar" 
+            icon="📅" 
+            text="Calendar" 
+            active={isActiveRoute('/calendar')}
           />
-          
-          {expandedMenus.scheduling && (
-            <div className="mobile-submenu">
-              <MenuItem 
-                to="/calendar" 
-                icon="📆" 
-                text="Calendar" 
-                active={isActiveRoute('/calendar')}
-                submenu
-              />
-              <MenuItem 
-                to="/staff-scheduling" 
-                icon="👥" 
-                text="Staff Scheduling" 
-                active={isActiveRoute('/staff-scheduling')}
-                submenu
-              />
-              <MenuItem 
-                to="/holidays" 
-                icon="🎉" 
-                text="Holidays & Closures" 
-                active={isActiveRoute('/holidays')}
-                submenu
-              />
-            </div>
-          )}
           
           {/* Appointments Section */}
           <MenuToggle
@@ -229,7 +188,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
             icon="📝"
             expanded={expandedMenus.appointments}
             onToggle={() => toggleMenuExpand('appointments')}
-            active={isMenuActive(['/appointments', '/recurring-appointments'])}
+            active={isMenuActive(['/appointments'])}
           />
           
           {expandedMenus.appointments && (
@@ -241,50 +200,16 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
                 active={location.pathname === '/appointments'}
                 submenu
               />
-              <MenuItem 
-                to="/appointments?status=upcoming" 
-                icon="⏳" 
-                text="Upcoming" 
-                active={location.pathname === '/appointments' && location.search.includes('status=upcoming')}
-                submenu
-              />
-              <MenuItem 
-                to="/recurring-appointments" 
-                icon="🔄" 
-                text="Recurring" 
-                active={isActiveRoute('/recurring-appointments')}
-                submenu
-              />
             </div>
           )}
           
           {/* Customers Section */}
-          <MenuToggle
-            title="Customers"
-            icon="👥"
-            expanded={expandedMenus.customers}
-            onToggle={() => toggleMenuExpand('customers')}
-            active={isMenuActive(['/customers', '/pets'])}
+          <MenuItem 
+            to="/customers" 
+            icon="👥" 
+            text="Customers" 
+            active={isMenuActive(['/customers'])}
           />
-          
-          {expandedMenus.customers && (
-            <div className="mobile-submenu">
-              <MenuItem 
-                to="/customers" 
-                icon="👤" 
-                text="Customers" 
-                active={location.pathname === '/customers'}
-                submenu
-              />
-              <MenuItem 
-                to="/pets" 
-                icon="🐕" 
-                text="Pets" 
-                active={location.pathname === '/pets'}
-                submenu
-              />
-            </div>
-          )}
           
           {/* Services Section */}
           <MenuToggle
@@ -292,7 +217,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
             icon="🛠️"
             expanded={expandedMenus.services}
             onToggle={() => toggleMenuExpand('services')}
-            active={isMenuActive(['/services', '/service-categories', '/service-templates', '/custom-fields'])}
+            active={isMenuActive(['/services', '/service-templates'])}
           />
           
           {expandedMenus.services && (
@@ -305,24 +230,10 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
                 submenu
               />
               <MenuItem 
-                to="/service-categories" 
-                icon="🗂️" 
-                text="Categories" 
-                active={isActiveRoute('/service-categories')}
-                submenu
-              />
-              <MenuItem 
                 to="/service-templates" 
                 icon="📑" 
-                text="Templates" 
+                text="Services" 
                 active={isActiveRoute('/service-templates')}
-                submenu
-              />
-              <MenuItem 
-                to="/custom-fields" 
-                icon="✏️" 
-                text="Custom Fields" 
-                active={isActiveRoute('/custom-fields')}
                 submenu
               />
             </div>
@@ -334,37 +245,16 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
             icon="🔌"
             expanded={expandedMenus.integrations}
             onToggle={() => toggleMenuExpand('integrations')}
-            active={isMenuActive(['/widget-integration', '/widget-preview', '/api-access', '/webhooks'])}
+            active={isMenuActive(['/booking-page-setup'])}
           />
           
           {expandedMenus.integrations && (
             <div className="mobile-submenu">
               <MenuItem 
-                to="/widget-integration" 
-                icon="🧩" 
-                text="Widget" 
-                active={isActiveRoute('/widget-integration')}
-                submenu
-              />
-              <MenuItem 
-                to="/widget-preview" 
-                icon="👁️" 
-                text="Preview" 
-                active={isActiveRoute('/widget-preview')}
-                submenu
-              />
-              <MenuItem 
-                to="/api-access" 
-                icon="🔑" 
-                text="API Access" 
-                active={isActiveRoute('/api-access')}
-                submenu
-              />
-              <MenuItem 
-                to="/webhooks" 
-                icon="🪝" 
-                text="Webhooks" 
-                active={isActiveRoute('/webhooks')}
+                to="/booking-page-setup" 
+                icon="📅" 
+                text="Booking Page" 
+                active={isActiveRoute('/booking-page-setup')}
                 submenu
               />
             </div>

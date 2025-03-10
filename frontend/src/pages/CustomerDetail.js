@@ -139,93 +139,184 @@ const CustomerDetail = () => {
         backLink="/customers"
       />
 
-      <div className="customer-profile-header">
-        <div className="customer-avatar">
-          <span className="avatar-initials">{customer.name.charAt(0)}</span>
-        </div>
-        <div className="customer-header-info">
-          <h2>{customer.name}</h2>
-          <div className="customer-contact">
-            <span className="contact-item">
-              <i className="icon-email"></i> {customer.email}
-            </span>
-            <span className="contact-item">
-              <i className="icon-phone"></i> {customer.phone}
-            </span>
-          </div>
-          <div className="customer-meta">
-            <span className="meta-item">Customer since {formatDate(customer.dateJoined)}</span>
-            <span className="meta-item">Total spent: {customer.totalSpent}</span>
+      <div className="profile-card">
+        <div className="profile-header">
+          <div className="profile-cover-photo"></div>
+          <div className="profile-avatar">
+            <div className="profile-avatar-wrapper">
+              <span className="profile-avatar-initials">{customer.name.charAt(0)}{customer.name.split(' ')[1]?.charAt(0) || ''}</span>
+            </div>
+            <span className="profile-status-badge active-badge"></span>
           </div>
         </div>
-        <div className="header-actions">
-          <button 
-            className="btn btn-outline-primary"
-            onClick={() => navigate(`/customers/${customerId}/edit`)}
-          >
-            Edit Customer
-          </button>
-          <button className="btn btn-primary">
-            Book Appointment
-          </button>
+        
+        <div className="profile-body">
+          <div className="profile-identity">
+            <h2 className="profile-name">{customer.name}</h2>
+            <span className="profile-label">Active Customer</span>
+          </div>
+          
+          <div className="profile-contact">
+            <div className="contact-item">
+              <span className="contact-icon">📧</span>
+              <span className="contact-text">{customer.email}</span>
+            </div>
+            <div className="contact-item">
+              <span className="contact-icon">📱</span>
+              <span className="contact-text">{customer.phone}</span>
+            </div>
+            <div className="contact-item">
+              <span className="contact-icon">🏠</span>
+              <span className="contact-text">{customer.address}</span>
+            </div>
+          </div>
+          
+          <div className="profile-stats">
+            <div className="stat-card">
+              <div className="stat-number">{customer.totalSpent}</div>
+              <div className="stat-label">Total Spent</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">{formatDate(customer.dateJoined)}</div>
+              <div className="stat-label">Customer Since</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">{activePets.length}</div>
+              <div className="stat-label">Pets</div>
+            </div>
+          </div>
+          
+          <div className="profile-actions">
+            <button 
+              className="btn btn-outline-primary action-btn"
+              onClick={() => navigate(`/customers/${customerId}/edit`)}
+            >
+              <span className="btn-icon">✏️</span>
+              Edit Profile
+            </button>
+            <Link to={`/appointments/new?customerId=${customerId}`} className="btn btn-primary action-btn">
+              <span className="btn-icon">📅</span>
+              Book Appointment
+            </Link>
+            <button className="btn btn-outline-secondary action-btn">
+              <span className="btn-icon">📧</span>
+              Send Email
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="tab-navigation">
-        <button 
-          className={`tab-button ${activeTab === 'info' ? 'active' : ''}`}
-          onClick={() => setActiveTab('info')}
-        >
-          Information
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'pets' ? 'active' : ''}`}
-          onClick={() => setActiveTab('pets')}
-        >
-          Pets ({activePets.length})
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'appointments' ? 'active' : ''}`}
-          onClick={() => setActiveTab('appointments')}
-        >
-          Appointments
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'billing' ? 'active' : ''}`}
-          onClick={() => setActiveTab('billing')}
-        >
-          Billing
-        </button>
+      <div className="modern-tabs">
+        <div className="tabs-inner">
+          <button 
+            className={`tab-item ${activeTab === 'info' ? 'active' : ''}`}
+            onClick={() => setActiveTab('info')}
+          >
+            <span className="tab-icon">ℹ️</span>
+            <span className="tab-text">Overview</span>
+          </button>
+          <button 
+            className={`tab-item ${activeTab === 'appointments' ? 'active' : ''}`}
+            onClick={() => setActiveTab('appointments')}
+          >
+            <span className="tab-icon">📅</span>
+            <span className="tab-text">Appointments</span>
+            <span className="tab-counter">{recentAppointments.length}</span>
+          </button>
+          <button 
+            className={`tab-item ${activeTab === 'billing' ? 'active' : ''}`}
+            onClick={() => setActiveTab('billing')}
+          >
+            <span className="tab-icon">💳</span>
+            <span className="tab-text">Billing</span>
+          </button>
+          <button 
+            className={`tab-item ${activeTab === 'pets' ? 'active' : ''}`}
+            onClick={() => setActiveTab('pets')}
+          >
+            <span className="tab-icon">🐾</span>
+            <span className="tab-text">Pets</span>
+            <span className="tab-counter">{activePets.length}</span>
+          </button>
+          <div className="tab-indicator" style={{ left: `calc(${['info', 'appointments', 'billing', 'pets'].indexOf(activeTab) * 25}%)` }}></div>
+        </div>
       </div>
 
       {activeTab === 'info' && (
-        <div className="card">
-          <div className="card-header">
-            <h3>Customer Information</h3>
-          </div>
-          <div className="card-body">
-            <div className="detail-grid">
-              <div className="detail-item">
-                <span className="detail-label">Name:</span>
-                <span className="detail-value">{customer.name}</span>
+        <div className="content-grid">
+          <div className="detail-card">
+            <div className="detail-card-header">
+              <h3 className="detail-card-title">
+                <span className="detail-card-icon">📋</span>
+                Customer Overview
+              </h3>
+            </div>
+            <div className="detail-card-body">
+              <div className="info-section">
+                <h4 className="info-section-title">About</h4>
+                <p className="info-text">{customer.notes || 'No additional information available for this customer.'}</p>
               </div>
-              <div className="detail-item">
-                <span className="detail-label">Email:</span>
-                <span className="detail-value">{customer.email}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Phone:</span>
-                <span className="detail-value">{customer.phone}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Address:</span>
-                <span className="detail-value">{customer.address}</span>
+              
+              <div className="info-section">
+                <h4 className="info-section-title">Preferences</h4>
+                <div className="preference-tags">
+                  <span className="preference-tag">Afternoon appointments</span>
+                  <span className="preference-tag">Electronic receipts</span>
+                  <span className="preference-tag">Text reminders</span>
+                </div>
               </div>
             </div>
-            
-            <div className="detail-section">
-              <h4>Notes</h4>
-              <p className="detail-value notes-box">{customer.notes || 'No notes for this customer.'}</p>
+          </div>
+          
+          <div className="activity-card">
+            <div className="detail-card-header">
+              <h3 className="detail-card-title">
+                <span className="detail-card-icon">📊</span>
+                Recent Activity
+              </h3>
+            </div>
+            <div className="detail-card-body">
+              <div className="activity-timeline">
+                {recentAppointments.map((appointment, index) => (
+                  <div key={appointment.id} className="timeline-item">
+                    <div className="timeline-icon">
+                      {appointment.status === 'completed' ? '✅' : '📅'}
+                    </div>
+                    <div className="timeline-content">
+                      <div className="timeline-date">{formatDate(appointment.date)}</div>
+                      <div className="timeline-title">{appointment.service}</div>
+                      <div className="timeline-detail">
+                        Amount: {appointment.amount} • Status: <span className={`status-text status-${appointment.status}`}>{appointment.status}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {recentAppointments.length === 0 && (
+                  <div className="empty-timeline">No recent activity</div>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          <div className="notes-card">
+            <div className="detail-card-header">
+              <h3 className="detail-card-title">
+                <span className="detail-card-icon">📝</span>
+                Notes
+              </h3>
+              <button className="card-action-btn">
+                <span className="card-action-icon">✏️</span>
+              </button>
+            </div>
+            <div className="detail-card-body">
+              <div className="notes-content">
+                <p>{customer.notes || 'No notes have been added for this customer yet.'}</p>
+              </div>
+              <div className="notes-actions">
+                <button className="btn btn-sm btn-outline-primary">
+                  Add Note
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -295,62 +386,82 @@ const CustomerDetail = () => {
       )}
 
       {activeTab === 'appointments' && (
-        <div className="card">
-          <div className="card-header">
-            <h3>Appointments</h3>
-            <div className="card-actions">
-              <button className="btn btn-primary">
-                + Book Appointment
-              </button>
+        <div className="appointments-container">
+          <div className="appointments-header">
+            <div className="appointments-title">
+              <h3>Appointment History</h3>
+              <span className="appointments-count">{recentAppointments.length} appointments</span>
+            </div>
+            <div className="appointments-filters">
+              <div className="filter-group">
+                <button className="filter-btn active">All</button>
+                <button className="filter-btn">Upcoming</button>
+                <button className="filter-btn">Past</button>
+              </div>
+              <Link to={`/appointments/new?customerId=${customerId}`} className="btn btn-primary">
+                <span className="btn-icon">+</span> New Appointment
+              </Link>
             </div>
           </div>
-          <div className="card-body">
-            {recentAppointments.length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-state-icon">📅</div>
-                <h3>No appointments found</h3>
-                <p>This customer doesn't have any appointments yet.</p>
-                <button className="btn btn-primary">
-                  Book First Appointment
-                </button>
+          
+          {recentAppointments.length === 0 ? (
+            <div className="empty-state modern-empty">
+              <div className="empty-state-illustration">
+                <span className="empty-icon">📅</span>
               </div>
-            ) : (
-              <div className="table-responsive">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Date & Time</th>
-                      <th>Service</th>
-                      <th>Pet</th>
-                      <th>Status</th>
-                      <th>Amount</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentAppointments.map(appointment => (
-                      <tr key={appointment.id}>
-                        <td>{formatDateTime(appointment.date)}</td>
-                        <td>{appointment.service}</td>
-                        <td>{appointment.petName}</td>
-                        <td>
-                          <span className={`status-badge ${getStatusBadgeClass(appointment.status)}`}>
-                            {appointment.status}
-                          </span>
-                        </td>
-                        <td>{appointment.amount}</td>
-                        <td>
-                          <Link to={`/appointments/${appointment.id}`} className="btn btn-sm btn-outline-primary">
-                            View Details
-                          </Link>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+              <h3 className="empty-title">No appointments yet</h3>
+              <p className="empty-description">This customer doesn't have any appointments on record.</p>
+              <Link to={`/appointments/new?customerId=${customerId}`} className="btn btn-primary">
+                Book First Appointment
+              </Link>
+            </div>
+          ) : (
+            <div className="appointments-list">
+              {recentAppointments.map(appointment => (
+                <div key={appointment.id} className="appointment-card">
+                  <div className="appointment-status">
+                    <span className={`status-indicator status-${appointment.status}`}></span>
+                  </div>
+                  <div className="appointment-content">
+                    <div className="appointment-date">
+                      <span className="date-day">{new Date(appointment.date).getDate()}</span>
+                      <span className="date-month">{new Date(appointment.date).toLocaleString('en-US', { month: 'short' })}</span>
+                    </div>
+                    <div className="appointment-details">
+                      <h4 className="appointment-title">{appointment.service}</h4>
+                      <div className="appointment-time">
+                        {new Date(appointment.date).toLocaleTimeString('en-US', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true
+                        })}
+                      </div>
+                    </div>
+                    <div className="appointment-meta">
+                      <div className="meta-info">
+                        <span className="meta-label">Price:</span>
+                        <span className="meta-value">{appointment.amount}</span>
+                      </div>
+                      <div className="meta-info">
+                        <span className="meta-label">Status:</span>
+                        <span className={`meta-value status-${appointment.status}`}>
+                          {appointment.status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="appointment-actions">
+                    <Link to={`/appointments/${appointment.id}`} className="action-btn view-btn">
+                      View
+                    </Link>
+                    {appointment.status === 'confirmed' && (
+                      <button className="action-btn cancel-btn">Cancel</button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

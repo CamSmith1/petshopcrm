@@ -30,10 +30,6 @@ const AppointmentDetail = () => {
         customerId: booking.client?._id || '',
         customerEmail: booking.client?.email || '',
         customerPhone: booking.client?.phone || '',
-        petName: booking.subject?.name || 'No pet specified',
-        petId: booking.subject?._id || '',
-        petBreed: booking.subject?.breed || '',
-        petAge: booking.subject?.age || '',
         service: booking.service?.title || 'Unknown Service',
         serviceId: booking.service?._id || '',
         serviceDuration: calculateDuration(booking.startTime, booking.endTime),
@@ -45,7 +41,6 @@ const AppointmentDetail = () => {
         paymentStatus: booking.paymentStatus || 'pending',
         location: booking.location,
         createdAt: booking.createdAt,
-        assignedStaff: booking.assignedStaff,
       };
       
       setAppointment(formattedAppointment);
@@ -235,12 +230,12 @@ const AppointmentDetail = () => {
                   </button>
                 )}
                 
-                <button 
+                <Link 
+                  to={`/appointments/${appointmentId}/edit`}
                   className="btn btn-outline-primary"
-                  onClick={() => navigate(`/appointments/${appointmentId}/edit`)}
                 >
                   Edit Appointment
-                </button>
+                </Link>
               </div>
               
               {confirmingCancel && (
@@ -280,21 +275,7 @@ const AppointmentDetail = () => {
             </div>
           </div>
           
-          <div className="card mt-3">
-            <div className="card-header">
-              <h3>Pet Details</h3>
-            </div>
-            <div className="card-body">
-              <div className="pet-info">
-                <h4>{appointment.petName}</h4>
-                <p><strong>Breed:</strong> {appointment.petBreed}</p>
-                <p><strong>Age:</strong> {appointment.petAge}</p>
-                <Link to={`/pets/${appointment.petId}`} className="btn btn-sm btn-outline-primary">
-                  View Pet Profile
-                </Link>
-              </div>
-            </div>
-          </div>
+          {/* Pet details section removed */}
         </div>
       </div>
     </div>

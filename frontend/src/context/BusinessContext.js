@@ -6,7 +6,74 @@ import { useAuth } from './AuthContext';
 const BusinessContext = createContext();
 
 // Custom hook to use the business context
-export const useBusiness = () => useContext(BusinessContext);
+export const useBusiness = () => {
+  const context = useContext(BusinessContext);
+  
+  // For development mode, provide a mock business context if real context is not available
+  if (process.env.NODE_ENV === 'development' && !context) {
+    console.warn('Business context not found, using development fallback');
+    return {
+      // Business profile
+      businessProfile: {
+        id: 'dev-business-123',
+        name: 'Development Business',
+        email: 'dev-business@example.com',
+        phone: '555-123-4567',
+        address: {
+          street: '123 Dev St',
+          city: 'Development City',
+          state: 'DS',
+          zipCode: '12345',
+          country: 'DevLand'
+        },
+        businessHours: {
+          monday: { isOpen: true, start: '09:00', end: '17:00' },
+          tuesday: { isOpen: true, start: '09:00', end: '17:00' },
+          wednesday: { isOpen: true, start: '09:00', end: '17:00' },
+          thursday: { isOpen: true, start: '09:00', end: '17:00' },
+          friday: { isOpen: true, start: '09:00', end: '17:00' },
+          saturday: { isOpen: false, start: '', end: '' },
+          sunday: { isOpen: false, start: '', end: '' }
+        },
+      },
+      updateBusinessProfile: async () => ({ success: true }),
+      
+      // Mock service management
+      services: [],
+      fetchServices: async () => [],
+      createService: async () => ({ success: true }),
+      updateService: async () => ({ success: true }),
+      deleteService: async () => ({ success: true }),
+      
+      // Mock service categories
+      serviceCategories: [],
+      fetchServiceCategories: async () => [],
+      createServiceCategory: async () => ({ success: true }),
+      
+      // Mock staff management
+      staff: [],
+      fetchStaff: async () => [],
+      
+      // Mock customer management
+      customers: [],
+      fetchCustomers: async () => ({ customers: [], total: 0, pages: 0 }),
+      
+      // Mock appointment management
+      appointments: [],
+      fetchAppointments: async () => ({ appointments: [], total: 0, pages: 0 }),
+      
+      // Mock widget integration
+      getWidgetSettings: async () => ({ success: true, settings: {} }),
+      updateWidgetSettings: async () => ({ success: true }),
+      
+      // Loading and error states
+      businessLoading: false,
+      businessError: null
+    };
+  }
+  
+  return context;
+};
 
 // Provider component
 export const BusinessProvider = ({ children }) => {

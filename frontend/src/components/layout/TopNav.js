@@ -17,7 +17,7 @@ const TopNav = ({ toggleSidebar }) => {
     if (path === '/pets') return 'Pets';
     if (path === '/services') return 'Services';
     if (path.includes('/services/')) return 'Service Details';
-    if (path === '/widget-integration') return 'Widget Integration';
+    if (path === '/api-access') return 'API Access';
     if (path === '/settings') return 'Settings';
     if (path === '/profile') return 'Your Profile';
     

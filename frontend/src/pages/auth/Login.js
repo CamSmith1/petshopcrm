@@ -49,12 +49,14 @@ const Login = () => {
       name: 'Demo User',
       email: 'demo@example.com',
       role: 'business',
-      businessId: 'demo-business-456'
+      businessId: 'demo-business-456',
+      isVerified: true
     };
     
     setBypassAuth(demoUser);
     toast.success('Demo access granted!');
     navigate('/dashboard');
+    console.log('Demo mode activated, bypassing authentication');
   };
   
   return (

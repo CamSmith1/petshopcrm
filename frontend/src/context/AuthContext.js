@@ -5,7 +5,34 @@ import supabaseService from '../services/supabaseService';
 
 const AuthContext = createContext();
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  
+  // For development mode, provide a mock auth context if real context is not available
+  if (process.env.NODE_ENV === 'development' && !context) {
+    console.warn('Auth context not found, using development fallback');
+    return {
+      currentUser: {
+        id: 'dev-user-123',
+        name: 'Development User',
+        email: 'dev@example.com',
+        role: 'business',
+        isVerified: true
+      },
+      session: { access_token: 'dev-token' },
+      authLoading: false,
+      error: null,
+      register: async () => ({ success: true }),
+      login: async () => ({ success: true }),
+      logout: async () => {},
+      updateProfile: async () => ({ success: true }),
+      setBypassAuth: () => {},
+      isAuthenticated: true
+    };
+  }
+  
+  return context;
+};
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -227,10 +254,11 @@ export const AuthProvider = ({ children }) => {
 
   // For demo purposes - bypass authentication
   const setBypassAuth = (userData) => {
-    console.warn('Demo mode is not supported with Supabase authentication');
+    console.log('Using demo mode - bypassing Supabase authentication');
     
-    // Instead of using a fake token, we can redirect to login
-    navigate('/login');
+    // Create a mock session and user
+    setSession({ access_token: 'demo-token' });
+    setCurrentUser(userData);
   };
 
   return (
