@@ -56,7 +56,7 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
       className={`menu-item ${active ? 'active' : ''} ${submenu ? 'submenu-item' : ''}`}
       onClick={onClick}
     >
-      <span className="menu-icon">{icon}</span>
+      {!submenu && icon && <span className="menu-icon">{icon}</span>}
       <span className="menu-text">{text}</span>
     </Link>
   );
@@ -87,73 +87,22 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
       <div className="sidebar-menu">
         {/* Dashboard Section */}
         {userRole === 'admin' ? (
-          <>
-            <MenuToggle
-              title="Admin Dashboard"
-              icon="⚡"
-              expanded={expandedMenus.admin}
-              onToggle={() => toggleMenuExpand('admin')}
-              active={isMenuActive(['/admin'])}
-            />
-            
-            {expandedMenus.admin && (
-              <div className="submenu">
-                <MenuItem 
-                  to="/admin/dashboard" 
-                  icon="📊" 
-                  text="Overview" 
-                  active={isActiveRoute('/admin/dashboard')}
-                  submenu
-                />
-                <MenuItem 
-                  to="/admin/businesses" 
-                  icon="🏢" 
-                  text="Businesses" 
-                  active={isActiveRoute('/admin/businesses')}
-                  submenu
-                />
-                <MenuItem 
-                  to="/admin/subscriptions" 
-                  icon="💰" 
-                  text="Subscriptions" 
-                  active={isActiveRoute('/admin/subscriptions')}
-                  submenu
-                />
-                <MenuItem 
-                  to="/admin/white-label" 
-                  icon="🏷️" 
-                  text="White Label" 
-                  active={isActiveRoute('/admin/white-label')}
-                  submenu
-                />
-              </div>
-            )}
-          </>
+          <MenuItem 
+            to="/admin/dashboard" 
+            icon="⚡" 
+            text="Admin Dashboard" 
+            active={isMenuActive(['/admin'])}
+          />
         ) : (
-          <>
-            <MenuToggle
-              title="Dashboard"
-              icon="📊"
-              expanded={expandedMenus.dashboard}
-              onToggle={() => toggleMenuExpand('dashboard')}
-              active={isMenuActive(['/dashboard'])}
-            />
-            
-            {expandedMenus.dashboard && (
-              <div className="submenu">
-                <MenuItem 
-                  to="/dashboard" 
-                  icon="🏠" 
-                  text="Overview" 
-                  active={isActiveRoute('/dashboard')}
-                  submenu
-                />
-              </div>
-            )}
-          </>
+          <MenuItem 
+            to="/dashboard" 
+            icon="📊" 
+            text="Dashboard" 
+            active={isActiveRoute('/dashboard')}
+          />
         )}
         
-        {/* Calendar/Scheduling Section */}
+        {/* Calendar Section */}
         <MenuItem 
           to="/calendar" 
           icon="📅" 
@@ -162,25 +111,12 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
         />
         
         {/* Appointments Section */}
-        <MenuToggle
-          title="Appointments"
-          icon="📝"
-          expanded={expandedMenus.appointments}
-          onToggle={() => toggleMenuExpand('appointments')}
+        <MenuItem 
+          to="/appointments" 
+          icon="📝" 
+          text="Appointments" 
           active={isMenuActive(['/appointments'])}
         />
-        
-        {expandedMenus.appointments && (
-          <div className="submenu">
-            <MenuItem 
-              to="/appointments" 
-              icon="📋" 
-              text="All Appointments" 
-              active={location.pathname === '/appointments'}
-              submenu
-            />
-          </div>
-        )}
         
         {/* Customers Section */}
         <MenuItem 
@@ -191,53 +127,20 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
         />
         
         {/* Services Section */}
-        <MenuToggle
-          title="Services"
-          icon="🛠️"
-          expanded={expandedMenus.services}
-          onToggle={() => toggleMenuExpand('services')}
-          active={isMenuActive(['/services', '/service-templates'])}
+        <MenuItem 
+          to="/services" 
+          icon="🛠️" 
+          text="Services" 
+          active={isMenuActive(['/services'])}
         />
         
-        {expandedMenus.services && (
-          <div className="submenu">
-            <MenuItem 
-              to="/services" 
-              icon="📋" 
-              text="All Services" 
-              active={location.pathname === '/services'}
-              submenu
-            />
-            <MenuItem 
-              to="/service-templates" 
-              icon="📑" 
-              text="Services" 
-              active={isActiveRoute('/service-templates')}
-              submenu
-            />
-          </div>
-        )}
-        
-        {/* Integration Section */}
-        <MenuToggle
-          title="Integrations"
-          icon="🔌"
-          expanded={expandedMenus.integrations}
-          onToggle={() => toggleMenuExpand('integrations')}
+        {/* Booking Page Section */}
+        <MenuItem 
+          to="/booking-page-setup" 
+          icon="🔗" 
+          text="Booking Page" 
           active={isMenuActive(['/booking-page-setup'])}
         />
-        
-        {expandedMenus.integrations && (
-          <div className="submenu">
-            <MenuItem 
-              to="/booking-page-setup" 
-              icon="📅" 
-              text="Booking Page" 
-              active={isActiveRoute('/booking-page-setup')}
-              submenu
-            />
-          </div>
-        )}
         
         {/* Settings Section */}
         <MenuToggle
@@ -252,42 +155,36 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
           <div className="submenu">
             <MenuItem 
               to="/profile" 
-              icon="👤" 
               text="Your Profile" 
               active={isActiveRoute('/profile')}
               submenu
             />
             <MenuItem 
               to="/business-profile" 
-              icon="🏢" 
               text="Business Profile" 
               active={isActiveRoute('/business-profile')}
               submenu
             />
             <MenuItem 
               to="/staff" 
-              icon="👥" 
               text="Staff Management" 
               active={isActiveRoute('/staff')}
               submenu
             />
             <MenuItem 
               to="/locations" 
-              icon="📍" 
               text="Locations" 
               active={isActiveRoute('/locations')}
               submenu
             />
             <MenuItem 
               to="/notifications" 
-              icon="🔔" 
               text="Notifications" 
               active={isActiveRoute('/notifications')}
               submenu
             />
             <MenuItem 
               to="/settings" 
-              icon="⚙️" 
               text="General Settings" 
               active={isActiveRoute('/settings')}
               submenu

@@ -71,7 +71,7 @@ import NotFound from './pages/NotFound';
 import './styles/business-portal.css';
 
 function App() {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // Always false now - sidebar not collapsible
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState('business'); // business, admin, client
@@ -81,9 +81,10 @@ function App() {
   const isAuthRoute = ['/login', '/signup', '/forgot-password'].includes(location.pathname);
   const isBookingRoute = location.pathname === '/booking'; // Only the standalone booking page
   
-  // Toggle sidebar
+  // Toggle sidebar - now disabled as per requirements
   const toggleSidebar = () => {
-    setIsSidebarCollapsed(!isSidebarCollapsed);
+    // No longer collapsible, keeping function for compatibility
+    setIsSidebarCollapsed(false);
   };
   
   // Toggle mobile menu
@@ -266,22 +267,12 @@ function App() {
                   } />
                   
                   {/* Service Management Routes */}
-                  <Route path="/services" element={
-                    <ProtectedRoute>
-                      <ServicesList />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/services/:serviceId" element={
-                    <ProtectedRoute>
-                      <ServiceDetail />
-                    </ProtectedRoute>
-                  } />
                   <Route path="/service-categories" element={
                     <ProtectedRoute>
                       <ServiceCategories />
                     </ProtectedRoute>
                   } />
-                  <Route path="/service-templates" element={
+                  <Route path="/services" element={
                     <ProtectedRoute>
                       <ServiceTemplates />
                     </ProtectedRoute>

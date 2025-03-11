@@ -197,7 +197,7 @@ const ServiceTemplates = () => {
     <Modal
       isOpen={showAddModal}
       onClose={() => setShowAddModal(false)}
-      title="Add Service Template"
+      title="Add Service"
       footer={
         <>
           <button 
@@ -210,7 +210,7 @@ const ServiceTemplates = () => {
             className="btn btn-primary" 
             onClick={handleAddTemplate}
           >
-            Add Template
+            Add Service
           </button>
         </>
       }
@@ -302,7 +302,7 @@ const ServiceTemplates = () => {
         setSelectedTemplate(null);
         resetForm();
       }}
-      title="Edit Service Template"
+      title="Edit Service"
       footer={
         <>
           <button 
@@ -319,7 +319,7 @@ const ServiceTemplates = () => {
             className="btn btn-primary" 
             onClick={handleUpdateTemplate}
           >
-            Update Template
+            Update Service
           </button>
         </>
       }
@@ -410,8 +410,8 @@ const ServiceTemplates = () => {
   return (
     <div className="service-templates-page">
       <PageHeader
-        title="Service Templates"
-        subtitle="Create and manage your service templates"
+        title="Services"
+        subtitle="Create and manage your services"
         actions={
           <button 
             className="btn btn-primary" 
@@ -420,7 +420,7 @@ const ServiceTemplates = () => {
               setShowAddModal(true);
             }}
           >
-            Add Template
+            Add Service
           </button>
         }
       />
@@ -473,9 +473,9 @@ const ServiceTemplates = () => {
         </div>
       ) : (
         <EmptyState
-          title="No Service Templates"
-          message="You haven't created any service templates yet. Templates help you quickly add services to your offerings."
-          actionText="Add Template"
+          title="No Services"
+          message="You haven't created any services yet. Services are offerings that your customers can book."
+          actionText="Add Service"
           onActionClick={() => {
             resetForm();
             setShowAddModal(true);

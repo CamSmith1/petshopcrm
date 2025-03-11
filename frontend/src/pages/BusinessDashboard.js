@@ -11,7 +11,7 @@ const BusinessDashboard = () => {
       id: 1, 
       label: 'Total Appointments', 
       value: 152, 
-      icon: '📅', 
+      icon: '🗓️', 
       iconClass: 'icon-primary', 
       change: 12, 
       changeType: 'up' 
@@ -20,7 +20,7 @@ const BusinessDashboard = () => {
       id: 2, 
       label: 'Upcoming Today', 
       value: 8, 
-      icon: '⏰', 
+      icon: '📊', 
       iconClass: 'icon-warning', 
       change: 2, 
       changeType: 'up' 
@@ -29,7 +29,7 @@ const BusinessDashboard = () => {
       id: 3, 
       label: 'Customers', 
       value: 47, 
-      icon: '👥', 
+      icon: '👤', 
       iconClass: 'icon-success', 
       change: 5, 
       changeType: 'up' 
@@ -38,7 +38,7 @@ const BusinessDashboard = () => {
       id: 4, 
       label: 'Revenue This Month', 
       value: '$4,275', 
-      icon: '💰', 
+      icon: '📈', 
       iconClass: 'icon-success', 
       change: 15, 
       changeType: 'up' 
@@ -289,9 +289,9 @@ const BusinessDashboard = () => {
                 Add New Service
               </Link>
               
-              <Link to="/widget-integration" className="btn btn-secondary" style={{ width: '100%' }}>
-                <span className="btn-icon">🔌</span>
-                Manage Widget Integration
+              <Link to="/booking-page-setup" className="btn btn-secondary" style={{ width: '100%' }}>
+                <span className="btn-icon">🔗</span>
+                Manage Booking Page
               </Link>
             </div>
           </div>

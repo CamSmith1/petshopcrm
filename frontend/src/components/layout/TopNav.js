@@ -21,7 +21,7 @@ const TopNav = ({ toggleSidebar }) => {
     if (path === '/settings') return 'Settings';
     if (path === '/profile') return 'Your Profile';
     
-    return 'Dog Services Portal';
+    return 'Services';
   };
   
   // Get current date in a readable format
@@ -33,9 +33,6 @@ const TopNav = ({ toggleSidebar }) => {
   return (
     <div className="top-nav">
       <div className="top-nav-left">
-        <button className="toggle-sidebar" onClick={toggleSidebar}>
-          ☰
-        </button>
         <div className="top-nav-title">{getPageTitle()}</div>
       </div>
       

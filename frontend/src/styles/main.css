@@ -628,9 +628,9 @@ img {
   transition: transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+.card {
+  transform: none;
+  transition: none;
 }
 
 .card-header {
@@ -1399,9 +1399,9 @@ input[type="radio"] {
   transition: transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
 }
 
-.service-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+.service-card {
+  transform: none;
+  transition: none;
 }
 
 .service-card.selected {
