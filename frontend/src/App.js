@@ -141,6 +141,8 @@ function App() {
 
   // Check if we're in development mode
   const isDevelopment = process.env.NODE_ENV === 'development';
+  // Force development mode for now to fix navigation issues
+  const forceDevMode = true;
 
   // Main application UI with auth flow and responsive design
   return (
@@ -151,7 +153,7 @@ function App() {
             <ToastContainer position="top-right" autoClose={3000} />
             
             {/* Show sidebar for authenticated users or in development mode, but never on booking page */}
-            {(!isAuthRoute && !isBookingRoute && (isAuthenticated || isDevelopment)) && (
+            {(!isAuthRoute && !isBookingRoute && (isAuthenticated || isDevelopment || forceDevMode)) && (
               <>
                 <Sidebar 
                   collapsed={isSidebarCollapsed} 
@@ -168,7 +170,7 @@ function App() {
             
             <div className={`main-container ${isSidebarCollapsed ? 'expanded' : ''} ${isAuthRoute || isBookingRoute ? 'auth-page' : ''}`}>
               {/* Show navigation for authenticated users or in development mode, but never on booking page */}
-              {(!isAuthRoute && !isBookingRoute && (isAuthenticated || isDevelopment)) && (
+              {(!isAuthRoute && !isBookingRoute && (isAuthenticated || isDevelopment || forceDevMode)) && (
                 <TopNav 
                   toggleSidebar={toggleSidebar} 
                   toggleMobileMenu={toggleMobileMenu}
