@@ -155,117 +155,110 @@ const AppointmentForm = () => {
         backLink="/appointments"
       />
       
-      <div className="card">
+      <div className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
         <div className="card-body">
           <form onSubmit={handleSubmit}>
-            <div className="form-section">
-              <h3>Service Details</h3>
-              <div className="form-group">
-                <label htmlFor="serviceId">Service</label>
-                <select 
-                  id="serviceId" 
-                  name="serviceId" 
-                  className="form-control"
-                  value={formData.serviceId}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Select a service</option>
-                  {services.map(service => (
-                    <option key={service._id} value={service._id}>
-                      {service.title} (${service.price?.amount || 0})
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="form-group">
+              <label htmlFor="serviceId">Service</label>
+              <select 
+                id="serviceId" 
+                name="serviceId" 
+                className="form-control"
+                value={formData.serviceId}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select a service</option>
+                {services.map(service => (
+                  <option key={service._id} value={service._id}>
+                    {service.title} (${service.price?.amount || 0})
+                  </option>
+                ))}
+              </select>
             </div>
             
-            <div className="form-section">
-              <h3>Customer</h3>
-              <div className="form-group">
-                <label htmlFor="customerId">Customer</label>
-                <select 
-                  id="customerId" 
-                  name="customerId" 
-                  className="form-control"
-                  value={formData.customerId}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Select a customer</option>
-                  {customers.map(customer => (
-                    <option key={customer._id} value={customer._id}>
-                      {customer.name} ({customer.email})
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="form-group">
+              <label htmlFor="customerId">Customer</label>
+              <select 
+                id="customerId" 
+                name="customerId" 
+                className="form-control"
+                value={formData.customerId}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select a customer</option>
+                {customers.map(customer => (
+                  <option key={customer._id} value={customer._id}>
+                    {customer.name} ({customer.email})
+                  </option>
+                ))}
+              </select>
             </div>
             
-            <div className="form-section">
-              <h3>Appointment Time</h3>
-              <div className="form-row">
-                <div className="form-group col-md-6">
-                  <label htmlFor="date">Date</label>
-                  <input 
-                    type="date" 
-                    id="date" 
-                    name="date" 
-                    className="form-control"
-                    value={formData.date}
-                    onChange={handleInputChange}
-                    required
-                    min={new Date().toISOString().split('T')[0]}
-                  />
-                </div>
-                <div className="form-group col-md-6">
-                  <label htmlFor="time">Time</label>
-                  <input 
-                    type="time" 
-                    id="time" 
-                    name="time" 
-                    className="form-control"
-                    value={formData.time}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="duration">Duration (minutes)</label>
+            <div className="form-row">
+              <div className="form-group" style={{ flex: 1, marginRight: '10px' }}>
+                <label htmlFor="date">Date</label>
                 <input 
-                  type="number" 
-                  id="duration" 
-                  name="duration" 
+                  type="date" 
+                  id="date" 
+                  name="date" 
                   className="form-control"
-                  value={formData.duration}
+                  value={formData.date}
                   onChange={handleInputChange}
-                  min="15"
-                  max="240"
-                  step="15"
+                  required
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+              <div className="form-group" style={{ flex: 1 }}>
+                <label htmlFor="time">Time</label>
+                <input 
+                  type="time" 
+                  id="time" 
+                  name="time" 
+                  className="form-control"
+                  value={formData.time}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
             </div>
             
-            <div className="form-section">
-              <h3>Additional Information</h3>
-              <div className="form-group">
-                <label htmlFor="notes">Notes</label>
-                <textarea 
-                  id="notes" 
-                  name="notes" 
-                  className="form-control"
-                  value={formData.notes}
-                  onChange={handleInputChange}
-                  rows="3"
-                  placeholder="Add any special instructions or notes for this appointment"
-                ></textarea>
-              </div>
+            <div className="form-group">
+              <label htmlFor="duration">Duration (minutes)</label>
+              <select
+                id="duration" 
+                name="duration" 
+                className="form-control"
+                value={formData.duration}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="15">15 minutes</option>
+                <option value="30">30 minutes</option>
+                <option value="45">45 minutes</option>
+                <option value="60">1 hour</option>
+                <option value="90">1.5 hours</option>
+                <option value="120">2 hours</option>
+                <option value="180">3 hours</option>
+                <option value="240">4 hours</option>
+              </select>
             </div>
             
-            <div className="form-actions">
+            <div className="form-group">
+              <label htmlFor="notes">Notes</label>
+              <textarea 
+                id="notes" 
+                name="notes" 
+                className="form-control"
+                value={formData.notes}
+                onChange={handleInputChange}
+                rows="2"
+                placeholder="Add any special instructions or notes"
+              ></textarea>
+            </div>
+            
+            <div className="form-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
               <button 
                 type="button" 
                 className="btn btn-outline-secondary"
