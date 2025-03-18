@@ -1,9 +1,57 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
+import api from '../services/api';
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
+  const [upcomingBookings, setUpcomingBookings] = useState([]);
+  const [totalBookings, setTotalBookings] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        // Fetch upcoming bookings
+        const response = await api.getBookings({
+          startDate: new Date().toISOString(),
+          status: ['pending', 'confirmed'],
+          limit: 5
+        });
+        
+        const bookings = response.data.bookings || [];
+        setUpcomingBookings(bookings.map(booking => ({
+          id: booking._id,
+          customerName: booking.client?.name || 'Unknown',
+          customerEmail: booking.client?.email || 'No email',
+          venue: booking.location || 'Main Venue',
+          date: booking.startTime,
+          status: booking.status
+        })));
+        
+        // Set total bookings count
+        setTotalBookings(bookings.length);
+        
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchBookings();
+  }, []);
+  
+  const formatDate = (dateString) => {
+    const options = { 
+      weekday: 'short', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+  };
 
   return (
     <div className="dashboard-page">
@@ -13,8 +61,8 @@ const Dashboard = () => {
 
         <div className="dashboard-stats">
           <div className="stat-card">
-            <h3>Upcoming Bookings</h3>
-            <p className="stat-number">3</p>
+            <h3>Total Bookings</h3>
+            <p className="stat-number">{totalBookings}</p>
             <Link to="/bookings" className="btn btn-sm">View All</Link>
           </div>
           {user?.role === 'pet_owner' && (
@@ -78,6 +126,53 @@ const Dashboard = () => {
           </div>
         </div>
 
+        <div className="bookings-table-container">
+          <h2>Upcoming Bookings</h2>
+          {upcomingBookings.length === 0 ? (
+            <div className="empty-state">
+              <p>No upcoming bookings.</p>
+              <Link to="/bookings/new" className="btn btn-primary">
+                Create Booking
+              </Link>
+            </div>
+          ) : (
+            <div className="table-responsive">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Date & Time</th>
+                    <th>Customer</th>
+                    <th>Email Address</th>
+                    <th>Venue</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {upcomingBookings.map(booking => (
+                    <tr key={booking.id}>
+                      <td>{formatDate(booking.date)}</td>
+                      <td>{booking.customerName}</td>
+                      <td>{booking.customerEmail}</td>
+                      <td>{booking.venue}</td>
+                      <td>
+                        <span className={`status-badge badge-${booking.status === 'confirmed' ? 'success' : booking.status === 'pending' ? 'warning' : 'secondary'}`}>
+                          {booking.status}
+                        </span>
+                      </td>
+                      <td>
+                        <Link to={`/bookings/${booking.id}`} className="btn btn-sm btn-outline-primary">
+                          View
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+        
         <div className="recent-activity">
           <h2>Recent Activity</h2>
           <div className="activity-list">
@@ -85,7 +180,7 @@ const Dashboard = () => {
               <div className="activity-icon">✅</div>
               <div className="activity-content">
                 <h4>Booking Confirmed</h4>
-                <p>Your booking for Dog Grooming has been confirmed.</p>
+                <p>Your booking for venue "Conference Room A" has been confirmed.</p>
                 <p className="activity-time">2 hours ago</p>
               </div>
             </div>
@@ -101,7 +196,7 @@ const Dashboard = () => {
               <div className="activity-icon">⭐</div>
               <div className="activity-content">
                 <h4>New Review</h4>
-                <p>You received a 5-star review for Dog Training service.</p>
+                <p>You received a 5-star review for "Exhibition Hall" venue.</p>
                 <p className="activity-time">3 days ago</p>
               </div>
             </div>

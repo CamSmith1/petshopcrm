@@ -3,37 +3,55 @@ import { Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import api from '../services/api';
 
-const ManageServices = () => {
+const ManageVenues = () => {
   const { user } = useContext(AuthContext);
-  const [services, setServices] = useState([]);
+  const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
   useEffect(() => {
-    fetchServices();
+    fetchVenues();
   }, []);
   
-  const fetchServices = async () => {
+  const fetchVenues = async () => {
     try {
       setLoading(true);
       // In a real app, we would fetch from API
-      // const response = await api.getServices({ provider: user.id });
-      // setServices(response.data.services);
+      // const response = await api.getVenues({ owner: user.id });
+      // setVenues(response.data.venues);
       
-      // Mock services data
-      setServices([
+      // Mock venues data
+      setVenues([
         {
           id: '1',
-          title: 'Dog Grooming - Full Service',
-          category: 'grooming',
-          description: 'Full grooming service including bath, haircut, nail trimming, and ear cleaning.',
-          price: {
-            amount: 50,
-            currency: 'USD',
-            unit: 'per_session'
+          name: 'Community Hall',
+          category: 'hall',
+          description: 'Large community hall ideal for events, conferences, and gatherings up to 200 people.',
+          address: {
+            street: '123 Main St',
+            city: 'Townsville',
+            state: 'TS',
+            zipCode: '12345',
+            country: 'USA'
           },
-          duration: 60, // in minutes
+          maxCapacity: 200,
+          amenities: ['WiFi', 'AV Equipment', 'Kitchen', 'Parking', 'Accessible Entrance'],
+          accessibilityFeatures: ['Wheelchair Access', 'Hearing Loop', 'Accessible Restrooms'],
+          layouts: [
+            { id: '101', name: 'Theater', capacity: 200 },
+            { id: '102', name: 'Banquet', capacity: 150 },
+            { id: '103', name: 'Classroom', capacity: 100 }
+          ],
+          pricing: {
+            standard: { amount: 150, unit: 'hour' },
+            commercial: { amount: 200, unit: 'hour' },
+            community: { amount: 100, unit: 'hour' }
+          },
           isPaused: false,
+          images: [
+            { url: 'https://example.com/venue1_1.jpg', isPrimary: true },
+            { url: 'https://example.com/venue1_2.jpg' }
+          ],
           ratings: {
             average: 4.8,
             count: 25
@@ -45,16 +63,32 @@ const ManageServices = () => {
         },
         {
           id: '2',
-          title: 'Basic Training Package',
-          category: 'training',
-          description: 'Basic obedience training including sit, stay, come, and leash walking.',
-          price: {
-            amount: 40,
-            currency: 'USD',
-            unit: 'per_hour'
+          name: 'Conference Room A',
+          category: 'meeting',
+          description: 'Modern conference room with high-speed internet and video conferencing capabilities.',
+          address: {
+            street: '456 Business Ave',
+            city: 'Metropolis',
+            state: 'MP',
+            zipCode: '67890',
+            country: 'USA'
           },
-          duration: 60, // in minutes
+          maxCapacity: 30,
+          amenities: ['WiFi', 'Video Conferencing', 'Whiteboard', 'Coffee Service'],
+          accessibilityFeatures: ['Wheelchair Access', 'Accessible Restrooms'],
+          layouts: [
+            { id: '201', name: 'Boardroom', capacity: 20 },
+            { id: '202', name: 'U-Shape', capacity: 16 }
+          ],
+          pricing: {
+            standard: { amount: 75, unit: 'hour' },
+            commercial: { amount: 100, unit: 'hour' },
+            community: { amount: 50, unit: 'hour' }
+          },
           isPaused: false,
+          images: [
+            { url: 'https://example.com/venue2_1.jpg', isPrimary: true }
+          ],
           ratings: {
             average: 4.6,
             count: 18
@@ -66,16 +100,33 @@ const ManageServices = () => {
         },
         {
           id: '3',
-          title: 'Dog Walking Service',
-          category: 'walking',
-          description: '30-minute dog walking service with exercise and bathroom breaks.',
-          price: {
-            amount: 25,
-            currency: 'USD',
-            unit: 'per_session'
+          name: 'Banquet Hall',
+          category: 'banquet',
+          description: 'Elegant banquet hall perfect for weddings, parties, and formal events.',
+          address: {
+            street: '789 Celebration Blvd',
+            city: 'Festivity',
+            state: 'FT',
+            zipCode: '45678',
+            country: 'USA'
           },
-          duration: 30, // in minutes
+          maxCapacity: 150,
+          amenities: ['Dance Floor', 'Sound System', 'Kitchen', 'Bar Area', 'Coat Check'],
+          accessibilityFeatures: ['Wheelchair Access', 'Accessible Parking', 'Accessible Restrooms'],
+          layouts: [
+            { id: '301', name: 'Banquet', capacity: 150 },
+            { id: '302', name: 'Reception', capacity: 200 }
+          ],
+          pricing: {
+            standard: { amount: 2000, unit: 'day' },
+            commercial: { amount: 2500, unit: 'day' },
+            community: { amount: 1500, unit: 'day' }
+          },
           isPaused: true,
+          images: [
+            { url: 'https://example.com/venue3_1.jpg', isPrimary: true },
+            { url: 'https://example.com/venue3_2.jpg' }
+          ],
           ratings: {
             average: 4.7,
             count: 15
@@ -89,131 +140,179 @@ const ManageServices = () => {
       
       setLoading(false);
     } catch (err) {
-      setError('Error fetching services. Please try again.');
+      setError('Error fetching venues. Please try again.');
       setLoading(false);
     }
   };
   
-  const handleToggleStatus = async (serviceId, currentStatus) => {
+  const handleToggleStatus = async (venueId, currentStatus) => {
     try {
       // In a real app, we would call API
-      // await api.updateService(serviceId, { isPaused: !currentStatus });
+      // await api.updateVenue(venueId, { isPaused: !currentStatus });
       
       // Update local state
-      setServices(services.map(service => 
-        service.id === serviceId 
-          ? { ...service, isPaused: !service.isPaused } 
-          : service
+      setVenues(venues.map(venue => 
+        venue.id === venueId 
+          ? { ...venue, isPaused: !venue.isPaused } 
+          : venue
       ));
     } catch (err) {
-      setError('Error updating service status. Please try again.');
+      setError('Error updating venue status. Please try again.');
     }
   };
   
-  const handleDeleteService = async (serviceId) => {
-    if (!window.confirm('Are you sure you want to delete this service? This action cannot be undone.')) {
+  const handleDeleteVenue = async (venueId) => {
+    if (!window.confirm('Are you sure you want to delete this venue? This action cannot be undone.')) {
       return;
     }
     
     try {
       // In a real app, we would call API
-      // await api.deleteService(serviceId);
+      // await api.deleteVenue(venueId);
       
       // Update local state
-      setServices(services.filter(service => service.id !== serviceId));
+      setVenues(venues.filter(venue => venue.id !== venueId));
     } catch (err) {
-      setError('Error deleting service. Please try again.');
+      setError('Error deleting venue. Please try again.');
     }
   };
   
-  if (!user || user.role !== 'service_provider') {
+  if (!user || user.role !== 'venue_owner') {
     return (
       <div className="unauthorized-message">
         <h2>Access Denied</h2>
-        <p>You must be a service provider to access this page.</p>
+        <p>You must be a venue owner to access this page.</p>
       </div>
     );
   }
   
   return (
-    <div className="manage-services-page">
+    <div className="manage-venues-page">
       <div className="container">
         <div className="page-header">
-          <h1>Manage Services</h1>
-          <Link to="/manage-services/create" className="btn btn-primary">
-            Add New Service
+          <h1>Manage Venues</h1>
+          <Link to="/manage-venues/create" className="btn btn-primary">
+            Add New Venue
           </Link>
         </div>
         
         {loading ? (
-          <div className="loading">Loading services...</div>
+          <div className="loading">Loading venues...</div>
         ) : error ? (
           <div className="error-message">{error}</div>
-        ) : services.length === 0 ? (
-          <div className="no-services">
-            <p>You haven't added any services yet.</p>
-            <Link to="/manage-services/create" className="btn btn-primary">
-              Add Your First Service
+        ) : venues.length === 0 ? (
+          <div className="no-venues">
+            <p>You haven't added any venues yet.</p>
+            <Link to="/manage-venues/create" className="btn btn-primary">
+              Add Your First Venue
             </Link>
           </div>
         ) : (
-          <div className="services-list">
-            {services.map(service => (
-              <div key={service.id} className="service-card">
-                <div className="service-header">
-                  <h3>{service.title}</h3>
-                  <span className={`status-badge ${service.isPaused ? 'status-paused' : 'status-active'}`}>
-                    {service.isPaused ? 'Paused' : 'Active'}
+          <div className="venues-list">
+            {venues.map(venue => (
+              <div key={venue.id} className="venue-card">
+                <div className="venue-header">
+                  <h3>{venue.name}</h3>
+                  <span className={`status-badge ${venue.isPaused ? 'status-paused' : 'status-active'}`}>
+                    {venue.isPaused ? 'Paused' : 'Active'}
                   </span>
                 </div>
                 
-                <div className="service-body">
-                  <div className="service-details">
-                    <p><strong>Category:</strong> {service.category}</p>
-                    <p><strong>Description:</strong> {service.description}</p>
-                    <p><strong>Price:</strong> ${service.price.amount} {service.price.unit === 'per_hour' ? '/ hour' : '/ session'}</p>
-                    <p><strong>Duration:</strong> {service.duration} minutes</p>
+                <div className="venue-body">
+                  <div className="venue-image">
+                    {venue.images && venue.images.length > 0 && (
+                      <img 
+                        src={venue.images.find(img => img.isPrimary)?.url || venue.images[0].url} 
+                        alt={venue.name} 
+                      />
+                    )}
                   </div>
                   
-                  <div className="service-stats">
+                  <div className="venue-details">
+                    <p><strong>Category:</strong> {venue.category}</p>
+                    <p><strong>Description:</strong> {venue.description}</p>
+                    <p><strong>Address:</strong> {venue.address.street}, {venue.address.city}, {venue.address.state} {venue.address.zipCode}</p>
+                    <p><strong>Capacity:</strong> Up to {venue.maxCapacity} people</p>
+                    <p><strong>Layouts:</strong> {venue.layouts.map(layout => `${layout.name} (${layout.capacity})`).join(', ')}</p>
+                    <p><strong>Pricing:</strong></p>
+                    <ul className="pricing-list">
+                      <li>Standard: ${venue.pricing.standard.amount}/{venue.pricing.standard.unit}</li>
+                      <li>Commercial: ${venue.pricing.commercial.amount}/{venue.pricing.commercial.unit}</li>
+                      <li>Community: ${venue.pricing.community.amount}/{venue.pricing.community.unit}</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="venue-features">
+                    <div className="feature-section">
+                      <h4>Amenities</h4>
+                      <ul>
+                        {venue.amenities.map((amenity, index) => (
+                          <li key={index}>{amenity}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div className="feature-section">
+                      <h4>Accessibility</h4>
+                      <ul>
+                        {venue.accessibilityFeatures.map((feature, index) => (
+                          <li key={index}>{feature}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="venue-stats">
                     <div className="stat">
-                      <span className="stat-value">{service.ratings.average}</span>
+                      <span className="stat-value">{venue.ratings.average}</span>
                       <span className="stat-label">Rating</span>
                     </div>
                     <div className="stat">
-                      <span className="stat-value">{service.ratings.count}</span>
+                      <span className="stat-value">{venue.ratings.count}</span>
                       <span className="stat-label">Reviews</span>
                     </div>
                     <div className="stat">
-                      <span className="stat-value">{service.bookings.total}</span>
+                      <span className="stat-value">{venue.bookings.total}</span>
                       <span className="stat-label">Bookings</span>
                     </div>
                     <div className="stat">
-                      <span className="stat-value">{service.bookings.upcoming}</span>
+                      <span className="stat-value">{venue.bookings.upcoming}</span>
                       <span className="stat-label">Upcoming</span>
                     </div>
                   </div>
                 </div>
                 
-                <div className="service-actions">
-                  <Link to={`/manage-services/edit/${service.id}`} className="btn btn-secondary">
-                    Edit
+                <div className="venue-actions">
+                  <Link to={`/manage-venues/edit/${venue.id}`} className="btn btn-secondary">
+                    Edit Venue
+                  </Link>
+                  <Link to={`/manage-venues/${venue.id}/layouts`} className="btn btn-info">
+                    Manage Layouts
+                  </Link>
+                  <Link to={`/manage-venues/${venue.id}/equipment`} className="btn btn-info">
+                    Manage Equipment
+                  </Link>
+                  <Link to={`/manage-venues/${venue.id}/bonds`} className="btn btn-info">
+                    Manage Bonds
+                  </Link>
+                  <Link to={`/manage-venues/${venue.id}/availability`} className="btn btn-info">
+                    Set Availability
                   </Link>
                   <button 
-                    className={`btn ${service.isPaused ? 'btn-success' : 'btn-warning'}`}
-                    onClick={() => handleToggleStatus(service.id, service.isPaused)}
+                    className={`btn ${venue.isPaused ? 'btn-success' : 'btn-warning'}`}
+                    onClick={() => handleToggleStatus(venue.id, venue.isPaused)}
                   >
-                    {service.isPaused ? 'Activate' : 'Pause'}
+                    {venue.isPaused ? 'Activate' : 'Pause'}
                   </button>
                   <button 
                     className="btn btn-danger"
-                    onClick={() => handleDeleteService(service.id)}
-                    disabled={service.bookings.upcoming > 0}
+                    onClick={() => handleDeleteVenue(venue.id)}
+                    disabled={venue.bookings.upcoming > 0}
                   >
                     Delete
                   </button>
-                  {service.bookings.upcoming > 0 && (
-                    <p className="delete-warning">Cannot delete service with upcoming bookings</p>
+                  {venue.bookings.upcoming > 0 && (
+                    <p className="delete-warning">Cannot delete venue with upcoming bookings</p>
                   )}
                 </div>
               </div>
@@ -225,4 +324,4 @@ const ManageServices = () => {
   );
 };
 
-export default ManageServices;
+export default ManageVenues;

@@ -166,14 +166,8 @@ const CustomersList = () => {
                       )}
                     </th>
                     <th>Phone</th>
-                    <th onClick={() => handleSort('petCount')} className="sortable-header">
-                      Pets
-                      {sortBy === 'petCount' && (
-                        <span className="sort-icon">{sortOrder === 'asc' ? '↑' : '↓'}</span>
-                      )}
-                    </th>
                     <th onClick={() => handleSort('lastAppointment')} className="sortable-header">
-                      Last Visit
+                      Last Booking
                       {sortBy === 'lastAppointment' && (
                         <span className="sort-icon">{sortOrder === 'asc' ? '↑' : '↓'}</span>
                       )}
@@ -197,7 +191,6 @@ const CustomersList = () => {
                       </td>
                       <td>{customer.email}</td>
                       <td>{customer.phone}</td>
-                      <td>{customer.petCount}</td>
                       <td>{formatDate(customer.lastAppointment)}</td>
                       <td>{customer.totalSpent}</td>
                       <td>

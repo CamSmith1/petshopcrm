@@ -134,14 +134,14 @@ const AppointmentDetail = () => {
   if (!appointment) {
     return (
       <div className="page-container">
-        <PageHeader title="Appointment Not Found" />
+        <PageHeader title="Booking Not Found" />
         <div className="card">
           <div className="card-body empty-state">
             <div className="empty-state-icon">🔍</div>
-            <h3>Appointment Not Found</h3>
-            <p>The appointment you're looking for doesn't exist or has been removed.</p>
-            <Link to="/appointments" className="btn btn-primary">
-              Back to Appointments
+            <h3>Booking Not Found</h3>
+            <p>The booking you're looking for doesn't exist or has been removed.</p>
+            <Link to="/bookings" className="btn btn-primary">
+              Back to Bookings
             </Link>
           </div>
         </div>
@@ -152,15 +152,15 @@ const AppointmentDetail = () => {
   return (
     <div className="page-container">
       <PageHeader 
-        title={`Appointment: ${appointment.service}`}
-        backLink="/appointments"
+        title={`Booking: ${appointment.service}`}
+        backLink="/bookings"
       />
 
       <div className="row">
         <div className="col-md-8">
           <div className="card">
             <div className="card-header">
-              <h3>Appointment Details</h3>
+              <h3>Booking Details</h3>
               <div className="status-pill">
                 <span className={`status-badge ${getStatusBadgeClass(appointment.status)}`}>
                   {appointment.status}
@@ -174,10 +174,10 @@ const AppointmentDetail = () => {
               </div>
 
               <div className="detail-section">
-                <h4>Service Information</h4>
+                <h4>Venue Information</h4>
                 <div className="detail-grid">
                   <div className="detail-item">
-                    <span className="detail-label">Service:</span>
+                    <span className="detail-label">Event Type:</span>
                     <span className="detail-value">{appointment.service}</span>
                   </div>
                   <div className="detail-item">
@@ -199,7 +199,7 @@ const AppointmentDetail = () => {
 
               <div className="detail-section">
                 <h4>Notes</h4>
-                <p className="detail-value notes-box">{appointment.notes || 'No notes for this appointment.'}</p>
+                <p className="detail-value notes-box">{appointment.notes || 'No notes for this booking.'}</p>
               </div>
               
               <div className="action-buttons">
@@ -208,7 +208,7 @@ const AppointmentDetail = () => {
                     className="btn btn-success"
                     onClick={() => handleStatusChange('confirmed')}
                   >
-                    Confirm Appointment
+                    Confirm Booking
                   </button>
                 )}
                 
@@ -217,7 +217,7 @@ const AppointmentDetail = () => {
                     className="btn btn-danger"
                     onClick={handleCancelClick}
                   >
-                    Cancel Appointment
+                    Cancel Booking
                   </button>
                 )}
                 
@@ -231,24 +231,24 @@ const AppointmentDetail = () => {
                 )}
                 
                 <Link 
-                  to={`/appointments/${appointmentId}/edit`}
+                  to={`/bookings/${appointmentId}/edit`}
                   className="btn btn-outline-primary"
                 >
-                  Edit Appointment
+                  Edit Booking
                 </Link>
               </div>
               
               {confirmingCancel && (
                 <div className="confirmation-modal">
                   <div className="confirmation-modal-content">
-                    <h3>Cancel Appointment</h3>
-                    <p>Are you sure you want to cancel this appointment?</p>
+                    <h3>Cancel Booking</h3>
+                    <p>Are you sure you want to cancel this venue booking?</p>
                     <div className="confirmation-actions">
                       <button className="btn btn-outline-secondary" onClick={() => setConfirmingCancel(false)}>
                         No, Keep It
                       </button>
                       <button className="btn btn-danger" onClick={confirmCancel}>
-                        Yes, Cancel Appointment
+                        Yes, Cancel Booking
                       </button>
                     </div>
                   </div>

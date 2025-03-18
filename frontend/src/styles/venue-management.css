@@ -1,0 +1,473 @@
+/* Venue Management Styles */
+
+/* General Styles */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header-content h1 {
+  margin-bottom: 0.5rem;
+}
+
+.required {
+  color: #dc3545;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+}
+
+.form-section h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.alert {
+  margin-bottom: 1.5rem;
+}
+
+/* Venue Card Styles */
+.venues-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .venues-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .venues-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.venue-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.venue-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.venue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.venue-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-active {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-paused {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.venue-body {
+  padding: 1rem;
+}
+
+.venue-image {
+  margin-bottom: 1rem;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 0.25rem;
+}
+
+.venue-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.venue-details {
+  margin-bottom: 1.5rem;
+}
+
+.venue-details p {
+  margin-bottom: 0.5rem;
+}
+
+.pricing-list {
+  list-style: none;
+  padding-left: 1rem;
+  margin-top: 0.5rem;
+}
+
+.venue-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.feature-section {
+  flex: 1;
+  min-width: 150px;
+}
+
+.feature-section h4 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.feature-section ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.feature-section li {
+  margin-bottom: 0.25rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.feature-section li:before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #28a745;
+}
+
+.venue-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 0.25rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+.venue-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+}
+
+.delete-warning {
+  width: 100%;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #dc3545;
+}
+
+/* Layout Styles */
+.layouts-list, .equipment-list, .bonds-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .layouts-list, .equipment-list, .bonds-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.layout-card, .equipment-card, .bond-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.layout-info, .equipment-info, .bond-info {
+  padding: 1rem;
+  flex-grow: 1;
+}
+
+.layout-info h3, .equipment-info h3, .bond-info h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.layout-actions, .equipment-actions, .bond-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Equipment and Bond Specific Styles */
+.included-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: #d4edda;
+  color: #155724;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.price-info {
+  font-weight: 600;
+  color: #495057;
+}
+
+.bond-amount {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #495057;
+}
+
+.refund-status {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* Images Styles */
+.images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.image-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.image-card:hover {
+  transform: translateY(-4px);
+}
+
+.primary-image {
+  border: 2px solid #28a745;
+}
+
+.image-wrapper {
+  position: relative;
+  height: 150px;
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.primary-badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #28a745;
+  color: white;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.image-details {
+  padding: 0.75rem;
+}
+
+.image-description {
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.image-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Form Styles - Compact Layout */
+.venue-form.compact-form .form-section {
+  margin-bottom: 1.5rem;
+  padding: 1.25rem;
+}
+
+.venue-form.compact-form .form-section h2 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  color: #333;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 0.5rem;
+}
+
+.venue-form.compact-form .form-group {
+  margin-bottom: 0.75rem;
+}
+
+.venue-form.compact-form .form-control {
+  padding: 0.375rem 0.5rem;
+}
+
+.venue-form.compact-form label {
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+/* Feature tags UI */
+.feature-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.25rem;
+  background-color: #f8f9fa;
+  min-height: 100px;
+}
+
+.feature-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.feature-tag:hover {
+  border-color: #6c757d;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.feature-tag.selected {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.feature-tag.selected:hover {
+  background-color: #0069d9;
+}
+
+.feature-tag-icon {
+  margin-right: 6px;
+  font-size: 0.9rem;
+}
+
+.feature-tag-group-title {
+  width: 100%;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* Horizontal form layout */
+.horizontal-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.horizontal-checkbox-group .form-check {
+  width: auto;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
+}
+
+.horizontal-checkbox-group .form-check-input {
+  margin-right: 5px;
+}
+
+.venue-form.compact-form .form-text {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.venue-form.compact-form .input-group-text {
+  padding: 0.375rem 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .feature-tag {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.6rem;
+  }
+  
+  .venue-form.compact-form .form-row > .form-group {
+    margin-bottom: 0.75rem;
+  }
+}

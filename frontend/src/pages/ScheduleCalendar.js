@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import api from '../services/api';
 
 const ScheduleCalendar = () => {
   // Get today's date
@@ -9,90 +10,132 @@ const ScheduleCalendar = () => {
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [view, setView] = useState('month'); // 'month', 'week', 'day'
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
   
-  // Mock appointments data
-  const appointments = [
-    {
-      id: 'appt-1',
-      title: 'Dog Grooming - Buddy',
-      customer: 'John Smith',
-      date: '2025-03-03',
-      startTime: '10:00',
-      endTime: '11:30',
-      status: 'confirmed',
-      type: 'grooming'
-    },
-    {
-      id: 'appt-2',
-      title: 'Dog Walking - Max',
-      customer: 'Mary Johnson',
-      date: '2025-03-03',
-      startTime: '13:30',
-      endTime: '14:00',
-      status: 'confirmed',
-      type: 'walking'
-    },
-    {
-      id: 'appt-3',
-      title: 'Nail Trimming - Charlie',
-      customer: 'David Williams',
-      date: '2025-03-03',
-      startTime: '15:45',
-      endTime: '16:00',
-      status: 'pending',
-      type: 'grooming'
-    },
-    {
-      id: 'appt-4',
-      title: 'Bath & Brush - Luna',
-      customer: 'Sarah Miller',
-      date: '2025-03-04',
-      startTime: '09:15',
-      endTime: '10:15',
-      status: 'confirmed',
-      type: 'grooming'
-    },
-    {
-      id: 'appt-5',
-      title: 'Full Grooming - Rocky',
-      customer: 'Michael Brown',
-      date: '2025-03-04',
-      startTime: '11:00',
-      endTime: '12:30',
-      status: 'confirmed',
-      type: 'grooming'
-    },
-    {
-      id: 'appt-6',
-      title: 'Dog Walking - Bella',
-      customer: 'Jennifer Taylor',
-      date: '2025-03-05',
-      startTime: '14:00',
-      endTime: '14:30',
-      status: 'confirmed',
-      type: 'walking'
-    },
-    {
-      id: 'appt-7',
-      title: 'Training Session - Cooper',
-      customer: 'Robert Wilson',
-      date: '2025-03-07',
-      startTime: '16:00',
-      endTime: '17:00',
-      status: 'confirmed',
-      type: 'training'
-    },
-    {
-      id: 'appt-8',
-      title: 'Dog Grooming - Daisy',
-      customer: 'Emily Davis',
-      date: '2025-03-10',
-      startTime: '13:00',
-      endTime: '14:30',
-      status: 'confirmed',
-      type: 'grooming'
-    }
-  ];
+  // Load appointments from API/localStorage
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await api.getBookings();
+        
+        // Process appointments to match our display format
+        const formattedAppointments = response.data.bookings.map(booking => {
+          const startDate = new Date(booking.startTime);
+          const serviceTitle = booking.service?.title || 'Unknown Service';
+          const clientName = booking.client?.name || 'Unknown Client';
+          
+          return {
+            id: booking._id,
+            title: `${serviceTitle}${booking.subject?.name ? ' - ' + booking.subject.name : ''}`,
+            customer: clientName,
+            date: startDate.toISOString().split('T')[0],
+            startTime: startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+            endTime: new Date(booking.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+            status: booking.status,
+            type: serviceTitle.toLowerCase().includes('meeting') ? 'meeting' : 
+                  serviceTitle.toLowerCase().includes('sports') ? 'sports' : 'event'
+          };
+        });
+        
+        // Add pre-existing mock data for demonstration purposes
+        const defaultAppointments = [
+          {
+            id: 'appt-1',
+            title: 'Conference Room A - Corporate Meeting',
+            customer: 'John Smith',
+            date: '2025-03-03',
+            startTime: '10:00',
+            endTime: '11:30',
+            status: 'confirmed',
+            type: 'meeting'
+          },
+          {
+            id: 'appt-2',
+            title: 'Lakeside Pavilion - Birthday Party',
+            customer: 'Mary Johnson',
+            date: '2025-03-03',
+            startTime: '13:30',
+            endTime: '17:00',
+            status: 'confirmed',
+            type: 'event'
+          },
+          {
+            id: 'appt-3',
+            title: 'Sports Field 2 - Soccer Practice',
+            customer: 'David Williams',
+            date: '2025-03-03',
+            startTime: '15:45',
+            endTime: '17:30',
+            status: 'pending',
+            type: 'sports'
+          },
+          {
+            id: 'appt-4',
+            title: 'Exhibition Hall - Art Show',
+            customer: 'Sarah Miller',
+            date: '2025-03-04',
+            startTime: '09:15',
+            endTime: '16:15',
+            status: 'confirmed',
+            type: 'event'
+          },
+          {
+            id: 'appt-5',
+            title: 'Auditorium - Community Forum',
+            customer: 'Michael Brown',
+            date: '2025-03-04',
+            startTime: '11:00',
+            endTime: '12:30',
+            status: 'confirmed',
+            type: 'meeting'
+          },
+          {
+            id: 'appt-6',
+            title: 'Waterway Section A - Boat Race',
+            customer: 'Jennifer Taylor',
+            date: '2025-03-05',
+            startTime: '14:00',
+            endTime: '17:30',
+            status: 'confirmed',
+            type: 'event'
+          },
+          {
+            id: 'appt-7',
+            title: 'Meeting Room B - Workshop',
+            customer: 'Robert Wilson',
+            date: '2025-03-07',
+            startTime: '16:00',
+            endTime: '17:00',
+            status: 'confirmed',
+            type: 'meeting'
+          },
+          {
+            id: 'appt-8',
+            title: 'Community Center - Fundraiser',
+            customer: 'Emily Davis',
+            date: '2025-03-10',
+            startTime: '13:00',
+            endTime: '19:30',
+            status: 'confirmed',
+            type: 'event'
+          }
+        ];
+        
+        // Combine existing mock data with new appointments
+        setAppointments([...defaultAppointments, ...formattedAppointments]);
+        
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+        // Fallback to existing mock data if API fails
+        setAppointments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchAppointments();
+  }, []);
 
   // Navigate to next month
   const nextMonth = () => {
@@ -158,10 +201,12 @@ const ScheduleCalendar = () => {
           {dayAppointments.map(appointment => {
             let eventClass = 'calendar-event-primary';
             
-            if (appointment.type === 'walking') {
+            if (appointment.type === 'meeting') {
               eventClass = 'calendar-event-success';
-            } else if (appointment.type === 'training') {
+            } else if (appointment.type === 'sports') {
               eventClass = 'calendar-event-warning';
+            } else if (appointment.type === 'event') {
+              eventClass = 'calendar-event-primary';
             } else if (appointment.status === 'pending') {
               eventClass = 'calendar-event-warning';
             } else if (appointment.status === 'cancelled') {
@@ -228,14 +273,14 @@ const ScheduleCalendar = () => {
         <div>
           <h1 className="page-title">Schedule Calendar</h1>
           <p className="page-description">
-            View and manage your upcoming appointments
+            View and manage your upcoming venue bookings
           </p>
         </div>
         
         <div className="header-actions">
-          <Link to="/appointments/new" className="btn btn-primary">
+          <Link to="/bookings/new" className="btn btn-primary">
             <span className="btn-icon">➕</span>
-            New Appointment
+            New Booking
           </Link>
         </div>
       </div>
@@ -273,7 +318,7 @@ const ScheduleCalendar = () => {
       <div className="grid grid-2 mt-4">
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">Today's Appointments</h2>
+            <h2 className="card-title">Today's Bookings</h2>
           </div>
           
           <div className="card-body">
@@ -305,7 +350,7 @@ const ScheduleCalendar = () => {
                       ))
                   ) : (
                     <tr>
-                      <td colSpan="4" style={{ textAlign: 'center' }}>No appointments scheduled for today</td>
+                      <td colSpan="4" style={{ textAlign: 'center' }}>No bookings scheduled for today</td>
                     </tr>
                   )}
                 </tbody>
@@ -316,7 +361,7 @@ const ScheduleCalendar = () => {
         
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">Upcoming Appointments</h2>
+            <h2 className="card-title">Upcoming Bookings</h2>
           </div>
           
           <div className="card-body">

@@ -75,79 +75,126 @@ export default {
   getUser: () => api.get('/users/me'),
   updateProfile: (userData) => api.put('/users/profile', userData),
   
-  // Pet endpoints
-  getPets: () => api.get('/pets'),
-  getPet: (id) => api.get(`/pets/${id}`),
-  createPet: (petData) => api.post('/pets', petData),
-  updatePet: (id, petData) => api.put(`/pets/${id}`, petData),
-  deletePet: (id) => api.delete(`/pets/${id}`),
-  
-  // Service endpoints
-  getServices: (params) => {
-    // In development mode, return mock services if requested
+  // Venue endpoints
+  getVenues: (params) => {
+    // In development mode, return mock venues if requested
     if (process.env.NODE_ENV === 'development') {
       return Promise.resolve({
         data: {
-          services: [
+          venues: [
             {
-              _id: 'service1',
-              title: 'Basic Dog Grooming',
-              description: 'Complete grooming service including bath, brush, nail trim, ear cleaning, and basic haircut.',
-              category: 'Grooming',
-              price: { amount: 45.00, currency: 'USD' },
-              duration: 60,
-              location_options: ['In-store'],
-              capacity: 1
+              id: '1',
+              name: 'Community Hall',
+              category: 'hall',
+              description: 'Large community hall ideal for events, conferences, and gatherings up to 200 people.',
+              address: {
+                street: '123 Main St',
+                city: 'Townsville',
+                state: 'TS',
+                zipCode: '12345',
+                country: 'USA'
+              },
+              maxCapacity: 200,
+              amenities: ['WiFi', 'AV Equipment', 'Kitchen', 'Parking', 'Accessible Entrance'],
+              accessibilityFeatures: ['Wheelchair Access', 'Hearing Loop', 'Accessible Restrooms'],
+              layouts: [
+                { id: '101', name: 'Theater', capacity: 200 },
+                { id: '102', name: 'Banquet', capacity: 150 },
+                { id: '103', name: 'Classroom', capacity: 100 }
+              ],
+              pricing: {
+                standard: { amount: 150, unit: 'hour' },
+                commercial: { amount: 200, unit: 'hour' },
+                community: { amount: 100, unit: 'hour' }
+              },
+              isPaused: false,
+              images: [
+                { url: 'https://example.com/venue1_1.jpg', isPrimary: true },
+                { url: 'https://example.com/venue1_2.jpg' }
+              ],
+              ratings: {
+                average: 4.8,
+                count: 25
+              },
+              bookings: {
+                total: 42,
+                upcoming: 3
+              }
             },
             {
-              _id: 'service2',
-              title: 'Deluxe Dog Grooming',
-              description: 'Premium grooming package with specialized shampoo, conditioner, teeth brushing, and styled haircut.',
-              category: 'Grooming',
-              price: { amount: 65.00, currency: 'USD' },
-              duration: 90,
-              location_options: ['In-store'],
-              capacity: 1
+              id: '2',
+              name: 'Conference Room A',
+              category: 'meeting',
+              description: 'Modern conference room with high-speed internet and video conferencing capabilities.',
+              address: {
+                street: '456 Business Ave',
+                city: 'Metropolis',
+                state: 'MP',
+                zipCode: '67890',
+                country: 'USA'
+              },
+              maxCapacity: 30,
+              amenities: ['WiFi', 'Video Conferencing', 'Whiteboard', 'Coffee Service'],
+              accessibilityFeatures: ['Wheelchair Access', 'Accessible Restrooms'],
+              layouts: [
+                { id: '201', name: 'Boardroom', capacity: 20 },
+                { id: '202', name: 'U-Shape', capacity: 16 }
+              ],
+              pricing: {
+                standard: { amount: 75, unit: 'hour' },
+                commercial: { amount: 100, unit: 'hour' },
+                community: { amount: 50, unit: 'hour' }
+              },
+              isPaused: false,
+              images: [
+                { url: 'https://example.com/venue2_1.jpg', isPrimary: true }
+              ],
+              ratings: {
+                average: 4.6,
+                count: 18
+              },
+              bookings: {
+                total: 35,
+                upcoming: 2
+              }
             },
             {
-              _id: 'service3',
-              title: 'Dog Walking - 30 min',
-              description: 'A 30-minute walk for your dog with personalized attention and exercise.',
-              category: 'Exercise',
-              price: { amount: 25.00, currency: 'USD' },
-              duration: 30,
-              location_options: ['Home visit'],
-              capacity: 3
-            },
-            {
-              _id: 'service4',
-              title: 'Dog Training Session',
-              description: 'One-hour training session focusing on basic commands, leash training, and behavior correction.',
-              category: 'Training',
-              price: { amount: 75.00, currency: 'USD' },
-              duration: 60,
-              location_options: ['In-store', 'Home visit'],
-              capacity: 1
-            },
-            {
-              _id: 'service5',
-              title: 'Nail Trim',
-              description: 'Quick and stress-free nail trimming service for your dog.',
-              category: 'Grooming',
-              price: { amount: 15.00, currency: 'USD' },
-              duration: 15,
-              location_options: ['In-store'],
-              capacity: 1
-            },
-            {
-              _id: 'service6',
-              title: 'Teeth Cleaning',
-              description: "Professional teeth cleaning to maintain your dog's dental health and fresh breath.",
-              category: 'Health',
-              price: { amount: 40.00, currency: 'USD' },
-              duration: 30,
-              location_options: ['In-store'],
-              capacity: 1
+              id: '3',
+              name: 'Banquet Hall',
+              category: 'banquet',
+              description: 'Elegant banquet hall perfect for weddings, parties, and formal events.',
+              address: {
+                street: '789 Celebration Blvd',
+                city: 'Festivity',
+                state: 'FT',
+                zipCode: '45678',
+                country: 'USA'
+              },
+              maxCapacity: 150,
+              amenities: ['Dance Floor', 'Sound System', 'Kitchen', 'Bar Area', 'Coat Check'],
+              accessibilityFeatures: ['Wheelchair Access', 'Accessible Parking', 'Accessible Restrooms'],
+              layouts: [
+                { id: '301', name: 'Banquet', capacity: 150 },
+                { id: '302', name: 'Reception', capacity: 200 }
+              ],
+              pricing: {
+                standard: { amount: 2000, unit: 'day' },
+                commercial: { amount: 2500, unit: 'day' },
+                community: { amount: 1500, unit: 'day' }
+              },
+              isPaused: true,
+              images: [
+                { url: 'https://example.com/venue3_1.jpg', isPrimary: true },
+                { url: 'https://example.com/venue3_2.jpg' }
+              ],
+              ratings: {
+                average: 4.7,
+                count: 15
+              },
+              bookings: {
+                total: 120,
+                upcoming: 0
+              }
             }
           ]
         }
@@ -155,28 +202,158 @@ export default {
     }
     
     // Otherwise, make the actual API call
-    return api.get('/services', { params });
+    return api.get('/venues', { params });
   },
-  getService: (id) => api.get(`/services/${id}`),
-  createService: (serviceData) => api.post('/services', serviceData),
-  updateService: (id, serviceData) => api.put(`/services/${id}`, serviceData),
-  deleteService: (id) => api.delete(`/services/${id}`),
+  getVenue: (id) => api.get(`/venues/${id}`),
+  createVenue: (venueData) => api.post('/venues', venueData),
+  updateVenue: (id, venueData) => api.put(`/venues/${id}`, venueData),
+  deleteVenue: (id) => api.delete(`/venues/${id}`),
+  
+  // Venue layouts
+  getVenueLayouts: (venueId) => api.get(`/venues/${venueId}/layouts`),
+  getVenueLayout: (venueId, layoutId) => api.get(`/venues/${venueId}/layouts/${layoutId}`),
+  createVenueLayout: (venueId, layoutData) => api.post(`/venues/${venueId}/layouts`, layoutData),
+  updateVenueLayout: (venueId, layoutId, layoutData) => api.put(`/venues/${venueId}/layouts/${layoutId}`, layoutData),
+  deleteVenueLayout: (venueId, layoutId) => api.delete(`/venues/${venueId}/layouts/${layoutId}`),
+  
+  // Venue equipment
+  getVenueEquipment: (venueId) => api.get(`/venues/${venueId}/equipment`),
+  getVenueEquipmentItem: (venueId, equipmentId) => api.get(`/venues/${venueId}/equipment/${equipmentId}`),
+  createVenueEquipment: (venueId, equipmentData) => api.post(`/venues/${venueId}/equipment`, equipmentData),
+  updateVenueEquipment: (venueId, equipmentId, equipmentData) => api.put(`/venues/${venueId}/equipment/${equipmentId}`, equipmentData),
+  deleteVenueEquipment: (venueId, equipmentId) => api.delete(`/venues/${venueId}/equipment/${equipmentId}`),
+  
+  // Venue bonds
+  getVenueBonds: (venueId) => api.get(`/venues/${venueId}/bonds`),
+  getVenueBond: (venueId, bondId) => api.get(`/venues/${venueId}/bonds/${bondId}`),
+  createVenueBond: (venueId, bondData) => api.post(`/venues/${venueId}/bonds`, bondData),
+  updateVenueBond: (venueId, bondId, bondData) => api.put(`/venues/${venueId}/bonds/${bondId}`, bondData),
+  deleteVenueBond: (venueId, bondId) => api.delete(`/venues/${venueId}/bonds/${bondId}`),
+  
+  // Venue availability
+  getVenueAvailability: (venueId, params) => api.get(`/venues/${venueId}/availability`, { params }),
+  createVenueAvailability: (venueId, availabilityData) => api.post(`/venues/${venueId}/availability`, availabilityData),
+  updateVenueAvailability: (venueId, availabilityId, availabilityData) => api.put(`/venues/${venueId}/availability/${availabilityId}`, availabilityData),
+  deleteVenueAvailability: (venueId, availabilityId) => api.delete(`/venues/${venueId}/availability/${availabilityId}`),
+  
+  // Venue images
+  getVenueImages: (venueId) => api.get(`/venues/${venueId}/images`),
+  uploadVenueImage: (venueId, imageData) => {
+    const formData = new FormData();
+    formData.append('image', imageData.file);
+    if (imageData.description) formData.append('description', imageData.description);
+    if (imageData.isPrimary !== undefined) formData.append('is_primary', imageData.isPrimary);
+    
+    return api.post(`/venues/${venueId}/images`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
+  updateVenueImage: (venueId, imageId, imageData) => api.put(`/venues/${venueId}/images/${imageId}`, imageData),
+  deleteVenueImage: (venueId, imageId) => api.delete(`/venues/${venueId}/images/${imageId}`),
+  setPrimaryVenueImage: (venueId, imageId) => api.put(`/venues/${venueId}/images/${imageId}/set-primary`),
   
   // Booking endpoints
-  getBookings: (params) => api.get('/bookings', { params }),
-  getBooking: (id) => api.get(`/bookings/${id}`),
-  createBooking: (bookingData) => {
-    // In development mode, return mock booking confirmation
+  getBookings: (params) => {
+    // In development mode, return mock bookings from localStorage
     if (process.env.NODE_ENV === 'development') {
-      const mockBookingId = 'booking-' + Math.random().toString(36).substring(2, 9);
+      const storedBookings = localStorage.getItem('mockBookings');
+      let bookings = storedBookings ? JSON.parse(storedBookings) : [];
+      
+      // Filter bookings based on params if they exist
+      if (params) {
+        if (params.status) {
+          const statusArray = Array.isArray(params.status) ? params.status : [params.status];
+          bookings = bookings.filter(booking => statusArray.includes(booking.status));
+        }
+        
+        if (params.startDate) {
+          const startDate = new Date(params.startDate);
+          bookings = bookings.filter(booking => new Date(booking.startTime) >= startDate);
+        }
+        
+        if (params.endDate) {
+          const endDate = new Date(params.endDate);
+          bookings = bookings.filter(booking => new Date(booking.startTime) <= endDate);
+        }
+      }
+      
       return Promise.resolve({
         data: {
-          booking: {
-            _id: mockBookingId,
-            ...bookingData,
-            status: 'confirmed',
-            createdAt: new Date().toISOString()
+          bookings: bookings
+        }
+      });
+    }
+    
+    // Otherwise, make the actual API call
+    return api.get('/bookings', { params });
+  },
+  getBooking: (id) => {
+    // In development mode, return mock booking from localStorage
+    if (process.env.NODE_ENV === 'development') {
+      const storedBookings = localStorage.getItem('mockBookings');
+      let bookings = storedBookings ? JSON.parse(storedBookings) : [];
+      const booking = bookings.find(b => b._id === id);
+      
+      if (booking) {
+        return Promise.resolve({
+          data: {
+            booking: booking
           }
+        });
+      }
+      
+      // If booking not found in localStorage and it's the mock data, return that
+      if (id === 'service1' || id === 'service2') {
+        // This is a fallback for mock services
+        return Promise.resolve({
+          data: {
+            booking: {
+              _id: id,
+              title: id === 'service1' ? 'Basic Dog Grooming' : 'Deluxe Dog Grooming',
+              status: 'confirmed',
+              startTime: new Date().toISOString(),
+              endTime: new Date(new Date().getTime() + 60 * 60 * 1000).toISOString()
+            }
+          }
+        });
+      }
+      
+      // Return a 404 error
+      return Promise.reject({
+        response: {
+          status: 404,
+          data: { error: 'Booking not found' }
+        }
+      });
+    }
+    
+    // Otherwise, make the actual API call
+    return api.get(`/bookings/${id}`);
+  },
+  createBooking: (bookingData) => {
+    // In development mode, update mock data and modify local state
+    if (process.env.NODE_ENV === 'development') {
+      const mockBookingId = 'booking-' + Math.random().toString(36).substring(2, 9);
+      
+      // Create a mock booking that will be visible in the UI
+      const mockBooking = {
+        _id: mockBookingId,
+        ...bookingData,
+        status: 'confirmed',
+        createdAt: new Date().toISOString()
+      };
+      
+      // If localStorage has bookings, update it
+      const storedBookings = localStorage.getItem('mockBookings');
+      let bookings = storedBookings ? JSON.parse(storedBookings) : [];
+      bookings.push(mockBooking);
+      localStorage.setItem('mockBookings', JSON.stringify(bookings));
+      
+      return Promise.resolve({
+        data: {
+          booking: mockBooking
         }
       });
     }

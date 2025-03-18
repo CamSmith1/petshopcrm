@@ -53,39 +53,99 @@ CREATE TABLE IF NOT EXISTS api_keys (
 
 -- Pets tables removed
 
--- Services table 
-CREATE TABLE IF NOT EXISTS services (
+-- Venues table
+CREATE TABLE IF NOT EXISTS venues (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  provider_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  title TEXT NOT NULL,
+  owner_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
   description TEXT,
   category TEXT,
-  price_amount DECIMAL(10,2) NOT NULL,
-  price_currency TEXT DEFAULT 'USD',
-  duration INTEGER NOT NULL, -- in minutes
-  location_options TEXT[],
-  capacity INTEGER DEFAULT 1,
-  buffer_time INTEGER DEFAULT 0, -- in minutes
+  street TEXT NOT NULL,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL,
+  zip_code TEXT NOT NULL,
+  country TEXT DEFAULT 'USA',
+  max_capacity INTEGER NOT NULL,
+  accessibility_features TEXT[],
+  amenities TEXT[],
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Service Availability table
-CREATE TABLE IF NOT EXISTS service_availability (
+-- Venue Images table
+CREATE TABLE IF NOT EXISTS venue_images (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  service_id UUID REFERENCES services(id) ON DELETE CASCADE,
+  venue_id UUID REFERENCES venues(id) ON DELETE CASCADE,
+  url TEXT NOT NULL,
+  description TEXT,
+  is_primary BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Venue Layouts table
+CREATE TABLE IF NOT EXISTS venue_layouts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  venue_id UUID REFERENCES venues(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  description TEXT,
+  capacity INTEGER NOT NULL,
+  setup_notes TEXT,
+  floor_plan_url TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Venue Pricing Tiers table
+CREATE TABLE IF NOT EXISTS venue_pricing (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  venue_id UUID REFERENCES venues(id) ON DELETE CASCADE,
+  layout_id UUID REFERENCES venue_layouts(id) ON DELETE CASCADE,
+  tier_name TEXT NOT NULL, -- 'standard', 'commercial', 'community'
+  price_amount DECIMAL(10,2) NOT NULL,
+  price_currency TEXT DEFAULT 'USD',
+  price_unit TEXT NOT NULL, -- 'hour', 'day', 'event'
+  minimum_hours INTEGER DEFAULT 1,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Venue Equipment table
+CREATE TABLE IF NOT EXISTS venue_equipment (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  venue_id UUID REFERENCES venues(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  description TEXT,
+  quantity INTEGER NOT NULL DEFAULT 1,
+  price_amount DECIMAL(10,2) DEFAULT 0.00,
+  price_currency TEXT DEFAULT 'USD',
+  is_included BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Venue Bonds table
+CREATE TABLE IF NOT EXISTS venue_bonds (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  venue_id UUID REFERENCES venues(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  description TEXT,
+  amount DECIMAL(10,2) NOT NULL,
+  currency TEXT DEFAULT 'USD',
+  is_refundable BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Venue Availability table
+CREATE TABLE IF NOT EXISTS venue_availability (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  venue_id UUID REFERENCES venues(id) ON DELETE CASCADE,
   day_of_week TEXT,
   specific_date DATE,
   start_time TIME,
   end_time TIME,
-  is_available BOOLEAN DEFAULT TRUE
-);
-
--- Service Custom Forms table
-CREATE TABLE IF NOT EXISTS service_custom_forms (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  service_id UUID REFERENCES services(id) ON DELETE CASCADE,
-  form_schema JSONB NOT NULL
+  is_available BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Service Staff Assignments table removed
@@ -93,12 +153,25 @@ CREATE TABLE IF NOT EXISTS service_custom_forms (
 -- Bookings table 
 CREATE TABLE IF NOT EXISTS bookings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  service_id UUID REFERENCES services(id) ON DELETE SET NULL,
-  provider_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  venue_id UUID REFERENCES venues(id) ON DELETE SET NULL,
+  layout_id UUID REFERENCES venue_layouts(id) ON DELETE SET NULL,
+  owner_id UUID REFERENCES users(id) ON DELETE SET NULL,
   client_id UUID REFERENCES users(id) ON DELETE SET NULL,
   start_time TIMESTAMP WITH TIME ZONE NOT NULL,
   end_time TIMESTAMP WITH TIME ZONE NOT NULL,
   status TEXT NOT NULL DEFAULT 'pending',
+  
+  -- Selected equipment
+  selected_equipment JSONB,
+  
+  -- Bond information
+  bond_id UUID REFERENCES venue_bonds(id) ON DELETE SET NULL,
+  bond_paid BOOLEAN DEFAULT FALSE,
+  bond_returned BOOLEAN DEFAULT FALSE,
+  bond_return_date TIMESTAMP WITH TIME ZONE,
+  
+  -- Pricing tier
+  pricing_tier TEXT NOT NULL, -- 'standard', 'commercial', 'community'
   
   -- Payment details
   total_price_amount DECIMAL(10,2) NOT NULL,
@@ -107,9 +180,10 @@ CREATE TABLE IF NOT EXISTS bookings (
   payment_id TEXT,
   payment_method TEXT,
   
-  -- Location and meeting details
-  location TEXT NOT NULL,
-  meeting_link TEXT,
+  -- Event details
+  event_type TEXT,
+  event_name TEXT,
+  expected_attendees INTEGER,
   
   -- Cancellation details
   cancellation_reason TEXT,
@@ -119,18 +193,12 @@ CREATE TABLE IF NOT EXISTS bookings (
   -- Rescheduling details
   rescheduled_from UUID REFERENCES bookings(id),
   
-  -- Recurring booking details
-  is_recurring BOOLEAN DEFAULT FALSE,
-  recurring_frequency TEXT,
-  recurring_end_date DATE,
-  recurring_occurrences INTEGER,
-  
   -- Form data
   custom_form_data JSONB,
   
   -- Notes
   client_notes TEXT,
-  provider_notes TEXT,
+  owner_notes TEXT,
   internal_notes TEXT,
   
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),

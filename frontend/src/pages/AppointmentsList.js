@@ -99,31 +99,31 @@ const AppointmentsList = () => {
 
   return (
     <div className="page-container">
-      <PageHeader title="Appointments" />
+      <PageHeader title="Bookings" />
 
       <div className="card">
         <div className="card-header">
-          <div className="filter-tabs">
+          <div className="filter-tabs" style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
             <button 
-              className={`filter-tab ${filter === 'upcoming' ? 'active' : ''}`}
+              className={`btn ${filter === 'upcoming' ? 'btn-primary' : 'btn-outline-secondary'}`}
               onClick={() => setFilter('upcoming')}
             >
               Upcoming
             </button>
             <button 
-              className={`filter-tab ${filter === 'past' ? 'active' : ''}`}
+              className={`btn ${filter === 'past' ? 'btn-primary' : 'btn-outline-secondary'}`}
               onClick={() => setFilter('past')}
             >
               Past
             </button>
             <button 
-              className={`filter-tab ${filter === 'pending' ? 'active' : ''}`}
+              className={`btn ${filter === 'pending' ? 'btn-primary' : 'btn-outline-secondary'}`}
               onClick={() => setFilter('pending')}
             >
               Pending
             </button>
             <button 
-              className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
+              className={`btn ${filter === 'all' ? 'btn-primary' : 'btn-outline-secondary'}`}
               onClick={() => setFilter('all')}
             >
               All
@@ -134,7 +134,7 @@ const AppointmentsList = () => {
               className="btn btn-primary"
               onClick={handleCreateAppointment}
             >
-              + New Appointment
+              + New Booking
             </button>
           </div>
         </div>
@@ -143,8 +143,8 @@ const AppointmentsList = () => {
           {filteredAppointments.length === 0 ? (
             <div className="empty-state">
               <div className="empty-state-icon">📅</div>
-              <h3>No appointments found</h3>
-              <p>There are no {filter} appointments to display.</p>
+              <h3>No bookings found</h3>
+              <p>There are no {filter} bookings to display.</p>
             </div>
           ) : (
             <div className="table-responsive">
@@ -153,8 +153,8 @@ const AppointmentsList = () => {
                   <tr>
                     <th>Date & Time</th>
                     <th>Customer</th>
-                    <th>Pet</th>
-                    <th>Service</th>
+                    <th>Venue</th>
+                    <th>Event Type</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -164,7 +164,7 @@ const AppointmentsList = () => {
                     <tr key={appointment.id}>
                       <td>{formatDate(appointment.date)}</td>
                       <td>{appointment.customerName}</td>
-                      <td>{appointment.petName}</td>
+                      <td>{appointment.location || 'Main Venue'}</td>
                       <td>{appointment.service}</td>
                       <td>
                         <span className={`status-badge ${getStatusBadgeClass(appointment.status)}`}>

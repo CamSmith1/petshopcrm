@@ -9,7 +9,7 @@ const BusinessDashboard = () => {
   const stats = [
     { 
       id: 1, 
-      label: 'Total Appointments', 
+      label: 'Total Bookings', 
       value: 152, 
       icon: '🗓️', 
       iconClass: 'icon-primary', 
@@ -45,78 +45,94 @@ const BusinessDashboard = () => {
     }
   ];
   
-  const upcomingAppointments = [
+  const upcomingBookings = [
     {
-      id: 'appt-1',
+      id: 'book-1',
       customerName: 'John Smith',
-      petName: 'Buddy',
-      service: 'Dog Grooming',
+      customerEmail: 'john.smith@example.com',
+      venue: 'Conference Room A',
       date: '2025-03-03',
       time: '10:00 AM',
       status: 'confirmed'
     },
     {
-      id: 'appt-2',
+      id: 'book-2',
       customerName: 'Mary Johnson',
-      petName: 'Max',
-      service: 'Dog Walking',
+      customerEmail: 'mary.j@example.com',
+      venue: 'Main Hall',
       date: '2025-03-03',
       time: '01:30 PM',
       status: 'confirmed'
     },
     {
-      id: 'appt-3',
+      id: 'book-3',
       customerName: 'David Williams',
-      petName: 'Charlie',
-      service: 'Nail Trimming',
+      customerEmail: 'david.w@example.com',
+      venue: 'Exhibition Space',
       date: '2025-03-03',
       time: '03:45 PM',
       status: 'pending'
     },
     {
-      id: 'appt-4',
+      id: 'book-4',
       customerName: 'Sarah Miller',
-      petName: 'Luna',
-      service: 'Bath & Brush',
+      customerEmail: 'sarah.miller@example.com',
+      venue: 'Meeting Room B',
       date: '2025-03-04',
       time: '09:15 AM',
       status: 'confirmed'
     },
     {
-      id: 'appt-5',
+      id: 'book-5',
       customerName: 'Michael Brown',
-      petName: 'Rocky',
-      service: 'Full Grooming',
+      customerEmail: 'mbrown@example.com',
+      venue: 'Auditorium',
       date: '2025-03-04',
       time: '11:00 AM',
       status: 'confirmed'
     }
   ];
   
-  const recentCustomers = [
+  const pastBookings = [
     {
-      id: 'cust-1',
-      name: 'Emily Davis',
-      email: 'emily@example.com',
-      pets: 2,
-      lastVisit: '2025-03-01',
-      totalSpent: '$320'
+      id: 'past-1',
+      customerName: 'Emily Davis',
+      customerEmail: 'emily@example.com',
+      venue: 'Main Hall',
+      date: '2025-03-01',
+      time: '13:00 PM',
+      status: 'completed',
+      eventType: 'Conference'
     },
     {
-      id: 'cust-2',
-      name: 'Robert Wilson',
-      email: 'robert@example.com',
-      pets: 1,
-      lastVisit: '2025-02-28',
-      totalSpent: '$145'
+      id: 'past-2',
+      customerName: 'Robert Wilson',
+      customerEmail: 'robert@example.com',
+      venue: 'Exhibition Space',
+      date: '2025-02-28',
+      time: '09:30 AM',
+      status: 'completed',
+      eventType: 'Workshop'
     },
     {
-      id: 'cust-3',
-      name: 'Jennifer Taylor',
-      email: 'jennifer@example.com',
-      pets: 3,
-      lastVisit: '2025-02-27',
-      totalSpent: '$490'
+      id: 'past-3',
+      customerName: 'Jennifer Taylor',
+      customerEmail: 'jennifer@example.com',
+      venue: 'Conference Room B',
+      date: '2025-02-27',
+      time: '15:45 PM',
+      status: 'completed',
+      eventType: 'Meeting'
+    },
+    {
+      id: 'past-4',
+      customerName: 'Thomas Lee',
+      customerEmail: 'tlee@example.com',
+      venue: 'Auditorium',
+      date: '2025-02-26',
+      time: '18:00 PM',
+      status: 'completed',
+      eventType: 'Presentation'
     }
   ];
 
@@ -162,12 +178,12 @@ const BusinessDashboard = () => {
         ))}
       </div>
       
-      {/* Upcoming Appointments Section */}
+      {/* Upcoming Bookings Section */}
       <div className="card mb-4 mt-4">
         <div className="card-header">
-          <h2 className="card-title">Upcoming Appointments</h2>
+          <h2 className="card-title">Upcoming Bookings</h2>
           <div className="card-actions">
-            <Link to="/appointments" className="btn btn-sm btn-secondary">
+            <Link to="/bookings" className="btn btn-sm btn-secondary">
               View All
             </Link>
           </div>
@@ -179,33 +195,33 @@ const BusinessDashboard = () => {
               <thead>
                 <tr>
                   <th>Customer</th>
-                  <th>Pet</th>
-                  <th>Service</th>
+                  <th>Email</th>
+                  <th>Venue</th>
                   <th>Date & Time</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {upcomingAppointments.map(appointment => (
-                  <tr key={appointment.id}>
-                    <td>{appointment.customerName}</td>
-                    <td>{appointment.petName}</td>
-                    <td>{appointment.service}</td>
+                {upcomingBookings.map(booking => (
+                  <tr key={booking.id}>
+                    <td>{booking.customerName}</td>
+                    <td>{booking.customerEmail}</td>
+                    <td>{booking.venue}</td>
                     <td>
-                      {new Date(appointment.date).toLocaleDateString('en-US', { 
+                      {new Date(booking.date).toLocaleDateString('en-US', { 
                         month: 'short', 
                         day: 'numeric' 
-                      })} at {appointment.time}
+                      })} at {booking.time}
                     </td>
                     <td>
-                      <span className={`badge badge-${appointment.status === 'confirmed' ? 'success' : 'warning'}`}>
-                        {appointment.status}
+                      <span className={`badge badge-${booking.status === 'confirmed' ? 'success' : 'warning'}`}>
+                        {booking.status}
                       </span>
                     </td>
                     <td>
                       <div className="table-actions">
-                        <Link to={`/appointments/${appointment.id}`} className="btn btn-sm btn-secondary">
+                        <Link to={`/bookings/${booking.id}`} className="btn btn-sm btn-secondary">
                           View
                         </Link>
                       </div>
@@ -218,14 +234,14 @@ const BusinessDashboard = () => {
         </div>
       </div>
       
-      {/* Bottom Row: Recent Customers and Quick Actions */}
+      {/* Bottom Row: Past Bookings and Quick Actions */}
       <div className="grid grid-2">
-        {/* Recent Customers */}
+        {/* Past Bookings */}
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">Recent Customers</h2>
+            <h2 className="card-title">Past Bookings</h2>
             <div className="card-actions">
-              <Link to="/customers" className="btn btn-sm btn-secondary">
+              <Link to="/bookings?status=completed" className="btn btn-sm btn-secondary">
                 View All
               </Link>
             </div>
@@ -236,28 +252,28 @@ const BusinessDashboard = () => {
               <table>
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Pets</th>
-                    <th>Last Visit</th>
-                    <th>Total Spent</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Venue</th>
+                    <th>Event Type</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {recentCustomers.map(customer => (
-                    <tr key={customer.id}>
+                  {pastBookings.map(booking => (
+                    <tr key={booking.id}>
                       <td>
-                        <Link to={`/customers/${customer.id}`} className="text-primary">
-                          {customer.name}
-                        </Link>
-                      </td>
-                      <td>{customer.pets}</td>
-                      <td>
-                        {new Date(customer.lastVisit).toLocaleDateString('en-US', { 
+                        {new Date(booking.date).toLocaleDateString('en-US', { 
                           month: 'short', 
                           day: 'numeric' 
-                        })}
+                        })} at {booking.time}
                       </td>
-                      <td>{customer.totalSpent}</td>
+                      <td>
+                        <Link to={`/customers/${booking.id.replace('past-', 'cust-')}`} className="text-primary">
+                          {booking.customerName}
+                        </Link>
+                      </td>
+                      <td>{booking.venue}</td>
+                      <td>{booking.eventType}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -274,9 +290,9 @@ const BusinessDashboard = () => {
           
           <div className="card-body">
             <div style={{ display: 'grid', gap: '10px' }}>
-              <Link to="/appointments/new" className="btn btn-primary" style={{ width: '100%' }}>
+              <Link to="/bookings/new" className="btn btn-primary" style={{ width: '100%' }}>
                 <span className="btn-icon">➕</span>
-                Create New Appointment
+                Create New Booking
               </Link>
               
               <Link to="/customers/new" className="btn btn-secondary" style={{ width: '100%' }}>

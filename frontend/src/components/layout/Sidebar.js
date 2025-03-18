@@ -12,7 +12,7 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
     scheduling: false,
     appointments: false,
     customers: false,
-    services: false,
+    venues: false,
     integrations: false,
     settings: false,
     admin: false
@@ -110,12 +110,12 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
           active={isActiveRoute('/calendar')}
         />
         
-        {/* Appointments Section */}
+        {/* Bookings Section */}
         <MenuItem 
-          to="/appointments" 
+          to="/bookings" 
           icon="📝" 
-          text="Appointments" 
-          active={isMenuActive(['/appointments'])}
+          text="Bookings" 
+          active={isMenuActive(['/bookings'])}
         />
         
         {/* Customers Section */}
@@ -126,12 +126,12 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
           active={isMenuActive(['/customers'])}
         />
         
-        {/* Services Section */}
+        {/* Venues Section */}
         <MenuItem 
-          to="/services" 
-          icon="🛠️" 
-          text="Services" 
-          active={isMenuActive(['/services'])}
+          to="/manage-venues" 
+          icon="🏢" 
+          text="Venues" 
+          active={isMenuActive(['/manage-venues'])}
         />
         
         {/* Booking Page Section */}

@@ -1,0 +1,109 @@
+	Requirements for C-25-058 Venues Booking and Events Management software								
+						Fill in this section : -->			
+Req ID	Requirement	Requirement for (QLDC)	Must have	Nice to have	Nice not necessary	Requirement FULLY met currently (yes/no)	Requirement PARTIALLY met (yes/no) (include details in notes)	In Development Plan for requirement to be met (yes/no)	Notes (please detail)
+VBS1	Online calendar shows available bookings and gives people the opportunity to book and pay online. This includes the ability to 'push' customers to an online payment gateway once a venue booking has been confirmed and the ability for the QLDC venues team to see if a payment has been made. 	Customer	Y						
+VBS2	Online calendar shows the bookings made, the availablity still open and provides the user with the ability to make / change / manage bookings (for a customer) as well as manage bookings, view booking details etc. This may include, a change to a regular customer booking and notification to the customer of such. 	"Venues
+Customer Service"	Y						
+VBS3	Online bookings can be set to either 'auto confirm' i.e. book all the way through immediately or can be set to have confirmation by QLDC venues team. This can be set by venue, by season, and with a certain timeframe - i.e. certain venues 2 weeks out can 'auto confirm'	Venues	Y						
+VBS4	Equipment bookings (i.e. flags and banners, AV equipment etc) able to be added into a booking with a venue. Clear ability for the venues teams to see what equipment has been booked. This inlcudes additional fees for booking of equipment, and a variation of equipment available by venue. (I.e. not all venues would have all equipment types available)	"Venues
+Customer"	Y						
+VBS5	Ability to take a bond online and also the easy ability to refund bonds back to those who submitted them. Ability to manage the bond amount by venue and by booking type. 	Venues	Y						
+VBS6	Ability to list a range of different venues for booking, along with photos, videos, maps and other information such as layout options (i.e. table set ups) etc. The venue types include meeting rooms, netball courts, parks and reserves, whole buildings and parts of buildings amongst others. 	"Venues
+Customer"	Y						
+VBS7	Ability to block off 'set up / pack down and maintenance' requirements for a venue - i.e. a large event may require several days for set up or pack down. Or a venue may have scheduled maintenance. 	Venues	Y						
+VBS8	Filters for easy venue selection. For instance, a customer wanting to have an event that hosts 200 people would be able to filter by the number of people at their event, and as such only be presented with the venues that can cater for the 200 person requirement	"Venues
+Customer"		Y					
+VBS9	Bookings can be 'approved' or 'rejected' by venues team. Customer is notified of this via automated email. 	"Venues
+Customer"	Y						
+VBS10	Ability for the venues team to 'hold' a venue. This is particularly relevant for multiple year annual events where the team 'knows' that there will be a booking, and they are wanting to hold this until the customer confirms it / makes the booking. 	Venues	Y						
+VBS11	Ability to 'block off' / 'open' whole venues / parts of venues as availability changes. This is particularly relevant to sports fields for instance, the venues team would want to 'block off' (i.e. book) all the fields in Wanaka out for a Saturday morning. As the draw becomes available, two of the fields can be opened to the public for booking. 	Venues	Y						
+VBS12	Customer communications are set up and go out automatically (email and / or text message) i.e. your court booking is tomorrow, your booking has been confirmed and others. This can be templated to appear to go from a QLDC email address and with QLDC branding. 	"Customer
+Venues"		Y					
+VBS13	Ability to easily manage and issue refunds. This may be of a deposit, or an entire booking amount. 	"Venues
+Finance"	Y						
+VBS14	Ability to collate and issue invoices including email of this to the customer. Outline your process for invocing and whether it can be integrated into the QLDC enterprise solution, TechOne. The invoices may be by booking, or by interval such as monthly with a selection of bookings or quarterly. 	"Venues
+Finance"	Y						
+VBS15	Ability to define the documents required by a customer for uploading (by booking location or event/booking type) and the ability for customers to upload documentation. Ability to view and manage documentation by customer / by booking. An example of this is 'health and safety plans'. 	"Venues
+Events
+Customer
+Waterways
+Parks"	Y						
+VBS16	Ability to structure pricing for bookings and present the information clearly to the customer. The pricing structure for QLDC venues bookings happens in three ways; Commercial pricing, Community pricing (charitable) and standard (private) pricing. QLDC also provides venue hire free of charge as part of a grants program and as such, if a venue hire is to be FOC, this would need to be able to be managed. 	"Venues
+Customer"	Y						
+VBS17	Ability for customers to pay at a front desk for their booking, by cash, eftpos or bank transfer (with PO number reference). The likely workflow for this would include; customer makes enquiry, customer service team member makes venue booking on behalf of customer in the venues booking software. While the amount for this is shown, the customer services team are able to confirm this booking without putting any $ though the venues booking software, The customer services team would then enter the amount (directly or via pre-set buttons) into their POS solution and take the $ there. 	"Customer services
+Customer"	Y						
+VBS18	Ability for customers making a booking to 'sign' a hire agreement (or other legal doc) as part of the booking process. Potentially, this could be done as an acceptance of terms and conditions, however the ability for customers to 'sign' or 'confirm' an agreement generated for the customer by the booking software that outlines the booking details and expectations is preferred. Note that this may vary by venue and by event. 	"Venues
+Customer"	Y						
+VBS19	Ability to set 'maximum' and 'minimum' times by venue for a customer making a booking. For instance, the ability to book a venue no more than two years in advance, and no less than two weeks in advance. Outside of this, ability for a customer to enquire. 	"Venues
+Customer"	Y						
+VBS20	Ability for importing of current booking information into new booking solution - i.e. csv file of current bookings for ease of integration 	Venues	Y						
+VBS21	To do task list - per booking - which may vary per venue or booking type. This may include the ability to allocate tasks to an internal QLDC user, or externally to a customer with relevant notifications. This inlcudes the ability to tailor a task list by venue or by booking/event type - for instance a floor plan may be needed for a large event booking	"Venues
+Events"		Y					
+VBS22	Ability to add comments to tasks in a task list. 	"Venues
+Events"	Y						
+VBS23	Ability for customers to pay a partial payment - i.e.a deposit. This may be via an online payment gateway or through the issue of an invoice. 	Venues	Y						
+VBS24	High standards of data security including the handling of any customer information	Security	Y						
+VBS25	Ability to clearly see if a customer has paid for their booking. Generally, it is a reqirement for customers to have paid in full 7 days before their booking. Outline the process that is used for reconciliation if a customer is issued an invoice - i.e. how the payment is marked to a customer / a booking. This may include such as automated reminders prompting customers to pay invoice. 	"Venues
+Finance"	Y						
+VBS26	Ability to join/register for a 'wait list' for a venue. This includes, the ability for QLDC venues team to see the size of and who is on the wait list, as well as automated email to the 'top' of the wait list if a venue becomes available with an easy process for the customer to then follow a link (for instance) and request a booking. 	"Venues
+Customer"		Y					
+VBS27	Ability for multiple people at QLDC to view a booking, make a booking, manage a booking, and the ability for the different users to have varying levels of access.	Venues	Y						
+VBS28	Quality SEO for venues listing and search pages. So QLDC venues are highly ranked in searches to customers from all over the world	"Venues
+Customer"		Y					
+VBS29	Ability to schedule 'inductions'. At QLDC, when a hirer books certain venues for the first time an induction is had. This may be an in-person induction or an online video induction which outlines what the hirer needs to know in regards to their venue. Note that QLDC uses outlook and some type of connection to calendars is a nice to have. 	"Venues
+Customer"		Y					
+VBS30	Ability to mark a location or part of a venue on a map. For instance, a customer having an event in part of a park being able to mark out (in polygons) the location of their event, or customers wanting to book a waterway are able to mark out which part of the lake / river / waterway they are wanting to book. 	"Venues
+Waterways
+Events"		Y					
+VBS31	Ability to tailor customer enquiry information by venue and by event type. I.e. where basic information may be required for all bookings, specific locations may require additional information. 	"Venues
+Events
+Waterways"	 	Y					
+VBS32	Ability to easy generate reports on numbers of people (i.e. total people using a venue) including totals, by venue type etc, total bookings by number, revenue by venue, by venue type, total revenue and also bookable hours vs the total number of available hours, by venue, by venue type and totals	"Venues
+Events
+Waterways"	Y						
+VBS33	Ability for integration for documents relating to a booking to be uploaded to QLDC's Electronic Records Management ECM in Tech1. 	"Venues
+Info Services"	Y						
+VBS34	Ability for customer services team to easily (either) point people to how to reset their account passwords or password reset for a customer.	"Customer
+Customer Services"	Y						
+VBS35	Ability for customer services team to easily make a booking on behalf of a customer, and for that customer to pay by card or cash at the front desk.	"Customer
+Customer Services"	Y						
+VBS36	Ability to input / select from specifics in answer to questions - such as from drop down menu tailored for QLDC	All		Y					
+VBS37	Ability to 'notify' rather than 'book'. This is regarding waterways which we hope to have as part of this booking solution. Some waterways use we are hoping customers will be able to go online as though booking - and rather than 'book' or 'pay' the customer is able to notify or other. Expecting this may be a booking type. 	Waterways		Y					
+VBS38	Able to book multiple locations 	All	Y						
+VBS39	Ability to add comments and information in during the booking process. Information from QLDC for the customer. These could include public notice requirements 	All	Y						
+VBS40	Ability for a non-QLDC employee to be able to log-in and issue approvals (i.e. the harbourmaster for waterways booking approvals)	Waterways		Y					
+VBS41	Ability to vary the documentation required and input (questions) required based on booking type and 'use'	All	Y						
+VBS42	Ability to see status of an application		Y						
+VBS43	Ability to see stored documents by customer, booking or event	All	Y						
+VBS44	Ability to generate a unique number for an application - so there's a unique ID for the booking / customer	All	Y						
+VBS45	Event organiser able to create a user login / profile for an event organiser so that they are able to see previous event requests, documents etc that all pertain to a customer. (And be able to when setting up, organise and store the previous ones so that the information will all be in one place) 	"Events
+Customer"		Y					
+VBS46	Ability to copy across' from previous applications	All	Y						
+VBS47	Calendar of what's on - ability to see all the bookings (events or venue use) on in the area by region, by number of people, location, date etc	All		Y					
+VBS48	Ability to create a 'ranking profile' for different events / events organisers so that it's easy to see at a glance in subsequent years whether there's been challenges etc	Events			Y				
+VBS49	Ability to calculate the 'risk' of an event based on the information provided - i.e. if the event has liquor, it's on the water and it's 5k people plus then it becomes a high risk. 	Events		Y					
+VBS50	Ability to email / communicate templates out to people based on their selection / determination of their need (i.e. if they need a permit). For example, providing a template for a public liability insurance form	Events		Y					
+VBS51	Able to 'copy across' from previous applications	Customer		Y					
+VBS52	Able to have different user access levels	All	Y						
+VBS53	Events reporting for business analytics and management. Reporting in such a way that QLDC can make sensible management decisions based on the different events and venue use - for instance, Butlers Green is barely booked due to lack of power availability (so QLDC may choose to put that in, making it a more profitable location)	"venues
+Events"			Y				
+VBS54	Automated reminders (for different documents etc)	"Venues
+Events
+Customer"		Y					
+VBS55	Notifications to internal teams based on different input selection. For instance, if someone selects that they will have liquor at the event, then the venues team is notified of the booking, the events team is notified regarding permitting, and the liquor team is notified regarding liquor licencing. 	"Venues
+Events"		Y					
+VBS56	Able to set minimum timeframes for venues booking and also based on events type	"Venues
+Events"	Y						
+VBS57	User friendly interface with good 'help' available	All	Y						
+VBS58	Review - Approvals, conditions, and comments from reviewers stored in a central location as part of the application	All		Y					
+VBS59	User support and Helpdesk - Support available for users - Council and applicants	All	Y						
+VBS60	Automated coms to QLDC staff. For instance for last minute bookings - for this to be able to have email coms to those internally who may be in charge of managing it - this could be front line reception staff at events centers or venues team	"Venues
+Customer Service"	Y						
+VBS61	Record of customer activity accessible by QLDC team - So that if a person goes to the front desk and shows a photo of a booking to someone that is old (i.e. has been changed) the front desk team can see the history of a booking and how it has been changed etc	"Venues
+Customer Service"		Y					
+VBS62	Easy view for QLDC staff to see what has been booked and what is available	"Venues
+Customer Service"	Y						
+VBS63	Ability to request bookings in large chunks for certain periods - i.e. booking for a season for sports. 		Y						
+VBS64	Does your solution have or can it include an integrated POS solution. Please detail 				Y				
+VBS64	Detail any other features that your solution has that would be of benefit to QLDC	All							
+VBS65	Ability to create a document based from a template (including templating of that document with QLDC branding) - from 'approval' step. I.e. Approve/Issue of events permit then creates a document that includes information from the application as well as QLDC information	Events		Y					

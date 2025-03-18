@@ -23,7 +23,7 @@ import RevenueTracking from './pages/RevenueTracking';
 // Page Components - Scheduling
 import ScheduleCalendar from './pages/ScheduleCalendar';
 
-// Page Components - Appointments
+// Page Components - Bookings
 import AppointmentsList from './pages/AppointmentsList';
 import AppointmentDetail from './pages/AppointmentDetail';
 import AppointmentForm from './pages/AppointmentForm';
@@ -34,12 +34,14 @@ import CustomersList from './pages/CustomersList';
 import CustomerDetail from './pages/CustomerDetail';
 import CustomerForm from './pages/CustomerForm';
 
-// Page Components - Services
-import ServicesList from './pages/ServicesList';
-import ServiceDetail from './pages/ServiceDetail';
-import ServiceCategories from './pages/ServiceCategories';
-import ServiceTemplates from './pages/ServiceTemplates';
-import CustomFields from './pages/CustomFields';
+// Page Components - Venues
+import ManageVenues from './pages/ManageVenues';
+import VenueForm from './pages/VenueForm';
+import VenueLayouts from './pages/VenueLayouts';
+import VenuePricing from './pages/VenuePricing';
+import VenueEquipment from './pages/VenueEquipment';
+import VenueBonds from './pages/VenueBonds';
+import VenueImages from './pages/VenueImages';
 
 // Booking Page Components
 import BookingPageSetup from './pages/BookingPageSetup';
@@ -69,6 +71,7 @@ import NotFound from './pages/NotFound';
 
 // Styles
 import './styles/business-portal.css';
+import './styles/venue-management.css';
 
 function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // Always false now - sidebar not collapsible
@@ -219,32 +222,37 @@ function App() {
                     </ProtectedRoute>
                   } />
                   
-                  {/* Appointment Routes */}
-                  <Route path="/appointments" element={
+                  {/* Booking Routes */}
+                  <Route path="/bookings" element={
                     <ProtectedRoute>
                       <AppointmentsList />
                     </ProtectedRoute>
                   } />
-                  <Route path="/appointments/new" element={
+                  <Route path="/bookings/new" element={
                     <ProtectedRoute>
                       <AppointmentForm />
                     </ProtectedRoute>
                   } />
-                  <Route path="/appointments/:appointmentId/edit" element={
+                  <Route path="/bookings/:bookingId/edit" element={
                     <ProtectedRoute>
                       <AppointmentForm />
                     </ProtectedRoute>
                   } />
-                  <Route path="/appointments/:appointmentId" element={
+                  <Route path="/bookings/:bookingId" element={
                     <ProtectedRoute>
                       <AppointmentDetail />
                     </ProtectedRoute>
                   } />
-                  <Route path="/recurring-appointments" element={
+                  <Route path="/recurring-bookings" element={
                     <ProtectedRoute>
                       <RecurringAppointments />
                     </ProtectedRoute>
                   } />
+                  
+                  {/* Legacy routes for compatibility */}
+                  <Route path="/appointments" element={<Navigate to="/bookings" />} />
+                  <Route path="/appointments/new" element={<Navigate to="/bookings/new" />} />
+                  <Route path="/appointments/:appointmentId" element={<Navigate to={(params) => `/bookings/${params.appointmentId}`} />} />
                   
                   {/* Customer Routes */}
                   <Route path="/customers" element={
@@ -268,22 +276,15 @@ function App() {
                     </ProtectedRoute>
                   } />
                   
-                  {/* Service Management Routes */}
-                  <Route path="/service-categories" element={
-                    <ProtectedRoute>
-                      <ServiceCategories />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/services" element={
-                    <ProtectedRoute>
-                      <ServiceTemplates />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/custom-fields" element={
-                    <ProtectedRoute>
-                      <CustomFields />
-                    </ProtectedRoute>
-                  } />
+                  {/* Venue Management Routes */}
+                  <Route path="/manage-venues" element={<ManageVenues />} />
+                  <Route path="/manage-venues/create" element={<VenueForm />} />
+                  <Route path="/manage-venues/edit/:id" element={<VenueForm />} />
+                  <Route path="/manage-venues/:id/layouts" element={<VenueLayouts />} />
+                  <Route path="/manage-venues/:id/pricing" element={<VenuePricing />} />
+                  <Route path="/manage-venues/:id/equipment" element={<VenueEquipment />} />
+                  <Route path="/manage-venues/:id/bonds" element={<VenueBonds />} />
+                  <Route path="/manage-venues/:id/images" element={<VenueImages />} />
                   
                   {/* Booking Page Routes */}
                   <Route path="/booking-page-setup" element={

@@ -1,0 +1,125 @@
+# QLDC Venues Booking System - Supabase Setup Guide
+
+This document provides detailed instructions for setting up the Supabase backend for the QLDC Venues Booking system.
+
+## 1. Create a Supabase Project
+
+1. Sign up or log in to [Supabase](https://supabase.com)
+2. Create a new project
+3. Choose a name (e.g., "qldc-venues")
+4. Select a region closest to New Zealand (e.g., Sydney)
+5. Set a secure database password
+6. Wait for your project to be initialized (typically takes 2-3 minutes)
+
+## 2. Configure Authentication
+
+1. Go to Authentication → Settings
+2. Under Email Auth, make sure "Enable Email Signup" is enabled
+3. Set minimum password length to 8
+4. Enable "Confirm email" to require email verification
+5. Save changes
+
+## 3. Set Up Database Schema
+
+1. Go to SQL Editor
+2. Create a new query
+3. Copy the entire contents of `backend/models/supabase/schema.sql`
+4. Run the query
+5. Verify tables have been created in the Table Editor
+
+## 4. Configure Storage
+
+1. Go to Storage
+2. Create four buckets with the following settings:
+   
+   a. **venue-images**
+      - Public bucket: Yes
+      - Allow file size uploads up to: 10MB
+      
+   b. **floor-plans**
+      - Public bucket: Yes
+      - Allow file size uploads up to: 5MB
+      
+   c. **booking-documents**
+      - Public bucket: No (private)
+      - Allow file size uploads up to: 10MB
+      
+   d. **user-uploads**
+      - Public bucket: No (private)
+      - Allow file size uploads up to: 5MB
+
+## 5. Set Up Policies
+
+For each bucket, set up the following policies:
+
+### venue-images
+- Allow public read access
+- Only allow admin and venue_manager roles to insert, update, delete
+
+### floor-plans
+- Allow public read access
+- Only allow admin and venue_manager roles to insert, update, delete
+
+### booking-documents
+- Allow users to read their own documents
+- Allow admin and venue_manager to read all documents
+- Allow users to upload documents for their own bookings
+- Allow admin and venue_manager to delete any documents
+
+### user-uploads
+- Allow users to read, upload and delete their own files
+- Allow admin to read, upload and delete any files
+
+## 6. Collect API Credentials
+
+1. Go to Project Settings → API
+2. Record the following information for your `.env` file:
+   - API URL (e.g., https://abcdefgh.supabase.co)
+   - anon public key
+   - service_role key (keep this secure, never expose it in client-side code)
+
+## 7. Configure Email
+
+If you want to use Supabase's built-in email service:
+
+1. Go to Authentication → Email Templates
+2. Customize the templates for:
+   - Confirmation email
+   - Invitation email
+   - Magic link email
+   - Reset password email
+
+## 8. Additional Settings
+
+1. Database Settings:
+   - Consider enabling Realtime functionality for booking updates
+   - Set up database webhooks if needed
+   
+2. Edge Functions (optional for advanced features):
+   - For automated reminders or complex workflows
+   - Requires Supabase Pro plan
+
+## 9. Testing the Setup
+
+To verify your setup:
+1. Add a test user via the Authentication → Users panel
+2. Run a SQL query to insert a test venue
+3. Try connecting with your application using the API credentials
+
+## 10. Supabase Management
+
+Important ongoing maintenance tasks:
+- Regular database backups
+- Monitoring database size and performance
+- Reviewing authentication logs and failed login attempts
+- Updating RLS policies as requirements change
+
+## 11. Troubleshooting
+
+Common issues:
+- RLS policies blocking legitimate access: check policies in SQL Editor
+- Authentication issues: verify email settings and templates
+- Storage access issues: verify bucket permissions
+- Query performance issues: add indexes to frequently queried columns
+
+For additional help, refer to the [Supabase documentation](https://supabase.io/docs).
