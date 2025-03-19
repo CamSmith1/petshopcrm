@@ -4,3 +4,4 @@ dist/
 *.log
 .env
 
+/frontend/node_modules/.cache/
