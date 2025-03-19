@@ -2,6 +2,10 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import api from '../services/api';
+import { 
+  Search, Pets, Edit, Add, EventNote, Person,
+  CheckCircle, Message, Star, CalendarToday, Visibility
+} from '@mui/icons-material';
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
@@ -63,27 +67,27 @@ const Dashboard = () => {
           <div className="stat-card">
             <h3>Total Bookings</h3>
             <p className="stat-number">{totalBookings}</p>
-            <Link to="/bookings" className="btn btn-sm">View All</Link>
+            <Link to="/bookings" className="btn btn-sm"><Visibility style={{ fontSize: '0.875rem', marginRight: '4px' }} /> View All</Link>
           </div>
           {user?.role === 'pet_owner' && (
             <div className="stat-card">
               <h3>My Pets</h3>
               <p className="stat-number">2</p>
-              <Link to="/manage-pets" className="btn btn-sm">Manage</Link>
+              <Link to="/manage-pets" className="btn btn-sm"><Edit style={{ fontSize: '0.875rem', marginRight: '4px' }} /> Manage</Link>
             </div>
           )}
           {user?.role === 'service_provider' && (
             <div className="stat-card">
               <h3>My Services</h3>
               <p className="stat-number">5</p>
-              <Link to="/manage-services" className="btn btn-sm">Manage</Link>
+              <Link to="/manage-services" className="btn btn-sm"><Edit style={{ fontSize: '0.875rem', marginRight: '4px' }} /> Manage</Link>
             </div>
           )}
           {user?.role === 'service_provider' && (
             <div className="stat-card">
               <h3>Pending Requests</h3>
               <p className="stat-number">2</p>
-              <Link to="/bookings?status=pending" className="btn btn-sm">View</Link>
+              <Link to="/bookings?status=pending" className="btn btn-sm"><Visibility style={{ fontSize: '0.875rem', marginRight: '4px' }} /> View</Link>
             </div>
           )}
         </div>
@@ -94,11 +98,11 @@ const Dashboard = () => {
             {user?.role === 'pet_owner' && (
               <>
                 <Link to="/services" className="action-card">
-                  <div className="action-icon">🔍</div>
+                  <div className="action-icon"><Search /></div>
                   <h3>Find Services</h3>
                 </Link>
                 <Link to="/manage-pets" className="action-card">
-                  <div className="action-icon">🐕</div>
+                  <div className="action-icon"><Pets /></div>
                   <h3>Manage Pets</h3>
                 </Link>
               </>
@@ -106,21 +110,21 @@ const Dashboard = () => {
             {user?.role === 'service_provider' && (
               <>
                 <Link to="/manage-services" className="action-card">
-                  <div className="action-icon">📝</div>
+                  <div className="action-icon"><Edit /></div>
                   <h3>Manage Services</h3>
                 </Link>
                 <Link to="/manage-services/create" className="action-card">
-                  <div className="action-icon">➕</div>
+                  <div className="action-icon"><Add /></div>
                   <h3>Add New Service</h3>
                 </Link>
               </>
             )}
             <Link to="/bookings" className="action-card">
-              <div className="action-icon">📅</div>
+              <div className="action-icon"><EventNote /></div>
               <h3>View Bookings</h3>
             </Link>
             <Link to="/profile" className="action-card">
-              <div className="action-icon">👤</div>
+              <div className="action-icon"><Person /></div>
               <h3>Edit Profile</h3>
             </Link>
           </div>
@@ -130,9 +134,10 @@ const Dashboard = () => {
           <h2>Upcoming Bookings</h2>
           {upcomingBookings.length === 0 ? (
             <div className="empty-state">
+              <div className="empty-state-icon"><CalendarToday style={{ fontSize: '3rem' }} /></div>
               <p>No upcoming bookings.</p>
               <Link to="/bookings/new" className="btn btn-primary">
-                Create Booking
+                <Add style={{ marginRight: '4px' }} /> Create Booking
               </Link>
             </div>
           ) : (
@@ -162,7 +167,7 @@ const Dashboard = () => {
                       </td>
                       <td>
                         <Link to={`/bookings/${booking.id}`} className="btn btn-sm btn-outline-primary">
-                          View
+                          <Visibility style={{ fontSize: '1rem', marginRight: '4px' }} /> View
                         </Link>
                       </td>
                     </tr>
@@ -177,7 +182,7 @@ const Dashboard = () => {
           <h2>Recent Activity</h2>
           <div className="activity-list">
             <div className="activity-item">
-              <div className="activity-icon">✅</div>
+              <div className="activity-icon"><CheckCircle /></div>
               <div className="activity-content">
                 <h4>Booking Confirmed</h4>
                 <p>Your booking for venue "Conference Room A" has been confirmed.</p>
@@ -185,7 +190,7 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="activity-item">
-              <div className="activity-icon">💬</div>
+              <div className="activity-icon"><Message /></div>
               <div className="activity-content">
                 <h4>New Message</h4>
                 <p>You have a new message from John regarding your booking.</p>
@@ -193,7 +198,7 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="activity-item">
-              <div className="activity-icon">⭐</div>
+              <div className="activity-icon"><Star /></div>
               <div className="activity-content">
                 <h4>New Review</h4>
                 <p>You received a 5-star review for "Exhibition Hall" venue.</p>

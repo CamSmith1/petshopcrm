@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
+import { Add } from '@mui/icons-material';
 
 const ScheduleCalendar = () => {
   // Get today's date
@@ -167,8 +168,226 @@ const ScheduleCalendar = () => {
     return appointments.filter(appointment => appointment.date === date);
   };
 
-  // Render the calendar grid
-  const renderCalendar = () => {
+  // Render week view
+  const renderWeekView = () => {
+    // Get current week's Sunday
+    const currentDate = new Date(currentYear, currentMonth, today.getDate());
+    const dayOfWeek = currentDate.getDay();
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(currentDate.getDate() - dayOfWeek);
+    
+    // Create array of dates for the week
+    const weekDates = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startOfWeek);
+      date.setDate(startOfWeek.getDate() + i);
+      weekDates.push(date);
+    }
+    
+    return (
+      <div className="calendar-container">
+        <div className="calendar-header">
+          <div className="calendar-title">
+            Week of {startOfWeek.toLocaleDateString('default', { month: 'long', day: 'numeric' })} - {
+              new Date(startOfWeek.getTime() + 6 * 24 * 60 * 60 * 1000).toLocaleDateString('default', { 
+                month: 'long', day: 'numeric'
+              })
+            } {currentYear}
+          </div>
+          <div className="calendar-controls">
+            <button 
+              className="btn btn-sm btn-secondary"
+              onClick={() => {
+                const prevWeek = new Date(startOfWeek);
+                prevWeek.setDate(prevWeek.getDate() - 7);
+                setCurrentMonth(prevWeek.getMonth());
+                setCurrentYear(prevWeek.getFullYear());
+              }}
+              aria-label="Previous week"
+            >
+              ← Previous
+            </button>
+            <button 
+              className="btn btn-sm btn-primary"
+              onClick={() => {
+                setCurrentMonth(today.getMonth());
+                setCurrentYear(today.getFullYear());
+              }}
+              style={{ margin: '0 10px' }}
+            >
+              Today
+            </button>
+            <button 
+              className="btn btn-sm btn-secondary"
+              onClick={() => {
+                const nextWeek = new Date(startOfWeek);
+                nextWeek.setDate(nextWeek.getDate() + 7);
+                setCurrentMonth(nextWeek.getMonth());
+                setCurrentYear(nextWeek.getFullYear());
+              }}
+              aria-label="Next week"
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+        
+        <div className="calendar-grid">
+          {/* Day headers */}
+          {weekDates.map(date => (
+            <div key={date.toISOString()} className="calendar-day-header">
+              {date.toLocaleDateString('default', { weekday: 'short' })} {date.getDate()}
+            </div>
+          ))}
+          
+          {/* Calendar days */}
+          {weekDates.map(date => {
+            const formattedDate = formatDate(date.getFullYear(), date.getMonth(), date.getDate());
+            const dayAppointments = getAppointmentsForDate(formattedDate);
+            const isToday = date.getDate() === today.getDate() && 
+                           date.getMonth() === today.getMonth() && 
+                           date.getFullYear() === today.getFullYear();
+            
+            return (
+              <div key={date.toISOString()} className={`calendar-day ${isToday ? 'today' : ''}`}>
+                <div className="calendar-day-number">{date.getDate()}</div>
+                
+                {dayAppointments.map(appointment => {
+                  let eventClass = 'calendar-event-primary';
+                  
+                  if (appointment.type === 'meeting') {
+                    eventClass = 'calendar-event-success';
+                  } else if (appointment.type === 'sports') {
+                    eventClass = 'calendar-event-warning';
+                  } else if (appointment.type === 'event') {
+                    eventClass = 'calendar-event-primary';
+                  } else if (appointment.status === 'pending') {
+                    eventClass = 'calendar-event-warning';
+                  } else if (appointment.status === 'cancelled') {
+                    eventClass = 'calendar-event-danger';
+                  }
+                  
+                  return (
+                    <div 
+                      key={appointment.id} 
+                      className={`calendar-event ${eventClass}`}
+                      onClick={() => window.location.href = `/bookings/${appointment.id}`}
+                    >
+                      <span style={{ fontWeight: 'bold' }}>{appointment.startTime}</span> - {appointment.title}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  // Render day view
+  const renderDayView = () => {
+    const hours = [];
+    for (let i = 8; i < 20; i++) { // 8 AM to 8 PM
+      hours.push(i);
+    }
+    
+    const formattedDate = formatDate(currentYear, currentMonth, today.getDate());
+    const dayAppointments = getAppointmentsForDate(formattedDate);
+    
+    return (
+      <div className="calendar-container">
+        <div className="calendar-header">
+          <div className="calendar-title">
+            {new Date(currentYear, currentMonth, today.getDate()).toLocaleDateString('default', { 
+              weekday: 'long', month: 'long', day: 'numeric'
+            })} {currentYear}
+          </div>
+          <div className="calendar-controls">
+            <button 
+              className="btn btn-sm btn-secondary"
+              onClick={() => {
+                const prevDay = new Date(currentYear, currentMonth, today.getDate() - 1);
+                setCurrentMonth(prevDay.getMonth());
+                setCurrentYear(prevDay.getFullYear());
+              }}
+              aria-label="Previous day"
+            >
+              ← Previous
+            </button>
+            <button 
+              className="btn btn-sm btn-primary"
+              onClick={() => {
+                setCurrentMonth(today.getMonth());
+                setCurrentYear(today.getFullYear());
+              }}
+              style={{ margin: '0 10px' }}
+            >
+              Today
+            </button>
+            <button 
+              className="btn btn-sm btn-secondary"
+              onClick={() => {
+                const nextDay = new Date(currentYear, currentMonth, today.getDate() + 1);
+                setCurrentMonth(nextDay.getMonth());
+                setCurrentYear(nextDay.getFullYear());
+              }}
+              aria-label="Next day"
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+        
+        <div className="day-schedule">
+          {hours.map(hour => {
+            const hourAppointments = dayAppointments.filter(appointment => {
+              const appointmentHour = parseInt(appointment.startTime.split(':')[0]);
+              return appointmentHour === hour;
+            });
+            
+            return (
+              <div key={hour} className="hour-slot">
+                <div className="hour-label">{hour > 12 ? `${hour - 12} PM` : `${hour} AM`}</div>
+                <div className="hour-events">
+                  {hourAppointments.map(appointment => {
+                    let eventClass = 'calendar-event-primary';
+                    
+                    if (appointment.type === 'meeting') {
+                      eventClass = 'calendar-event-success';
+                    } else if (appointment.type === 'sports') {
+                      eventClass = 'calendar-event-warning';
+                    } else if (appointment.type === 'event') {
+                      eventClass = 'calendar-event-primary';
+                    } else if (appointment.status === 'pending') {
+                      eventClass = 'calendar-event-warning';
+                    } else if (appointment.status === 'cancelled') {
+                      eventClass = 'calendar-event-danger';
+                    }
+                    
+                    return (
+                      <div 
+                        key={appointment.id} 
+                        className={`day-event ${eventClass}`}
+                        onClick={() => window.location.href = `/bookings/${appointment.id}`}
+                      >
+                        <div className="event-time">{appointment.startTime} - {appointment.endTime}</div>
+                        <div className="event-title">{appointment.title}</div>
+                        <div className="event-customer">{appointment.customer}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  // Render month view (original calendar)
+  const renderMonthView = () => {
     // Get the first day of the month (0 = Sunday, 1 = Monday, etc.)
     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
     
@@ -217,9 +436,9 @@ const ScheduleCalendar = () => {
               <div 
                 key={appointment.id} 
                 className={`calendar-event ${eventClass}`}
-                onClick={() => window.location.href = `/appointments/${appointment.id}`}
+                onClick={() => window.location.href = `/bookings/${appointment.id}`}
               >
-                {appointment.startTime} - {appointment.title}
+                <span style={{ fontWeight: 'bold' }}>{appointment.startTime}</span> - {appointment.title}
               </div>
             );
           })}
@@ -235,11 +454,12 @@ const ScheduleCalendar = () => {
             <button 
               className="btn btn-sm btn-secondary"
               onClick={() => prevMonth()}
+              aria-label="Previous month"
             >
-              Previous
+              ← Previous
             </button>
             <button 
-              className="btn btn-sm btn-secondary"
+              className="btn btn-sm btn-primary"
               onClick={() => setCurrentMonth(today.getMonth())}
               style={{ margin: '0 10px' }}
             >
@@ -248,16 +468,17 @@ const ScheduleCalendar = () => {
             <button 
               className="btn btn-sm btn-secondary"
               onClick={() => nextMonth()}
+              aria-label="Next month"
             >
-              Next
+              Next →
             </button>
           </div>
         </div>
         
         <div className="calendar-grid">
           {/* Day headers */}
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="calendar-day-header">{day}</div>
+          {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
+            <div key={day} className="calendar-day-header">{day.substring(0, 3)}</div>
           ))}
           
           {/* Calendar days */}
@@ -265,6 +486,19 @@ const ScheduleCalendar = () => {
         </div>
       </div>
     );
+  };
+
+  // Render the calendar based on selected view
+  const renderCalendar = () => {
+    switch(view) {
+      case 'week':
+        return renderWeekView();
+      case 'day':
+        return renderDayView();
+      case 'month':
+      default:
+        return renderMonthView();
+    }
   };
 
   return (
@@ -279,7 +513,7 @@ const ScheduleCalendar = () => {
         
         <div className="header-actions">
           <Link to="/bookings/new" className="btn btn-primary">
-            <span className="btn-icon">➕</span>
+            <span className="btn-icon"><Add /></span>
             New Booking
           </Link>
         </div>

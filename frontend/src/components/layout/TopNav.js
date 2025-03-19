@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { Search, Notifications, Settings } from '@mui/icons-material';
 
 const TopNav = ({ toggleSidebar }) => {
   const location = useLocation();
@@ -42,16 +43,16 @@ const TopNav = ({ toggleSidebar }) => {
         </div>
         
         <button className="nav-action">
-          <span>🔍</span>
+          <Search />
         </button>
         
         <button className="nav-action">
-          <span>🔔</span>
+          <Notifications />
           <span className="action-badge">3</span>
         </button>
         
         <button className="nav-action">
-          <span>⚙️</span>
+          <Settings />
         </button>
       </div>
     </div>

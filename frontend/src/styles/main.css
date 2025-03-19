@@ -244,6 +244,15 @@ img {
 
 .logo-icon {
   font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-icon svg {
+  width: 28px;
+  height: 28px;
+  color: var(--primary-500);
 }
 
 .sidebar.collapsed .logo-text {
@@ -281,13 +290,13 @@ img {
 }
 
 .menu-toggle.active {
-  background-color: var(--primary-50);
-  color: var(--primary-700);
+  background-color: var(--primary-500);
+  color: white;
 }
 
 .dark-theme .menu-toggle.active {
-  background-color: rgba(15, 23, 42, 0.3);
-  color: var(--primary-300);
+  background-color: var(--primary-600);
+  color: white;
 }
 
 .menu-toggle-content {
@@ -305,6 +314,14 @@ img {
   font-size: 1.25rem;
   width: 1.5rem;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-icon svg {
+  width: 22px;
+  height: 22px;
 }
 
 .menu-item {
@@ -329,13 +346,13 @@ img {
 }
 
 .menu-item.active {
-  background-color: var(--primary-50);
-  color: var(--primary-700);
+  background-color: var(--primary-500);
+  color: white;
 }
 
 .dark-theme .menu-item.active {
-  background-color: rgba(15, 23, 42, 0.3);
-  color: var(--primary-300);
+  background-color: var(--primary-600);
+  color: white;
 }
 
 .sidebar.collapsed .menu-item {
@@ -374,18 +391,38 @@ img {
   display: flex;
   align-items: center;
   gap: var(--spacing-3);
+  position: relative;
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.user-info:hover {
+  background-color: var(--neutral-100);
+  transform: translateY(-1px);
+}
+
+.dark-theme .user-info:hover {
+  background-color: var(--neutral-800);
 }
 
 .user-avatar {
+  min-width: 2.5rem;
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: var(--radius-full);
-  background-color: var(--primary-500);
-  color: white;
+  border-radius: 50%;
+  color: var(--primary-500);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
+  transition: transform 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.user-info:hover .user-avatar {
+  color: var(--primary-600);
 }
 
 .logout-item {
@@ -452,6 +489,45 @@ img {
   display: flex;
   align-items: center;
   gap: var(--spacing-3);
+}
+
+.nav-action {
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-2);
+  border-radius: var(--radius-full);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-action svg {
+  width: 22px;
+  height: 22px;
+}
+
+.nav-action:hover {
+  background-color: var(--neutral-100);
+  color: var(--text-primary);
+}
+
+.action-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--error-500);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-action-item {
@@ -738,13 +814,14 @@ img {
 
 .btn-danger {
   background-color: var(--error-500);
-  color: white;
+  color: white !important;
   border-color: var(--error-500);
 }
 
 .btn-danger:hover:not(:disabled) {
   background-color: var(--error-600);
   border-color: var(--error-600);
+  color: white !important; /* Ensure text remains white on hover */
 }
 
 .btn-sm {
@@ -861,7 +938,8 @@ input[type="radio"] {
 }
 
 /* Modal */
-.modal-backdrop {
+.modal-backdrop,
+.confirmation-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -876,7 +954,8 @@ input[type="radio"] {
   animation: fadeIn var(--transition-normal) ease;
 }
 
-.modal {
+.modal,
+.confirmation-modal-content {
   background-color: var(--bg-card);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-xl);
@@ -885,6 +964,51 @@ input[type="radio"] {
   max-height: 90vh;
   overflow-y: auto;
   animation: slideIn var(--transition-normal) ease;
+  padding: var(--spacing-6);
+}
+
+.confirmation-modal-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-4);
+  color: var(--text-primary);
+}
+
+.confirmation-modal-content p {
+  margin-bottom: var(--spacing-6);
+  color: var(--text-secondary);
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-6);
+}
+
+.confirmation-actions .btn {
+  min-width: 120px;
+}
+
+/* Specific style for the cancel booking button with !important to override any conflicting styles */
+.confirm-cancel-btn {
+  background-color: var(--error-500) !important;
+  color: white !important;
+  border-color: var(--error-500) !important;
+}
+
+.confirmation-actions .btn-danger {
+  background-color: var(--error-500);
+  color: white !important;
+  border-color: var(--error-500);
+}
+
+.confirmation-actions .btn-danger:hover,
+.confirm-cancel-btn:hover {
+  background-color: var(--error-600) !important;
+  color: white !important;
+  border-color: var(--error-600) !important;
+  /* Prevent any transition on hover that might cause text to disappear */
+  transition: background-color 0.2s ease;
 }
 
 .modal-header {
@@ -1787,4 +1911,199 @@ footer {
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Profile dropdown styling */
+.profile-dropdown {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 12px;
+  background-color: var(--bg-card);
+  border-radius: 10px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  z-index: 1100;
+  width: 100%;
+  overflow: hidden;
+  left: 0;
+  border: 1px solid var(--border-color);
+  animation: slideInDown var(--transition-normal) ease;
+  padding: 6px 0;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+@keyframes slideInDown {
+  from { 
+    transform: translateY(-10px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.profile-menu-item:hover {
+  background-color: var(--primary-50);
+  color: var(--primary-600);
+  text-decoration: none;
+}
+
+.dark-theme .profile-menu-item:hover {
+  background-color: var(--primary-900);
+  color: var(--primary-300);
+}
+
+.profile-menu-icon {
+  width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  color: var(--primary-500);
+}
+
+.profile-menu-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.profile-menu-divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 6px 0;
+}
+
+.logout-menu-item {
+  color: var(--error-500);
+}
+
+.logout-menu-item:hover {
+  background-color: rgba(238, 48, 94, 0.1);
+  color: var(--error-500);
+}
+
+.logout-icon {
+  color: var(--error-500);
+}
+
+/* Mobile icon styling */
+.mobile-menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+.mobile-menu-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.mobile-logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-logo-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--primary-500);
+}
+
+.theme-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.theme-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.mobile-logout-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.mobile-logout-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.mobile-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.mobile-close-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Dashboard action icons */
+.action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: var(--primary-50);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  color: var(--primary-600);
+}
+
+.dark-theme .action-icon {
+  background-color: var(--primary-900);
+}
+
+.action-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Activity icons */
+.activity-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary-50);
+  border-radius: 8px;
+  margin-right: 12px;
+  color: var(--primary-600);
+}
+
+.dark-theme .activity-icon {
+  background-color: var(--primary-900);
+}
+
+.activity-icon svg {
+  width: 20px;
+  height: 20px;
 }

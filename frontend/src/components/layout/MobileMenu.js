@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import { 
+  Dashboard, CalendarMonth, ListAlt, People, 
+  Business, Link as LinkIcon, ExpandMore, ExpandLess,
+  Person, Settings, GroupWork, LocationOn, Notifications, 
+  Security, Logout, Close, Home, Description, 
+  Engineering, PowerSettingsNew, LightMode, DarkMode,
+  MeetingRoom, Category
+} from '@mui/icons-material';
 
 /**
  * Mobile Menu component that appears on small screens
@@ -56,7 +64,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
         <span className="mobile-menu-icon">{icon}</span>
         <span className="mobile-menu-text">{title}</span>
       </div>
-      <span className="mobile-toggle-icon">{expanded ? '▼' : '▶'}</span>
+      <span className="mobile-toggle-icon">{expanded ? <ExpandMore /> : <ExpandLess />}</span>
     </div>
   );
   
@@ -89,10 +97,10 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
       <div className={`mobile-menu ${isOpen ? 'open' : ''} ${theme === 'dark' ? 'dark-theme' : ''}`}>
         <div className="mobile-menu-header">
           <div className="mobile-logo">
-            <span className="mobile-logo-icon">📅</span>
+            <span className="mobile-logo-icon"><CalendarMonth /></span>
             <span className="mobile-logo-text">BookingPro</span>
           </div>
-          <button className="mobile-close-btn" onClick={onClose}>✕</button>
+          <button className="mobile-close-btn" onClick={onClose}><Close /></button>
         </div>
         
         <div className="mobile-user-info">
@@ -111,7 +119,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
             <>
               <MenuToggle
                 title="Admin Dashboard"
-                icon="⚡"
+                icon={<Dashboard />}
                 expanded={expandedMenus.admin}
                 onToggle={() => toggleMenuExpand('admin')}
                 active={isMenuActive(['/admin'])}
@@ -121,28 +129,28 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
                 <div className="mobile-submenu">
                   <MenuItem 
                     to="/admin/dashboard" 
-                    icon="📊" 
+                    icon={<Dashboard />} 
                     text="Overview" 
                     active={isActiveRoute('/admin/dashboard')}
                     submenu
                   />
                   <MenuItem 
                     to="/admin/businesses" 
-                    icon="🏢" 
+                    icon={<Business />} 
                     text="Businesses" 
                     active={isActiveRoute('/admin/businesses')}
                     submenu
                   />
                   <MenuItem 
                     to="/admin/subscriptions" 
-                    icon="💰" 
+                    icon={<PowerSettingsNew />} 
                     text="Subscriptions" 
                     active={isActiveRoute('/admin/subscriptions')}
                     submenu
                   />
                   <MenuItem 
                     to="/admin/white-label" 
-                    icon="🏷️" 
+                    icon={<Category />} 
                     text="White Label" 
                     active={isActiveRoute('/admin/white-label')}
                     submenu
@@ -154,7 +162,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
             <>
               <MenuToggle
                 title="Dashboard"
-                icon="📊"
+                icon={<Dashboard />}
                 expanded={expandedMenus.dashboard}
                 onToggle={() => toggleMenuExpand('dashboard')}
                 active={isMenuActive(['/dashboard'])}
@@ -164,7 +172,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
                 <div className="mobile-submenu">
                   <MenuItem 
                     to="/dashboard" 
-                    icon="🏠" 
+                    icon={<Home />} 
                     text="Overview" 
                     active={isActiveRoute('/dashboard')}
                     submenu
@@ -177,7 +185,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
           {/* Calendar/Scheduling Section */}
           <MenuItem 
             to="/calendar" 
-            icon="📅" 
+            icon={<CalendarMonth />} 
             text="Calendar" 
             active={isActiveRoute('/calendar')}
           />
@@ -185,7 +193,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
           {/* Appointments Section */}
           <MenuToggle
             title="Appointments"
-            icon="📝"
+            icon={<ListAlt />}
             expanded={expandedMenus.appointments}
             onToggle={() => toggleMenuExpand('appointments')}
             active={isMenuActive(['/appointments'])}
@@ -195,7 +203,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
             <div className="mobile-submenu">
               <MenuItem 
                 to="/appointments" 
-                icon="📋" 
+                icon={<Description />} 
                 text="All Appointments" 
                 active={location.pathname === '/appointments'}
                 submenu
@@ -206,7 +214,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
           {/* Customers Section */}
           <MenuItem 
             to="/customers" 
-            icon="👥" 
+            icon={<People />} 
             text="Customers" 
             active={isMenuActive(['/customers'])}
           />
@@ -214,7 +222,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
           {/* Services Section */}
           <MenuToggle
             title="Services"
-            icon="🛠️"
+            icon={<Engineering />}
             expanded={expandedMenus.services}
             onToggle={() => toggleMenuExpand('services')}
             active={isMenuActive(['/services', '/service-templates'])}
@@ -224,14 +232,14 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
             <div className="mobile-submenu">
               <MenuItem 
                 to="/services" 
-                icon="📋" 
+                icon={<Description />} 
                 text="All Services" 
                 active={location.pathname === '/services'}
                 submenu
               />
               <MenuItem 
                 to="/service-templates" 
-                icon="📑" 
+                icon={<Description />} 
                 text="Services" 
                 active={isActiveRoute('/service-templates')}
                 submenu
@@ -242,7 +250,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
           {/* Integration Section */}
           <MenuToggle
             title="Integrations"
-            icon="🔌"
+            icon={<LinkIcon />}
             expanded={expandedMenus.integrations}
             onToggle={() => toggleMenuExpand('integrations')}
             active={isMenuActive(['/booking-page-setup'])}
@@ -252,7 +260,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
             <div className="mobile-submenu">
               <MenuItem 
                 to="/booking-page-setup" 
-                icon="📅" 
+                icon={<CalendarMonth />} 
                 text="Booking Page" 
                 active={isActiveRoute('/booking-page-setup')}
                 submenu
@@ -263,7 +271,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
           {/* Settings Section */}
           <MenuToggle
             title="Settings"
-            icon="⚙️"
+            icon={<Settings />}
             expanded={expandedMenus.settings}
             onToggle={() => toggleMenuExpand('settings')}
             active={isMenuActive(['/settings', '/profile', '/business-profile', '/staff', '/locations', '/notifications'])}
@@ -273,42 +281,42 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
             <div className="mobile-submenu">
               <MenuItem 
                 to="/profile" 
-                icon="👤" 
+                icon={<Person />} 
                 text="Your Profile" 
                 active={isActiveRoute('/profile')}
                 submenu
               />
               <MenuItem 
                 to="/business-profile" 
-                icon="🏢" 
+                icon={<Business />} 
                 text="Business Profile" 
                 active={isActiveRoute('/business-profile')}
                 submenu
               />
               <MenuItem 
                 to="/staff" 
-                icon="👥" 
+                icon={<GroupWork />} 
                 text="Staff Management" 
                 active={isActiveRoute('/staff')}
                 submenu
               />
               <MenuItem 
                 to="/locations" 
-                icon="📍" 
+                icon={<LocationOn />} 
                 text="Locations" 
                 active={isActiveRoute('/locations')}
                 submenu
               />
               <MenuItem 
                 to="/notifications" 
-                icon="🔔" 
+                icon={<Notifications />} 
                 text="Notifications" 
                 active={isActiveRoute('/notifications')}
                 submenu
               />
               <MenuItem 
                 to="/settings" 
-                icon="⚙️" 
+                icon={<Settings />} 
                 text="General Settings" 
                 active={isActiveRoute('/settings')}
                 submenu
@@ -322,7 +330,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
             className="theme-toggle"
             onClick={toggleTheme}
           >
-            <span className="theme-icon">{theme === 'dark' ? '☀️' : '🌙'}</span>
+            <span className="theme-icon">{theme === 'dark' ? <LightMode /> : <DarkMode />}</span>
             <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
           </div>
           
@@ -330,7 +338,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
             className="mobile-logout-btn"
             onClick={handleLogout}
           >
-            <span className="mobile-logout-icon">🚪</span>
+            <span className="mobile-logout-icon"><Logout /></span>
             <span>Logout</span>
           </div>
         </div>

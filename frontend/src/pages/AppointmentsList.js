@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import PageHeader from '../components/common/PageHeader';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import api from '../services/api';
+import { Add, EventNote } from '@mui/icons-material';
 
 const AppointmentsList = () => {
   const [appointments, setAppointments] = useState([]);
@@ -52,7 +53,7 @@ const AppointmentsList = () => {
   };
 
   const handleCreateAppointment = () => {
-    navigate('/appointments/new');
+    navigate('/bookings/new');
   };
 
   const filteredAppointments = appointments.filter(appointment => {
@@ -134,7 +135,7 @@ const AppointmentsList = () => {
               className="btn btn-primary"
               onClick={handleCreateAppointment}
             >
-              + New Booking
+              <Add /> New Booking
             </button>
           </div>
         </div>
@@ -142,7 +143,7 @@ const AppointmentsList = () => {
         <div className="card-body">
           {filteredAppointments.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📅</div>
+              <div className="empty-state-icon"><EventNote style={{ fontSize: '3rem' }} /></div>
               <h3>No bookings found</h3>
               <p>There are no {filter} bookings to display.</p>
             </div>
@@ -172,7 +173,7 @@ const AppointmentsList = () => {
                         </span>
                       </td>
                       <td>
-                        <Link to={`/appointments/${appointment.id}`} className="btn btn-sm btn-outline-primary">
+                        <Link to={`/bookings/${appointment.id}`} className="btn btn-sm btn-outline-primary">
                           View Details
                         </Link>
                       </td>

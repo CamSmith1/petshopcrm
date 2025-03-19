@@ -3,7 +3,7 @@ const supabase = require('./config/supabase');
 // Demo service data
 const demoServices = [
   {
-    title: 'Basic Dog Grooming',
+    title: 'Waterway Section A - Boat Race',
     description: 'Complete grooming service including bath, brush, nail trim, ear cleaning, and basic haircut.',
     category: 'Grooming',
     price_amount: 45.00,

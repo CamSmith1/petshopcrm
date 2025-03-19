@@ -1,6 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { 
+  EventNote, Assessment, People, TrendingUp,
+  CalendarMonth, Visibility, Add, Person, 
+  Build, Link as LinkIcon
+} from '@mui/icons-material';
 
 const BusinessDashboard = () => {
   const { currentUser } = useAuth();
@@ -11,8 +16,8 @@ const BusinessDashboard = () => {
       id: 1, 
       label: 'Total Bookings', 
       value: 152, 
-      icon: '🗓️', 
-      iconClass: 'icon-primary', 
+      icon: <EventNote />, 
+      iconClass: 'icon-success', 
       change: 12, 
       changeType: 'up' 
     },
@@ -20,8 +25,8 @@ const BusinessDashboard = () => {
       id: 2, 
       label: 'Upcoming Today', 
       value: 8, 
-      icon: '📊', 
-      iconClass: 'icon-warning', 
+      icon: <Assessment />, 
+      iconClass: 'icon-success', 
       change: 2, 
       changeType: 'up' 
     },
@@ -29,7 +34,7 @@ const BusinessDashboard = () => {
       id: 3, 
       label: 'Customers', 
       value: 47, 
-      icon: '👤', 
+      icon: <People />, 
       iconClass: 'icon-success', 
       change: 5, 
       changeType: 'up' 
@@ -38,7 +43,7 @@ const BusinessDashboard = () => {
       id: 4, 
       label: 'Revenue This Month', 
       value: '$4,275', 
-      icon: '📈', 
+      icon: <TrendingUp />, 
       iconClass: 'icon-success', 
       change: 15, 
       changeType: 'up' 
@@ -148,7 +153,7 @@ const BusinessDashboard = () => {
         
         <div className="header-actions">
           <Link to="/calendar" className="btn btn-primary">
-            <span className="btn-icon">📅</span>
+            <span className="btn-icon"><CalendarMonth /></span>
             View Schedule
           </Link>
         </div>
@@ -184,7 +189,7 @@ const BusinessDashboard = () => {
           <h2 className="card-title">Upcoming Bookings</h2>
           <div className="card-actions">
             <Link to="/bookings" className="btn btn-sm btn-secondary">
-              View All
+              <Visibility style={{ fontSize: '0.875rem', marginRight: '4px' }} /> View All
             </Link>
           </div>
         </div>
@@ -222,7 +227,7 @@ const BusinessDashboard = () => {
                     <td>
                       <div className="table-actions">
                         <Link to={`/bookings/${booking.id}`} className="btn btn-sm btn-secondary">
-                          View
+                          <Visibility style={{ fontSize: '1rem', marginRight: '4px' }} /> View
                         </Link>
                       </div>
                     </td>
@@ -242,7 +247,7 @@ const BusinessDashboard = () => {
             <h2 className="card-title">Past Bookings</h2>
             <div className="card-actions">
               <Link to="/bookings?status=completed" className="btn btn-sm btn-secondary">
-                View All
+                <Visibility style={{ fontSize: '0.875rem', marginRight: '4px' }} /> View All
               </Link>
             </div>
           </div>
@@ -291,22 +296,22 @@ const BusinessDashboard = () => {
           <div className="card-body">
             <div style={{ display: 'grid', gap: '10px' }}>
               <Link to="/bookings/new" className="btn btn-primary" style={{ width: '100%' }}>
-                <span className="btn-icon">➕</span>
+                <span className="btn-icon"><Add /></span>
                 Create New Booking
               </Link>
               
               <Link to="/customers/new" className="btn btn-secondary" style={{ width: '100%' }}>
-                <span className="btn-icon">👤</span>
+                <span className="btn-icon"><Person /></span>
                 Add New Customer
               </Link>
               
               <Link to="/services/new" className="btn btn-secondary" style={{ width: '100%' }}>
-                <span className="btn-icon">🛠️</span>
+                <span className="btn-icon"><Build /></span>
                 Add New Service
               </Link>
               
               <Link to="/booking-page-setup" className="btn btn-secondary" style={{ width: '100%' }}>
-                <span className="btn-icon">🔗</span>
+                <span className="btn-icon"><LinkIcon /></span>
                 Manage Booking Page
               </Link>
             </div>

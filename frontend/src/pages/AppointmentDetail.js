@@ -4,9 +4,10 @@ import { toast } from 'react-toastify';
 import PageHeader from '../components/common/PageHeader';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import api from '../services/api';
+import { Search, Check, Cancel, Edit, Email, Phone } from '@mui/icons-material';
 
 const AppointmentDetail = () => {
-  const { appointmentId } = useParams();
+  const { bookingId } = useParams();
   const navigate = useNavigate();
   const [appointment, setAppointment] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -15,12 +16,12 @@ const AppointmentDetail = () => {
 
   useEffect(() => {
     fetchAppointmentDetails();
-  }, [appointmentId]);
+  }, [bookingId]);
 
   const fetchAppointmentDetails = async () => {
     setLoading(true);
     try {
-      const response = await api.getBooking(appointmentId);
+      const response = await api.getBooking(bookingId);
       const booking = response.data.booking;
       
       // Transform the booking data to fit our component
@@ -54,7 +55,7 @@ const AppointmentDetail = () => {
 
   const handleStatusChange = async (newStatus) => {
     try {
-      await api.updateBooking(appointmentId, { status: newStatus });
+      await api.updateBooking(bookingId, { status: newStatus });
       setAppointment({
         ...appointment,
         status: newStatus
@@ -72,7 +73,7 @@ const AppointmentDetail = () => {
 
   const confirmCancel = async () => {
     try {
-      await api.cancelBooking(appointmentId, cancelReason);
+      await api.cancelBooking(bookingId, cancelReason);
       setAppointment({
         ...appointment,
         status: 'cancelled'
@@ -137,7 +138,7 @@ const AppointmentDetail = () => {
         <PageHeader title="Booking Not Found" />
         <div className="card">
           <div className="card-body empty-state">
-            <div className="empty-state-icon">🔍</div>
+            <div className="empty-state-icon"><Search style={{ fontSize: '3rem' }} /></div>
             <h3>Booking Not Found</h3>
             <p>The booking you're looking for doesn't exist or has been removed.</p>
             <Link to="/bookings" className="btn btn-primary">
@@ -208,7 +209,7 @@ const AppointmentDetail = () => {
                     className="btn btn-success"
                     onClick={() => handleStatusChange('confirmed')}
                   >
-                    Confirm Booking
+                    <Check style={{ marginRight: '4px' }} /> Confirm Booking
                   </button>
                 )}
                 
@@ -217,7 +218,7 @@ const AppointmentDetail = () => {
                     className="btn btn-danger"
                     onClick={handleCancelClick}
                   >
-                    Cancel Booking
+                    <Cancel style={{ marginRight: '4px' }} /> Cancel Booking
                   </button>
                 )}
                 
@@ -226,15 +227,15 @@ const AppointmentDetail = () => {
                     className="btn btn-info"
                     onClick={() => handleStatusChange('completed')}
                   >
-                    Mark as Completed
+                    <Check style={{ marginRight: '4px' }} /> Mark as Completed
                   </button>
                 )}
                 
                 <Link 
-                  to={`/bookings/${appointmentId}/edit`}
+                  to={`/bookings/${bookingId}/edit`}
                   className="btn btn-outline-primary"
                 >
-                  Edit Booking
+                  <Edit style={{ marginRight: '4px' }} /> Edit Booking
                 </Link>
               </div>
               
@@ -247,7 +248,7 @@ const AppointmentDetail = () => {
                       <button className="btn btn-outline-secondary" onClick={() => setConfirmingCancel(false)}>
                         No, Keep It
                       </button>
-                      <button className="btn btn-danger" onClick={confirmCancel}>
+                      <button className="btn btn-danger confirm-cancel-btn" onClick={confirmCancel}>
                         Yes, Cancel Booking
                       </button>
                     </div>
@@ -266,8 +267,8 @@ const AppointmentDetail = () => {
             <div className="card-body">
               <div className="customer-info">
                 <h4>{appointment.customerName}</h4>
-                <p><i className="icon-email"></i> {appointment.customerEmail}</p>
-                <p><i className="icon-phone"></i> {appointment.customerPhone}</p>
+                <p><Email style={{ fontSize: '1rem', marginRight: '8px', verticalAlign: 'middle' }} /> {appointment.customerEmail}</p>
+                <p><Phone style={{ fontSize: '1rem', marginRight: '8px', verticalAlign: 'middle' }} /> {appointment.customerPhone}</p>
                 <Link to={`/customers/${appointment.customerId}`} className="btn btn-sm btn-outline-primary">
                   View Customer Profile
                 </Link>

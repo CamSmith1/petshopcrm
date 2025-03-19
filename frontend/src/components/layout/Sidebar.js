@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import { 
+  Dashboard, CalendarMonth, ListAlt, People, 
+  Business, Link as LinkIcon, ExpandMore, ExpandLess,
+  Person, Settings, GroupWork, LocationOn, Notifications, 
+  AccountCircle, Security, Logout, KeyboardArrowUp, KeyboardArrowDown
+} from '@mui/icons-material';
 
 const Sidebar = ({ collapsed, userRole = 'business' }) => {
   const location = useLocation();
@@ -14,15 +20,20 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
     customers: false,
     venues: false,
     integrations: false,
-    settings: false,
     admin: false
   });
+  
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   
   const toggleMenuExpand = (menu) => {
     setExpandedMenus({
       ...expandedMenus,
       [menu]: !expandedMenus[menu]
     });
+  };
+  
+  const toggleProfileMenu = () => {
+    setShowProfileMenu(!showProfileMenu);
   };
   
   const isActiveRoute = (route) => {
@@ -37,8 +48,14 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
     return routes.some(route => location.pathname.startsWith(route));
   };
   
+  // Check if we're in dev/demo mode
+  const isDemoMode = () => {
+    return process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost';
+  };
+
   // Get user initials for avatar
   const getUserInitials = () => {
+    if (isDemoMode() && (!currentUser || !currentUser.name)) return 'DS';
     if (!currentUser || !currentUser.name) return 'U';
     
     const nameParts = currentUser.name.split(' ');
@@ -71,7 +88,7 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
         <span className="menu-icon">{icon}</span>
         <span className="menu-text">{title}</span>
       </div>
-      <span className="toggle-icon">{expanded ? '▼' : '▶'}</span>
+      <span className="toggle-icon">{expanded ? <ExpandMore /> : <ExpandLess />}</span>
     </div>
   );
 
@@ -79,7 +96,7 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
     <div className={`sidebar ${collapsed ? 'collapsed' : ''} ${theme === 'dark' ? 'dark-theme' : ''}`}>
       <div className="sidebar-header">
         <div className="logo">
-          <span className="logo-icon">📅</span>
+          <span className="logo-icon"><CalendarMonth /></span>
           <span className="logo-text">BookingPro</span>
         </div>
       </div>
@@ -89,14 +106,14 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
         {userRole === 'admin' ? (
           <MenuItem 
             to="/admin/dashboard" 
-            icon="⚡" 
+            icon={<Dashboard />} 
             text="Admin Dashboard" 
             active={isMenuActive(['/admin'])}
           />
         ) : (
           <MenuItem 
             to="/dashboard" 
-            icon="📊" 
+            icon={<Dashboard />} 
             text="Dashboard" 
             active={isActiveRoute('/dashboard')}
           />
@@ -105,7 +122,7 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
         {/* Calendar Section */}
         <MenuItem 
           to="/calendar" 
-          icon="📅" 
+          icon={<CalendarMonth />} 
           text="Calendar" 
           active={isActiveRoute('/calendar')}
         />
@@ -113,7 +130,7 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
         {/* Bookings Section */}
         <MenuItem 
           to="/bookings" 
-          icon="📝" 
+          icon={<ListAlt />} 
           text="Bookings" 
           active={isMenuActive(['/bookings'])}
         />
@@ -121,7 +138,7 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
         {/* Customers Section */}
         <MenuItem 
           to="/customers" 
-          icon="👥" 
+          icon={<People />} 
           text="Customers" 
           active={isMenuActive(['/customers'])}
         />
@@ -129,7 +146,7 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
         {/* Venues Section */}
         <MenuItem 
           to="/manage-venues" 
-          icon="🏢" 
+          icon={<Business />} 
           text="Venues" 
           active={isMenuActive(['/manage-venues'])}
         />
@@ -137,83 +154,61 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
         {/* Booking Page Section */}
         <MenuItem 
           to="/booking-page-setup" 
-          icon="🔗" 
+          icon={<LinkIcon />} 
           text="Booking Page" 
           active={isMenuActive(['/booking-page-setup'])}
         />
         
-        {/* Settings Section */}
-        <MenuToggle
-          title="Settings"
-          icon="⚙️"
-          expanded={expandedMenus.settings}
-          onToggle={() => toggleMenuExpand('settings')}
-          active={isMenuActive(['/settings', '/profile', '/business-profile', '/staff', '/locations', '/notifications'])}
-        />
+        {/* Settings have been moved to user profile dropdown */}
         
-        {expandedMenus.settings && (
-          <div className="submenu">
-            <MenuItem 
-              to="/profile" 
-              text="Your Profile" 
-              active={isActiveRoute('/profile')}
-              submenu
-            />
-            <MenuItem 
-              to="/business-profile" 
-              text="Business Profile" 
-              active={isActiveRoute('/business-profile')}
-              submenu
-            />
-            <MenuItem 
-              to="/staff" 
-              text="Staff Management" 
-              active={isActiveRoute('/staff')}
-              submenu
-            />
-            <MenuItem 
-              to="/locations" 
-              text="Locations" 
-              active={isActiveRoute('/locations')}
-              submenu
-            />
-            <MenuItem 
-              to="/notifications" 
-              text="Notifications" 
-              active={isActiveRoute('/notifications')}
-              submenu
-            />
-            <MenuItem 
-              to="/settings" 
-              text="General Settings" 
-              active={isActiveRoute('/settings')}
-              submenu
-            />
-          </div>
-        )}
-        
-        {/* Logout button */}
-        <div 
-          className="menu-item logout-item"
-          onClick={logout}
-          style={{ cursor: 'pointer', marginTop: 'auto' }}
-        >
-          <span className="menu-icon">🚪</span>
-          <span className="menu-text">Logout</span>
-        </div>
+        {/* Logout moved to profile dropdown menu */}
       </div>
       
       <div className="sidebar-footer">
-        <div className="user-info">
+        <div className="user-info" onClick={toggleProfileMenu}>
           <div className="user-avatar">
-            {getUserInitials()}
+            <AccountCircle style={{ fontSize: '1.8rem' }} />
           </div>
           <div className="user-details">
-            <div style={{ fontWeight: '500' }}>{currentUser?.name}</div>
+            <div style={{ fontWeight: '500' }}>
+              {isDemoMode() && !currentUser?.name ? 'Demo User' : currentUser?.name}
+            </div>
             <div style={{ fontSize: '12px', color: 'var(--medium-text)' }}>
-              {currentUser?.email}
+              {isDemoMode() && !currentUser?.email ? 'demo@example.com' : currentUser?.email}
             </div>
           </div>
+          <span style={{ marginLeft: '8px', display: 'flex', alignItems: 'center' }}>{showProfileMenu ? <KeyboardArrowDown fontSize="small" /> : <KeyboardArrowUp fontSize="small" />}</span>
+          
+          {/* Profile Dropdown Menu */}
+          {showProfileMenu && (
+            <div className="profile-dropdown">
+              <Link to="/profile" className="profile-menu-item">
+                <span className="profile-menu-icon"><Person /></span> Your Profile
+              </Link>
+              <Link to="/business-profile" className="profile-menu-item">
+                <span className="profile-menu-icon"><Business /></span> Business Profile
+              </Link>
+              <Link to="/staff" className="profile-menu-item">
+                <span className="profile-menu-icon"><GroupWork /></span> Staff Management
+              </Link>
+              <Link to="/locations" className="profile-menu-item">
+                <span className="profile-menu-icon"><LocationOn /></span> Locations
+              </Link>
+              <Link to="/notifications" className="profile-menu-item">
+                <span className="profile-menu-icon"><Notifications /></span> Notifications
+              </Link>
+              <Link to="/settings" className="profile-menu-item">
+                <span className="profile-menu-icon"><Settings /></span> General Settings
+              </Link>
+              <Link to="/account" className="profile-menu-item">
+                <span className="profile-menu-icon"><Security /></span> Manage Account
+              </Link>
+              <div className="profile-menu-divider"></div>
+              <div className="profile-menu-item logout-menu-item" onClick={logout}>
+                <span className="profile-menu-icon logout-icon"><Logout /></span> Logout
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
