@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import PageHeader from '../components/common/PageHeader';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import api from '../services/api';
 
 const CustomerForm = () => {
   const { customerId } = useParams();
@@ -38,31 +39,44 @@ const CustomerForm = () => {
   
   useEffect(() => {
     if (isEditing) {
-      // In a real app, this would fetch customer data from API
-      // Simulating API request with setTimeout
-      setTimeout(() => {
-        setFormData({
-          firstName: 'John',
-          lastName: 'Smith',
-          email: 'john.smith@example.com',
-          phone: '(555) 123-4567',
+      // Fetch customer data from API
+      const fetchCustomer = async () => {
+        try {
+          const response = await api.get(`/api/customers/${customerId}`);
+          const customer = response.data.customer;
           
-          streetAddress: '123 Main St',
-          city: 'Anytown',
-          state: 'CA',
-          zipCode: '90210',
-          country: 'United States',
+          // Map API data to form fields
+          setFormData({
+            firstName: customer.name.split(' ')[0] || '',
+            lastName: customer.name.split(' ').slice(1).join(' ') || '',
+            email: customer.email || '',
+            phone: customer.phone || '',
+            
+            streetAddress: customer.street || '',
+            city: customer.city || '',
+            state: customer.state || '',
+            zipCode: customer.zip_code || '',
+            country: customer.country || 'United States',
+            
+            // Set other fields with defaults if not available
+            preferredContactMethod: customer.preferred_contact_method || 'email',
+            preferredAppointmentDay: customer.preferred_appointment_day || '',
+            preferredAppointmentTime: customer.preferred_appointment_time || '',
+            receiveMarketingEmails: customer.receive_marketing_emails || true,
+            sendAppointmentReminders: customer.send_appointment_reminders || true,
+            
+            notes: customer.notes || ''
+          });
           
-          preferredContactMethod: 'email',
-          preferredAppointmentDay: 'Tuesday',
-          preferredAppointmentTime: 'afternoon',
-          receiveMarketingEmails: true,
-          sendAppointmentReminders: true,
-          
-          notes: 'Prefers afternoon appointments. Always pays promptly.'
-        });
-        setLoading(false);
-      }, 800);
+        } catch (error) {
+          console.error('Error fetching customer:', error);
+          toast.error('Failed to load customer information');
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      fetchCustomer();
     }
   }, [isEditing, customerId]);
   
@@ -79,19 +93,56 @@ const CustomerForm = () => {
     setLoading(true);
     
     try {
-      // In a real app, this would send data to API
-      // Simulating API request with setTimeout
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Prepare customer data for API
+      const customerData = {
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email,
+        phone: formData.phone,
+        street: formData.streetAddress,
+        city: formData.city,
+        state: formData.state,
+        zip_code: formData.zipCode,
+        country: formData.country,
+        // Add custom fields as needed
+        custom_fields: {
+          preferred_contact_method: formData.preferredContactMethod,
+          preferred_appointment_day: formData.preferredAppointmentDay,
+          preferred_appointment_time: formData.preferredAppointmentTime,
+          receive_marketing_emails: formData.receiveMarketingEmails,
+          send_appointment_reminders: formData.sendAppointmentReminders,
+          notes: formData.notes
+        }
+      };
       
-      toast.success(isEditing 
-        ? 'Customer updated successfully!' 
-        : 'Customer added successfully!'
-      );
+      console.log('Submitting customer data:', customerData);
       
+      let response;
+      // Send to API
+      if (isEditing) {
+        console.log(`Updating customer with ID: ${customerId}`);
+        response = await api.updateCustomer(customerId, customerData);
+        console.log('Update response:', response.data);
+        toast.success('Customer updated successfully!');
+      } else {
+        console.log('Creating new customer');
+        try {
+          response = await api.createOrUpdateCustomer(customerData);
+          console.log('Create response:', response.data);
+          toast.success('Customer added successfully!');
+        } catch (err) {
+          console.error('Error creating customer:', err);
+          toast.error(`Failed to save customer: ${err.message || 'Connection refused - check if backend is running'}`);
+          setLoading(false);
+          return;
+        }
+      }
+      
+      console.log('Customer saved successfully:', response.data);
       navigate('/customers');
     } catch (error) {
-      console.error('Error saving customer:', error);
-      toast.error('Failed to save customer information');
+      console.error('Error saving customer - Frontend error:', error);
+      console.error('Error response:', error.response?.data);
+      toast.error(`Failed to save customer: ${error.response?.data?.error || 'Connection refused - check if backend is running'}`);
     } finally {
       setLoading(false);
     }

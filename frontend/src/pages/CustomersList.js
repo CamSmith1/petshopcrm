@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import PageHeader from '../components/common/PageHeader';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import api from '../services/api';
 
 const CustomersList = () => {
   const [customers, setCustomers] = useState([]);
@@ -12,46 +13,39 @@ const CustomersList = () => {
   const [sortOrder, setSortOrder] = useState('asc');
 
   useEffect(() => {
-    // Simulated data for now
-    // In a real implementation, this would fetch from API
-    const mockCustomers = [
-      {
-        id: 'cust1',
-        name: 'John Smith',
-        email: 'john.smith@example.com',
-        phone: '(555) 123-4567',
-        petCount: 2,
-        lastAppointment: '2025-02-28',
-        totalSpent: '$210.50',
-        status: 'active'
-      },
-      {
-        id: 'cust2',
-        name: 'Sarah Johnson',
-        email: 'sarah.johnson@example.com',
-        phone: '(555) 987-6543',
-        petCount: 1,
-        lastAppointment: '2025-03-01',
-        totalSpent: '$75.00',
-        status: 'active'
-      },
-      {
-        id: 'cust3',
-        name: 'Michael Brown',
-        email: 'michael.brown@example.com',
-        phone: '(555) 456-7890',
-        petCount: 3,
-        lastAppointment: '2025-02-15',
-        totalSpent: '$350.75',
-        status: 'active'
+    // Fetch customers from API
+    const fetchCustomers = async () => {
+      try {
+        // Add search parameter if available
+        const params = searchTerm ? { search: searchTerm } : {};
+        const response = await api.getCustomers(params);
+        
+        // Transform customer data to match expected format
+        const formattedCustomers = response.data.customers.map(customer => ({
+          id: customer.id,
+          name: customer.name,
+          email: customer.email,
+          phone: customer.phone || 'Not provided',
+          petCount: 0, // Could be fetched in the future
+          lastAppointment: customer.last_booking_date || 'No bookings yet',
+          totalSpent: customer.total_spent ? `$${customer.total_spent.toFixed(2)}` : '$0.00',
+          status: customer.status || 'active'
+        }));
+        
+        setCustomers(formattedCustomers);
+      } catch (error) {
+        console.error('Error fetching customers:', error);
+        toast.error('Failed to load customers');
+        
+        // Fallback to empty array
+        setCustomers([]);
+      } finally {
+        setLoading(false);
       }
-    ];
+    };
     
-    setTimeout(() => {
-      setCustomers(mockCustomers);
-      setLoading(false);
-    }, 800);
-  }, []);
+    fetchCustomers();
+  }, [searchTerm]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);

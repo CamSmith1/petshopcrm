@@ -8,6 +8,8 @@ const api = axios.create({
   },
 });
 
+console.log('API base URL:', process.env.REACT_APP_API_URL || 'http://localhost:5000/api');
+
 // Set token in request headers
 const setAuthToken = (token) => {
   if (token) {
@@ -375,23 +377,167 @@ export default {
     api.post(`/bookings/${bookingId}/review`, reviewData),
     
   // Customer endpoints
+  getCustomers: (params) => {
+    // In development mode, return mock customer data
+    if (process.env.NODE_ENV === 'development') {
+      return Promise.resolve({
+        data: {
+          customers: [
+            {
+              id: 'cust1',
+              name: 'John Smith',
+              email: 'john.smith@example.com',
+              phone: '(555) 123-4567',
+              street: '123 Main St',
+              city: 'Anytown',
+              state: 'CA',
+              zip_code: '90210',
+              country: 'USA',
+              total_spent: 210.50,
+              last_booking_date: '2025-02-28',
+              status: 'active'
+            },
+            {
+              id: 'cust2',
+              name: 'Sarah Johnson',
+              email: 'sarah.johnson@example.com',
+              phone: '(555) 987-6543',
+              street: '456 Oak Ave',
+              city: 'Somewhere',
+              state: 'NY',
+              zip_code: '10001',
+              country: 'USA',
+              total_spent: 75.00,
+              last_booking_date: '2025-03-01',
+              status: 'active'
+            },
+            {
+              id: 'cust3',
+              name: 'Michael Brown',
+              email: 'michael.brown@example.com',
+              phone: '(555) 456-7890',
+              street: '789 Pine St',
+              city: 'Other City',
+              state: 'TX',
+              zip_code: '75001',
+              country: 'USA',
+              total_spent: 350.75,
+              last_booking_date: '2025-02-15',
+              status: 'active'
+            }
+          ]
+        }
+      });
+    }
+    
+    // Otherwise, make the actual API call
+    return api.get('/customers', { params });
+  },
+  
+  getCustomer: (id) => {
+    // In development mode, return mock customer data
+    if (process.env.NODE_ENV === 'development') {
+      const mockCustomers = {
+        'cust1': {
+          id: 'cust1',
+          name: 'John Smith',
+          email: 'john.smith@example.com',
+          phone: '(555) 123-4567',
+          street: '123 Main St',
+          city: 'Anytown',
+          state: 'CA',
+          zip_code: '90210',
+          country: 'USA',
+          preferred_contact_method: 'email',
+          preferred_appointment_day: 'Tuesday',
+          preferred_appointment_time: 'afternoon',
+          receive_marketing_emails: true,
+          send_appointment_reminders: true,
+          notes: 'Prefers afternoon appointments. Always pays promptly.'
+        },
+        'cust2': {
+          id: 'cust2',
+          name: 'Sarah Johnson',
+          email: 'sarah.johnson@example.com',
+          phone: '(555) 987-6543',
+          street: '456 Oak Ave',
+          city: 'Somewhere',
+          state: 'NY',
+          zip_code: '10001',
+          country: 'USA',
+          preferred_contact_method: 'phone',
+          preferred_appointment_day: 'Friday',
+          preferred_appointment_time: 'morning',
+          receive_marketing_emails: false,
+          send_appointment_reminders: true,
+          notes: 'Prefers morning appointments. Has a service dog.'
+        },
+        'cust3': {
+          id: 'cust3',
+          name: 'Michael Brown',
+          email: 'michael.brown@example.com',
+          phone: '(555) 456-7890',
+          street: '789 Pine St',
+          city: 'Other City',
+          state: 'TX',
+          zip_code: '75001',
+          country: 'USA',
+          preferred_contact_method: 'sms',
+          preferred_appointment_day: 'Monday',
+          preferred_appointment_time: 'evening',
+          receive_marketing_emails: true,
+          send_appointment_reminders: true,
+          notes: 'Prefers evening appointments after work.'
+        }
+      };
+      
+      return Promise.resolve({
+        data: {
+          customer: mockCustomers[id] || null
+        }
+      });
+    }
+    
+    // Otherwise, make the actual API call
+    return api.get(`/customers/${id}`);
+  },
+  
   createOrUpdateCustomer: (customerData) => {
+    console.log('API service - Creating/updating customer:', customerData);
+    
+    // ALWAYS use the real API for customer creation
+    console.log('Making POST request to /customers');
+    try {
+      return api.post('/customers', customerData);
+    } catch (error) {
+      console.error('Error in createOrUpdateCustomer:', error);
+      throw error;
+    }
+  },
+  
+  updateCustomer: (id, customerData) => {
     // In development mode, return mock customer data
     if (process.env.NODE_ENV === 'development') {
       return Promise.resolve({
         data: {
           customer: {
-            _id: 'mock-customer-id',
+            id: id,
             name: customerData.name,
             email: customerData.email,
-            phone: customerData.phone
+            phone: customerData.phone,
+            street: customerData.street,
+            city: customerData.city,
+            state: customerData.state,
+            zip_code: customerData.zip_code,
+            country: customerData.country,
+            custom_fields: customerData.custom_fields
           }
         }
       });
     }
     
     // Otherwise, make the actual API call
-    return api.post('/customers', customerData);
+    return api.put(`/customers/${id}`, customerData);
   },
   
   // Direct axios methods for custom requests
