@@ -13,6 +13,8 @@ const TopNav = ({ toggleSidebar }) => {
     if (path === '/calendar') return 'Schedule Calendar';
     if (path === '/appointments') return 'Appointments';
     if (path.includes('/appointments/')) return 'Appointment Details';
+    if (path === '/bookings') return 'Bookings';
+    if (path.includes('/bookings/')) return 'Booking Details';
     if (path === '/customers') return 'Customers';
     if (path.includes('/customers/')) return 'Customer Details';
     if (path === '/pets') return 'Pets';

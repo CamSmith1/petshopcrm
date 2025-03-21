@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import api from '../services/api';
+import PageHeader from '../components/common/PageHeader';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import '../styles/venue-management.css';
 
 const VenueForm = () => {
   const { id } = useParams();
@@ -10,24 +13,38 @@ const VenueForm = () => {
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [activeSection, setActiveSection] = useState('basic');
   
   // Form state
   const [formData, setFormData] = useState({
+    // Basic information
     name: '',
     description: '',
     category: '',
+    
+    // Location
     street: '',
     city: '',
     state: '',
     zip_code: '',
-    country: 'New Zealand', // Default to New Zealand since we're using QLDC
+    country: 'New Zealand', // Default to New Zealand
+    
+    // Capacity & Dimensions
     max_capacity: '',
     min_capacity: '',
     dimensions: '',
+    
+    // Pricing & Booking
     hourly_rate: '',
     daily_rate: '',
     setup_time: 60, // Default setup time in minutes
     teardown_time: 60, // Default teardown time in minutes
+    deposit_required: false,
+    deposit_amount: '',
+    insurance_required: false,
+    cancellation_policy: '',
+    
+    // Availability
     availability: {
       monday: { start: '08:00', end: '22:00', available: true },
       tuesday: { start: '08:00', end: '22:00', available: true },
@@ -37,14 +54,14 @@ const VenueForm = () => {
       saturday: { start: '09:00', end: '22:00', available: true },
       sunday: { start: '09:00', end: '22:00', available: true }
     },
+    
+    // Features
     amenities: [],
     accessibility_features: [],
     suitability: [], // What the venue is suitable for
     restrictions: [], // Any restrictions
-    insurance_required: false,
-    deposit_required: false,
-    deposit_amount: '',
-    cancellation_policy: '',
+    
+    // Additional Information
     additional_notes: ''
   });
   
@@ -89,8 +106,37 @@ const VenueForm = () => {
     'No Confetti',
     'No After-hours Access'
   ];
-  const amenityOptions = ['WiFi', 'AV Equipment', 'Kitchen', 'Parking', 'Accessible Entrance', 'Air Conditioning', 'Heating', 'Natural Light', 'Stage', 'Sound System', 'Projector', 'Tables', 'Chairs', 'Whiteboard', 'Bar Area', 'Dance Floor', 'Coat Check', 'Outdoor Space'];
-  const accessibilityOptions = ['Wheelchair Access', 'Accessible Restrooms', 'Accessible Parking', 'Hearing Loop', 'Elevator', 'Ramp', 'Braille Signage', 'Service Animal Friendly'];
+  
+  const amenityOptions = [
+    'WiFi', 
+    'AV Equipment', 
+    'Kitchen', 
+    'Parking', 
+    'Air Conditioning', 
+    'Heating', 
+    'Natural Light', 
+    'Stage', 
+    'Sound System', 
+    'Projector', 
+    'Tables', 
+    'Chairs', 
+    'Whiteboard', 
+    'Bar Area', 
+    'Dance Floor', 
+    'Coat Check', 
+    'Outdoor Space'
+  ];
+  
+  const accessibilityOptions = [
+    'Wheelchair Access', 
+    'Accessible Restrooms', 
+    'Accessible Parking', 
+    'Hearing Loop', 
+    'Elevator', 
+    'Ramp', 
+    'Braille Signage', 
+    'Service Animal Friendly'
+  ];
   
   // Check if editing existing venue
   const isEditing = Boolean(id);
@@ -110,21 +156,34 @@ const VenueForm = () => {
       
       // Set form data from venue
       setFormData({
+        // Basic information
         name: venue.name || '',
         description: venue.description || '',
         category: venue.category || '',
+        
+        // Location
         street: venue.street || '',
         city: venue.city || '',
         state: venue.state || '',
         zip_code: venue.zip_code || '',
         country: venue.country || 'New Zealand',
+        
+        // Capacity & Dimensions
         max_capacity: venue.max_capacity || '',
         min_capacity: venue.min_capacity || '',
         dimensions: venue.dimensions || '',
+        
+        // Pricing & Booking
         hourly_rate: venue.hourly_rate || '',
         daily_rate: venue.daily_rate || '',
         setup_time: venue.setup_time || 60,
         teardown_time: venue.teardown_time || 60,
+        deposit_required: venue.deposit_required || false,
+        deposit_amount: venue.deposit_amount || '',
+        insurance_required: venue.insurance_required || false,
+        cancellation_policy: venue.cancellation_policy || '',
+        
+        // Availability
         availability: venue.availability || {
           monday: { start: '08:00', end: '22:00', available: true },
           tuesday: { start: '08:00', end: '22:00', available: true },
@@ -134,14 +193,14 @@ const VenueForm = () => {
           saturday: { start: '09:00', end: '22:00', available: true },
           sunday: { start: '09:00', end: '22:00', available: true }
         },
+        
+        // Features
         amenities: venue.amenities || [],
         accessibility_features: venue.accessibility_features || [],
         suitability: venue.suitability || [],
         restrictions: venue.restrictions || [],
-        insurance_required: venue.insurance_required || false,
-        deposit_required: venue.deposit_required || false,
-        deposit_amount: venue.deposit_amount || '',
-        cancellation_policy: venue.cancellation_policy || '',
+        
+        // Additional Information
         additional_notes: venue.additional_notes || ''
       });
       
@@ -294,455 +353,695 @@ const VenueForm = () => {
       setIsSubmitting(false);
     }
   };
-  
-  // Access restriction removed to allow all users to add/edit venues
+
+  const handleSectionChange = (section) => {
+    setActiveSection(section);
+  };
   
   if (loading) {
-    return <div className="loading">Loading venue data...</div>;
+    return <LoadingSpinner />;
   }
   
   return (
-    <div className="venue-form-page">
-      <div className="container">
-        <div className="page-header">
-          <h1>{isEditing ? 'Edit Venue' : 'Add New Venue'}</h1>
+    <div className="page-container">
+      <PageHeader 
+        title={isEditing ? 'Edit Venue' : 'Add New Venue'} 
+        backLink="/manage-venues"
+      />
+      
+      <div className="form-container">
+        <div className="form-progress">
+          
+          <div 
+            className={`progress-step ${activeSection === 'basic' ? 'active' : ''} ${activeSection !== 'basic' ? 'completed' : ''}`}
+            onClick={() => handleSectionChange('basic')}
+          >
+            <div className="step-icon">
+              <span className="step-check">✓</span>
+              <span className="material-icons step-material-icon">info</span>
+            </div>
+            <span className="step-label">Basic Information</span>
+          </div>
+          
+          <div 
+            className={`progress-step ${activeSection === 'location' ? 'active' : ''} ${['capacity', 'pricing', 'features'].includes(activeSection) ? 'completed' : ''}`}
+            onClick={() => handleSectionChange('location')}
+          >
+            <div className="step-icon">
+              <span className="step-check">✓</span>
+              <span className="material-icons step-material-icon">location_on</span>
+            </div>
+            <span className="step-label">Location</span>
+          </div>
+          
+          <div 
+            className={`progress-step ${activeSection === 'capacity' ? 'active' : ''} ${['pricing', 'features'].includes(activeSection) ? 'completed' : ''}`}
+            onClick={() => handleSectionChange('capacity')}
+          >
+            <div className="step-icon">
+              <span className="step-check">✓</span>
+              <span className="material-icons step-material-icon">groups</span>
+            </div>
+            <span className="step-label">Capacity</span>
+          </div>
+          
+          <div 
+            className={`progress-step ${activeSection === 'pricing' ? 'active' : ''} ${activeSection === 'features' ? 'completed' : ''}`}
+            onClick={() => handleSectionChange('pricing')}
+          >
+            <div className="step-icon">
+              <span className="step-check">✓</span>
+              <span className="material-icons step-material-icon">attach_money</span>
+            </div>
+            <span className="step-label">Pricing</span>
+          </div>
+          
+          <div 
+            className={`progress-step ${activeSection === 'features' ? 'active' : ''}`}
+            onClick={() => handleSectionChange('features')}
+          >
+            <div className="step-icon">
+              <span className="step-check">✓</span>
+              <span className="material-icons step-material-icon">stars</span>
+            </div>
+            <span className="step-label">Features</span>
+          </div>
         </div>
-        
+      
         {error && (
           <div className="alert alert-danger" role="alert">
             {error}
           </div>
         )}
         
-        <form onSubmit={handleSubmit} className="venue-form compact-form">
-          <div className="form-section">
-            <h2>Basic Information</h2>
-            <div className="form-row">
-              <div className="form-group col-md-6">
-                <label htmlFor="name">Venue Name <span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  className="form-control"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  placeholder="e.g. Queenstown Conference Center"
-                />
+        <form onSubmit={handleSubmit} className="modern-form">
+          {/* Basic Information Section */}
+          {activeSection === 'basic' && (
+            <div className="form-section-container">
+              <div className="form-section-header">
+                <h2 className="section-title">
+                  <span className="section-icon">🏢</span>
+                  Basic Information
+                </h2>
+                <p className="section-description">
+                  Enter the venue's basic details.
+                </p>
               </div>
               
-              <div className="form-group col-md-6">
-                <label htmlFor="category">Category <span className="required">*</span></label>
-                <select
-                  id="category"
-                  name="category"
-                  className="form-control"
-                  value={formData.category}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select a category</option>
-                  {categoryOptions.map(option => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="description">Description <span className="required">*</span></label>
-              <textarea
-                id="description"
-                name="description"
-                className="form-control"
-                value={formData.description}
-                onChange={handleChange}
-                rows="3"
-                placeholder="Provide a detailed description of the venue including key features and benefits"
-                required
-              ></textarea>
-            </div>
-          </div>
-          
-          <div className="form-section">
-            <h2>Location</h2>
-            <div className="form-group">
-              <label htmlFor="street">Street Address <span className="required">*</span></label>
-              <input
-                type="text"
-                id="street"
-                name="street"
-                className="form-control"
-                value={formData.street}
-                onChange={handleChange}
-                required
-                placeholder="e.g. 10 Lake Road"
-              />
-            </div>
-            
-            <div className="form-row">
-              <div className="form-group col-md-5">
-                <label htmlFor="city">City <span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="city"
-                  name="city"
-                  className="form-control"
-                  value={formData.city}
-                  onChange={handleChange}
-                  required
-                  placeholder="e.g. Queenstown"
-                />
-              </div>
-              
-              <div className="form-group col-md-4">
-                <label htmlFor="state">Region <span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="state"
-                  name="state"
-                  className="form-control"
-                  value={formData.state}
-                  onChange={handleChange}
-                  required
-                  placeholder="e.g. Otago"
-                />
-              </div>
-              
-              <div className="form-group col-md-3">
-                <label htmlFor="zip_code">Postal Code <span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="zip_code"
-                  name="zip_code"
-                  className="form-control"
-                  value={formData.zip_code}
-                  onChange={handleChange}
-                  required
-                  placeholder="e.g. 9300"
-                />
-              </div>
-            </div>
-          </div>
-          
-          <div className="form-section">
-            <h2>Capacity & Dimensions</h2>
-            <div className="form-row">
-              <div className="form-group col-md-4">
-                <label htmlFor="min_capacity">Minimum Capacity</label>
-                <input
-                  type="number"
-                  id="min_capacity"
-                  name="min_capacity"
-                  className="form-control"
-                  value={formData.min_capacity}
-                  onChange={handleNumberChange}
-                  min="1"
-                  placeholder="Minimum recommended capacity"
-                />
-              </div>
-              
-              <div className="form-group col-md-4">
-                <label htmlFor="max_capacity">Maximum Capacity <span className="required">*</span></label>
-                <input
-                  type="number"
-                  id="max_capacity"
-                  name="max_capacity"
-                  className="form-control"
-                  value={formData.max_capacity}
-                  onChange={handleNumberChange}
-                  min="1"
-                  required
-                  placeholder="Maximum allowed capacity"
-                />
-              </div>
-
-              <div className="form-group col-md-4">
-                <label htmlFor="dimensions">Dimensions</label>
-                <input
-                  type="text"
-                  id="dimensions"
-                  name="dimensions"
-                  className="form-control"
-                  value={formData.dimensions}
-                  onChange={handleChange}
-                  placeholder="e.g. 20m x 15m (300m²)"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="form-section">
-            <h2>Pricing</h2>
-            <div className="form-row">
-              <div className="form-group col-md-6">
-                <label htmlFor="hourly_rate">Hourly Rate (NZD) <span className="required">*</span></label>
-                <div className="input-group">
-                  <div className="input-group-prepend">
-                    <span className="input-group-text">$</span>
-                  </div>
-                  <input
-                    type="number"
-                    id="hourly_rate"
-                    name="hourly_rate"
-                    className="form-control"
-                    value={formData.hourly_rate}
-                    onChange={handleNumberChange}
-                    min="0"
-                    step="0.01"
-                    required
-                    placeholder="Hourly rental rate"
-                  />
-                </div>
-              </div>
-              
-              <div className="form-group col-md-6">
-                <label htmlFor="daily_rate">Daily Rate (NZD) <span className="required">*</span></label>
-                <div className="input-group">
-                  <div className="input-group-prepend">
-                    <span className="input-group-text">$</span>
-                  </div>
-                  <input
-                    type="number"
-                    id="daily_rate"
-                    name="daily_rate"
-                    className="form-control"
-                    value={formData.daily_rate}
-                    onChange={handleNumberChange}
-                    min="0"
-                    step="0.01"
-                    required
-                    placeholder="Daily rental rate"
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div className="form-row">
-              <div className="form-group col-md-6">
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    id="deposit_required"
-                    name="deposit_required"
-                    className="form-check-input"
-                    checked={formData.deposit_required}
-                    onChange={handleCheckboxChange}
-                  />
-                  <label htmlFor="deposit_required" className="form-check-label">
-                    Deposit Required
-                  </label>
-                </div>
-              </div>
-              
-              {formData.deposit_required && (
-                <div className="form-group col-md-6">
-                  <label htmlFor="deposit_amount">Deposit Amount (NZD)</label>
-                  <div className="input-group">
-                    <div className="input-group-prepend">
-                      <span className="input-group-text">$</span>
-                    </div>
+              <div className="form-content card">
+                <div className="input-grid">
+                  <div className="form-group full-width">
+                    <label htmlFor="name" className="form-label">Venue Name *</label>
                     <input
-                      type="number"
-                      id="deposit_amount"
-                      name="deposit_amount"
+                      type="text"
+                      id="name"
+                      name="name"
                       className="form-control"
-                      value={formData.deposit_amount}
-                      onChange={handleNumberChange}
-                      min="0"
-                      step="0.01"
-                      placeholder="Required deposit amount"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      placeholder="e.g. Queenstown Conference Center"
                     />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="category" className="form-label">Category *</label>
+                    <div className="select-with-icon">
+                      <i className="input-icon fas fa-tag"></i>
+                      <select
+                        id="category"
+                        name="category"
+                        className="form-control with-icon"
+                        value={formData.category}
+                        onChange={handleChange}
+                        required
+                      >
+                        <option value="">Select a category</option>
+                        {categoryOptions.map(option => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className="form-group full-width">
+                    <label htmlFor="description" className="form-label">Description *</label>
+                    <textarea
+                      id="description"
+                      name="description"
+                      className="form-control"
+                      value={formData.description}
+                      onChange={handleChange}
+                      rows="4"
+                      placeholder="Provide a detailed description of the venue including key features and benefits"
+                      required
+                    ></textarea>
                   </div>
                 </div>
-              )}
+                
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="btn btn-primary next-btn"
+                    onClick={() => handleSectionChange('location')}
+                  >
+                    Next: Location
+                    <span className="btn-icon-right">→</span>
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-
-          <div className="form-section">
-            <h2>Booking Settings</h2>
-            <div className="form-row">
-              <div className="form-group col-md-6">
-                <label htmlFor="setup_time">Setup Time (minutes)</label>
-                <input
-                  type="number"
-                  id="setup_time"
-                  name="setup_time"
-                  className="form-control"
-                  value={formData.setup_time}
-                  onChange={handleNumberChange}
-                  min="0"
-                  placeholder="Required setup time before event"
-                />
-                <small className="form-text text-muted">Amount of time needed before bookings for setup</small>
+          )}
+          
+          {/* Location Section */}
+          {activeSection === 'location' && (
+            <div className="form-section-container">
+              <div className="form-section-header">
+                <h2 className="section-title">
+                  <span className="section-icon">📍</span>
+                  Location Information
+                </h2>
+                <p className="section-description">
+                  Enter the venue's address details.
+                </p>
               </div>
               
-              <div className="form-group col-md-6">
-                <label htmlFor="teardown_time">Teardown Time (minutes)</label>
-                <input
-                  type="number"
-                  id="teardown_time"
-                  name="teardown_time"
-                  className="form-control"
-                  value={formData.teardown_time}
-                  onChange={handleNumberChange}
-                  min="0"
-                  placeholder="Required teardown time after event"
-                />
-                <small className="form-text text-muted">Amount of time needed after bookings for teardown</small>
-              </div>
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="cancellation_policy">Cancellation Policy</label>
-              <textarea
-                id="cancellation_policy"
-                name="cancellation_policy"
-                className="form-control"
-                value={formData.cancellation_policy}
-                onChange={handleChange}
-                rows="2"
-                placeholder="e.g. Full refund if cancelled 48 hours before booking"
-              ></textarea>
-            </div>
-            
-            <div className="form-check mb-3">
-              <input
-                type="checkbox"
-                id="insurance_required"
-                name="insurance_required"
-                className="form-check-input"
-                checked={formData.insurance_required}
-                onChange={handleCheckboxChange}
-              />
-              <label htmlFor="insurance_required" className="form-check-label">
-                Insurance Required for Booking
-              </label>
-            </div>
-          </div>
-          
-          <div className="form-section">
-            <h2>Features & Suitability</h2>
-            
-            {/* Amenities - Tag-based UI */}
-            <div className="form-group">
-              <label>Amenities</label>
-              <p className="form-text text-muted">Select all amenities that are available at this venue</p>
-              <div className="feature-tags">
-                <div className="feature-tag-group-title">Available Amenities</div>
-                {amenityOptions.map(option => (
-                  <div 
-                    key={option} 
-                    className={`feature-tag ${formData.amenities.includes(option) ? 'selected' : ''}`}
-                    onClick={() => handleMultiSelectChange('amenities', option)}
-                  >
-                    <span className="feature-tag-icon">{getFeatureIcon(option, 'amenities')}</span>
-                    {option}
+              <div className="form-content card">
+                <div className="input-grid">
+                  <div className="form-group full-width">
+                    <label htmlFor="street" className="form-label">Street Address *</label>
+                    <div className="input-with-icon">
+                      <i className="input-icon fas fa-map-marker-alt"></i>
+                      <input
+                        type="text"
+                        id="street"
+                        name="street"
+                        className="form-control with-icon"
+                        value={formData.street}
+                        onChange={handleChange}
+                        required
+                        placeholder="e.g. 10 Lake Road"
+                      />
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Accessibility - Horizontal checkbox layout */}
-            <div className="form-group">
-              <label>Accessibility Features</label>
-              <p className="form-text text-muted">Select all accessibility features available at this venue</p>
-              <div className="horizontal-checkbox-group">
-                {accessibilityOptions.map(option => (
-                  <div key={option} className="form-check">
+                  
+                  <div className="form-group">
+                    <label htmlFor="city" className="form-label">City *</label>
                     <input
-                      type="checkbox"
-                      id={`accessibility-${option}`}
-                      className="form-check-input"
-                      checked={formData.accessibility_features.includes(option)}
-                      onChange={() => handleMultiSelectChange('accessibility_features', option)}
+                      type="text"
+                      id="city"
+                      name="city"
+                      className="form-control"
+                      value={formData.city}
+                      onChange={handleChange}
+                      required
+                      placeholder="e.g. Queenstown"
                     />
-                    <label htmlFor={`accessibility-${option}`} className="form-check-label">
-                      {option}
-                    </label>
                   </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Suitable For - Tag-based UI */}
-            <div className="form-group">
-              <label>Venue Suitable For</label>
-              <p className="form-text text-muted">Select all event types this venue is suitable for</p>
-              <div className="feature-tags">
-                <div className="feature-tag-group-title">Event Types</div>
-                {suitabilityOptions.map(option => (
-                  <div 
-                    key={option} 
-                    className={`feature-tag ${formData.suitability.includes(option) ? 'selected' : ''}`}
-                    onClick={() => handleMultiSelectChange('suitability', option)}
-                  >
-                    <span className="feature-tag-icon">{getFeatureIcon(option, 'suitability')}</span>
-                    {option}
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Restrictions - Horizontal checkbox layout */}
-            <div className="form-group">
-              <label>Restrictions</label>
-              <p className="form-text text-muted">Select any restrictions that apply to this venue</p>
-              <div className="horizontal-checkbox-group">
-                {restrictionOptions.map(option => (
-                  <div key={option} className="form-check">
+                  
+                  <div className="form-group">
+                    <label htmlFor="state" className="form-label">Region *</label>
                     <input
-                      type="checkbox"
-                      id={`restriction-${option}`}
-                      className="form-check-input"
-                      checked={formData.restrictions.includes(option)}
-                      onChange={() => handleMultiSelectChange('restrictions', option)}
+                      type="text"
+                      id="state"
+                      name="state"
+                      className="form-control"
+                      value={formData.state}
+                      onChange={handleChange}
+                      required
+                      placeholder="e.g. Otago"
                     />
-                    <label htmlFor={`restriction-${option}`} className="form-check-label">
-                      {option}
-                    </label>
                   </div>
-                ))}
+                  
+                  <div className="form-group">
+                    <label htmlFor="zip_code" className="form-label">Postal Code *</label>
+                    <input
+                      type="text"
+                      id="zip_code"
+                      name="zip_code"
+                      className="form-control"
+                      value={formData.zip_code}
+                      onChange={handleChange}
+                      required
+                      placeholder="e.g. 9300"
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="country" className="form-label">Country</label>
+                    <div className="select-with-icon">
+                      <i className="input-icon fas fa-globe"></i>
+                      <select
+                        id="country"
+                        name="country"
+                        className="form-control with-icon"
+                        value={formData.country}
+                        onChange={handleChange}
+                      >
+                        <option value="New Zealand">New Zealand</option>
+                        <option value="Australia">Australia</option>
+                        <option value="United States">United States</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={() => handleSectionChange('basic')}
+                  >
+                    <span className="btn-icon-left">←</span>
+                    Back
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary next-btn"
+                    onClick={() => handleSectionChange('capacity')}
+                  >
+                    Next: Capacity
+                    <span className="btn-icon-right">→</span>
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
           
-          <div className="form-section">
-            <h2>Additional Information</h2>
-            <div className="form-group">
-              <label htmlFor="additional_notes">Additional Notes</label>
-              <textarea
-                id="additional_notes"
-                name="additional_notes"
-                className="form-control"
-                value={formData.additional_notes}
-                onChange={handleChange}
-                rows="3"
-                placeholder="Any other important details about the venue"
-              ></textarea>
+          {/* Capacity & Dimensions Section */}
+          {activeSection === 'capacity' && (
+            <div className="form-section-container">
+              <div className="form-section-header">
+                <h2 className="section-title">
+                  <span className="section-icon">👥</span>
+                  Capacity & Dimensions
+                </h2>
+                <p className="section-description">
+                  Specify the venue's capacity and size information.
+                </p>
+              </div>
+              
+              <div className="form-content card">
+                <div className="input-grid">
+                  <div className="form-group">
+                    <label htmlFor="min_capacity" className="form-label">Minimum Capacity</label>
+                    <div className="input-with-icon">
+                      <i className="input-icon fas fa-users"></i>
+                      <input
+                        type="number"
+                        id="min_capacity"
+                        name="min_capacity"
+                        className="form-control with-icon"
+                        value={formData.min_capacity}
+                        onChange={handleNumberChange}
+                        min="1"
+                        placeholder="Minimum recommended capacity"
+                      />
+                    </div>
+                    <small className="form-text text-muted">Minimum recommended number of people</small>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="max_capacity" className="form-label">Maximum Capacity *</label>
+                    <div className="input-with-icon">
+                      <i className="input-icon fas fa-users"></i>
+                      <input
+                        type="number"
+                        id="max_capacity"
+                        name="max_capacity"
+                        className="form-control with-icon"
+                        value={formData.max_capacity}
+                        onChange={handleNumberChange}
+                        min="1"
+                        required
+                        placeholder="Maximum allowed capacity"
+                      />
+                    </div>
+                    <small className="form-text text-muted">Maximum number of people allowed</small>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="dimensions" className="form-label">Dimensions</label>
+                    <div className="input-with-icon">
+                      <i className="input-icon fas fa-ruler-combined"></i>
+                      <input
+                        type="text"
+                        id="dimensions"
+                        name="dimensions"
+                        className="form-control with-icon"
+                        value={formData.dimensions}
+                        onChange={handleChange}
+                        placeholder="e.g. 20m x 15m (300m²)"
+                      />
+                    </div>
+                    <small className="form-text text-muted">Size or dimensions of the venue</small>
+                  </div>
+                </div>
+                
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={() => handleSectionChange('location')}
+                  >
+                    <span className="btn-icon-left">←</span>
+                    Back
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary next-btn"
+                    onClick={() => handleSectionChange('pricing')}
+                  >
+                    Next: Pricing
+                    <span className="btn-icon-right">→</span>
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
           
-          <div className="form-actions">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => navigate('/manage-venues')}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Saving...' : isEditing ? 'Update Venue' : 'Create Venue'}
-            </button>
-          </div>
+          {/* Pricing & Booking Section */}
+          {activeSection === 'pricing' && (
+            <div className="form-section-container">
+              <div className="form-section-header">
+                <h2 className="section-title">
+                  <span className="section-icon">💰</span>
+                  Pricing & Booking Settings
+                </h2>
+                <p className="section-description">
+                  Set up pricing, deposit requirements, and booking policies.
+                </p>
+              </div>
+              
+              <div className="form-content card">
+                <div className="form-subsection">
+                  <h3 className="subsection-title">Rental Rates</h3>
+                  <div className="input-grid">
+                    <div className="form-group">
+                      <label htmlFor="hourly_rate" className="form-label">Hourly Rate (NZD) *</label>
+                      <div className="input-with-icon">
+                        <i className="input-icon fas fa-dollar-sign"></i>
+                        <input
+                          type="number"
+                          id="hourly_rate"
+                          name="hourly_rate"
+                          className="form-control with-icon"
+                          value={formData.hourly_rate}
+                          onChange={handleNumberChange}
+                          min="0"
+                          step="0.01"
+                          required
+                          placeholder="Hourly rental rate"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="form-group">
+                      <label htmlFor="daily_rate" className="form-label">Daily Rate (NZD) *</label>
+                      <div className="input-with-icon">
+                        <i className="input-icon fas fa-dollar-sign"></i>
+                        <input
+                          type="number"
+                          id="daily_rate"
+                          name="daily_rate"
+                          className="form-control with-icon"
+                          value={formData.daily_rate}
+                          onChange={handleNumberChange}
+                          min="0"
+                          step="0.01"
+                          required
+                          placeholder="Daily rental rate"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="form-subsection">
+                  <h3 className="subsection-title">Deposit & Insurance</h3>
+                  
+                  <div className="checkbox-group">
+                    <div className="enhanced-checkbox">
+                      <input
+                        type="checkbox"
+                        id="deposit_required"
+                        name="deposit_required"
+                        checked={formData.deposit_required}
+                        onChange={handleCheckboxChange}
+                      />
+                      <label htmlFor="deposit_required">
+                        <span className="checkbox-icon"></span>
+                        <span className="checkbox-text">Require Deposit</span>
+                      </label>
+                    </div>
+                    
+                    <div className="enhanced-checkbox">
+                      <input
+                        type="checkbox"
+                        id="insurance_required"
+                        name="insurance_required"
+                        checked={formData.insurance_required}
+                        onChange={handleCheckboxChange}
+                      />
+                      <label htmlFor="insurance_required">
+                        <span className="checkbox-icon"></span>
+                        <span className="checkbox-text">Require Insurance</span>
+                      </label>
+                    </div>
+                  </div>
+                  
+                  {formData.deposit_required && (
+                    <div className="form-group">
+                      <label htmlFor="deposit_amount" className="form-label">Deposit Amount (NZD)</label>
+                      <div className="input-with-icon">
+                        <i className="input-icon fas fa-dollar-sign"></i>
+                        <input
+                          type="number"
+                          id="deposit_amount"
+                          name="deposit_amount"
+                          className="form-control with-icon"
+                          value={formData.deposit_amount}
+                          onChange={handleNumberChange}
+                          min="0"
+                          step="0.01"
+                          placeholder="Required deposit amount"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="form-subsection">
+                  <h3 className="subsection-title">Setup & Teardown</h3>
+                  <div className="input-grid">
+                    <div className="form-group">
+                      <label htmlFor="setup_time" className="form-label">Setup Time (minutes)</label>
+                      <div className="input-with-icon">
+                        <i className="input-icon fas fa-clock"></i>
+                        <input
+                          type="number"
+                          id="setup_time"
+                          name="setup_time"
+                          className="form-control with-icon"
+                          value={formData.setup_time}
+                          onChange={handleNumberChange}
+                          min="0"
+                          placeholder="Required setup time before event"
+                        />
+                      </div>
+                      <small className="form-text text-muted">Time needed before bookings for setup</small>
+                    </div>
+                    
+                    <div className="form-group">
+                      <label htmlFor="teardown_time" className="form-label">Teardown Time (minutes)</label>
+                      <div className="input-with-icon">
+                        <i className="input-icon fas fa-clock"></i>
+                        <input
+                          type="number"
+                          id="teardown_time"
+                          name="teardown_time"
+                          className="form-control with-icon"
+                          value={formData.teardown_time}
+                          onChange={handleNumberChange}
+                          min="0"
+                          placeholder="Required teardown time after event"
+                        />
+                      </div>
+                      <small className="form-text text-muted">Time needed after bookings for teardown</small>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="form-subsection">
+                  <h3 className="subsection-title">Policies</h3>
+                  <div className="form-group full-width">
+                    <label htmlFor="cancellation_policy" className="form-label">Cancellation Policy</label>
+                    <textarea
+                      id="cancellation_policy"
+                      name="cancellation_policy"
+                      className="form-control"
+                      value={formData.cancellation_policy}
+                      onChange={handleChange}
+                      rows="2"
+                      placeholder="e.g. Full refund if cancelled 48 hours before booking"
+                    ></textarea>
+                    <small className="form-text text-muted">Describe your cancellation policy</small>
+                  </div>
+                </div>
+                
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={() => handleSectionChange('capacity')}
+                  >
+                    <span className="btn-icon-left">←</span>
+                    Back
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary next-btn"
+                    onClick={() => handleSectionChange('features')}
+                  >
+                    Next: Features
+                    <span className="btn-icon-right">→</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Features & Suitability Section */}
+          {activeSection === 'features' && (
+            <div className="form-section-container">
+              <div className="form-section-header">
+                <h2 className="section-title">
+                  <span className="section-icon">✨</span>
+                  Features & Additional Information
+                </h2>
+                <p className="section-description">
+                  Specify amenities, accessibility features, and venue suitability.
+                </p>
+              </div>
+              
+              <div className="form-content card">
+                <div className="form-subsection">
+                  <h3 className="subsection-title">Amenities</h3>
+                  <p className="form-text text-muted">Select all amenities that are available at this venue</p>
+                  <div className="feature-tags">
+                    {amenityOptions.map(option => (
+                      <div 
+                        key={option} 
+                        className={`feature-tag ${formData.amenities.includes(option) ? 'selected' : ''}`}
+                        onClick={() => handleMultiSelectChange('amenities', option)}
+                      >
+                        <span className="feature-tag-icon">{getFeatureIcon(option, 'amenities')}</span>
+                        {option}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="form-subsection">
+                  <h3 className="subsection-title">Accessibility Features</h3>
+                  <p className="form-text text-muted">Select all accessibility features available at this venue</p>
+                  <div className="horizontal-checkbox-group">
+                    {accessibilityOptions.map(option => (
+                      <div key={option} className="form-check">
+                        <input
+                          type="checkbox"
+                          id={`accessibility-${option}`}
+                          className="form-check-input"
+                          checked={formData.accessibility_features.includes(option)}
+                          onChange={() => handleMultiSelectChange('accessibility_features', option)}
+                        />
+                        <label htmlFor={`accessibility-${option}`} className="form-check-label">
+                          {option}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="form-subsection">
+                  <h3 className="subsection-title">Venue Suitable For</h3>
+                  <p className="form-text text-muted">Select all event types this venue is suitable for</p>
+                  <div className="feature-tags">
+                    {suitabilityOptions.map(option => (
+                      <div 
+                        key={option} 
+                        className={`feature-tag ${formData.suitability.includes(option) ? 'selected' : ''}`}
+                        onClick={() => handleMultiSelectChange('suitability', option)}
+                      >
+                        <span className="feature-tag-icon">{getFeatureIcon(option, 'suitability')}</span>
+                        {option}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="form-subsection">
+                  <h3 className="subsection-title">Restrictions</h3>
+                  <p className="form-text text-muted">Select any restrictions that apply to this venue</p>
+                  <div className="horizontal-checkbox-group">
+                    {restrictionOptions.map(option => (
+                      <div key={option} className="form-check">
+                        <input
+                          type="checkbox"
+                          id={`restriction-${option}`}
+                          className="form-check-input"
+                          checked={formData.restrictions.includes(option)}
+                          onChange={() => handleMultiSelectChange('restrictions', option)}
+                        />
+                        <label htmlFor={`restriction-${option}`} className="form-check-label">
+                          {option}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="form-subsection">
+                  <h3 className="subsection-title">Additional Notes</h3>
+                  <div className="form-group full-width">
+                    <label htmlFor="additional_notes" className="form-label">Notes</label>
+                    <textarea
+                      id="additional_notes"
+                      name="additional_notes"
+                      className="form-control"
+                      value={formData.additional_notes}
+                      onChange={handleChange}
+                      rows="3"
+                      placeholder="Any other important details about the venue"
+                    ></textarea>
+                  </div>
+                </div>
+                
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={() => handleSectionChange('pricing')}
+                  >
+                    <span className="btn-icon-left">←</span>
+                    Back
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-success submit-btn"
+                    disabled={isSubmitting}
+                  >
+                    <span className="btn-icon">✓</span>
+                    {isSubmitting ? 'Saving...' : isEditing ? 'Update Venue' : 'Save Venue'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </form>
       </div>
     </div>

@@ -10,7 +10,7 @@ export const useTheme = () => useContext(ThemeContext);
 export const ThemeProvider = ({ children }) => {
   // Check local storage for saved theme preference or use system preference
   const getInitialTheme = () => {
-    const savedTheme = localStorage.getItem('bookingpro-theme');
+    const savedTheme = localStorage.getItem('venuehub-theme');
     
     if (savedTheme) {
       return savedTheme;
@@ -28,7 +28,7 @@ export const ThemeProvider = ({ children }) => {
   
   // Update theme in local storage when it changes
   useEffect(() => {
-    localStorage.setItem('bookingpro-theme', theme);
+    localStorage.setItem('venuehub-theme', theme);
     // Apply theme to body element
     if (theme === 'dark') {
       document.body.classList.add('dark-theme');
@@ -55,7 +55,7 @@ export const ThemeProvider = ({ children }) => {
     
     const handleChange = (e) => {
       // Only change theme if user hasn't manually set a preference
-      if (!localStorage.getItem('bookingpro-theme')) {
+      if (!localStorage.getItem('venuehub-theme')) {
         setTheme(e.matches ? 'dark' : 'light');
       }
     };

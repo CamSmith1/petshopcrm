@@ -422,7 +422,7 @@ img {
 }
 
 .user-info:hover .user-avatar {
-  color: var(--primary-600);
+  color: var(--neutral-500);
 }
 
 .logout-item {
@@ -1797,6 +1797,21 @@ footer {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
+  color: var(--primary-color);
+}
+
+.footer-logo .logo-icon {
+  margin-right: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.footer-logo .logo-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--primary-500);
 }
 
 .footer-links {

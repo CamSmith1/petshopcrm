@@ -98,7 +98,7 @@ const MobileMenu = ({ isOpen, onClose, userRole = 'business' }) => {
         <div className="mobile-menu-header">
           <div className="mobile-logo">
             <span className="mobile-logo-icon"><CalendarMonth /></span>
-            <span className="mobile-logo-text">BookingPro</span>
+            <span className="mobile-logo-text">VenueHub</span>
           </div>
           <button className="mobile-close-btn" onClick={onClose}><Close /></button>
         </div>

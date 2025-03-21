@@ -97,7 +97,7 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
       <div className="sidebar-header">
         <div className="logo">
           <span className="logo-icon"><CalendarMonth /></span>
-          <span className="logo-text">BookingPro</span>
+          <span className="logo-text">VenueHub</span>
         </div>
       </div>
       
@@ -177,7 +177,6 @@ const Sidebar = ({ collapsed, userRole = 'business' }) => {
               {isDemoMode() && !currentUser?.email ? 'demo@example.com' : currentUser?.email}
             </div>
           </div>
-          <span style={{ marginLeft: '8px', display: 'flex', alignItems: 'center' }}>{showProfileMenu ? <KeyboardArrowDown fontSize="small" /> : <KeyboardArrowUp fontSize="small" />}</span>
           
           {/* Profile Dropdown Menu */}
           {showProfileMenu && (

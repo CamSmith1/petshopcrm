@@ -37,6 +37,7 @@ import CustomerForm from './pages/CustomerForm';
 // Page Components - Venues
 import ManageVenues from './pages/ManageVenues';
 import VenueForm from './pages/VenueForm';
+import VenueDetail from './pages/VenueDetail';
 import VenueLayouts from './pages/VenueLayouts';
 import VenuePricing from './pages/VenuePricing';
 import VenueEquipment from './pages/VenueEquipment';
@@ -280,6 +281,7 @@ function App() {
                   <Route path="/manage-venues" element={<ManageVenues />} />
                   <Route path="/manage-venues/create" element={<VenueForm />} />
                   <Route path="/manage-venues/edit/:id" element={<VenueForm />} />
+                  <Route path="/manage-venues/:id" element={<VenueDetail />} />
                   <Route path="/manage-venues/:id/layouts" element={<VenueLayouts />} />
                   <Route path="/manage-venues/:id/pricing" element={<VenuePricing />} />
                   <Route path="/manage-venues/:id/equipment" element={<VenueEquipment />} />

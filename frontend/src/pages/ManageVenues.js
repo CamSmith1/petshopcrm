@@ -2,12 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import api from '../services/api';
+import '../styles/venue-management.css';
 
 const ManageVenues = () => {
   const { user } = useContext(AuthContext);
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [viewMode, setViewMode] = useState('table'); // 'cards' or 'table'
   
   useEffect(() => {
     // Using dummy data instead of API call
@@ -122,53 +124,6 @@ const ManageVenues = () => {
       }
     },
     {
-      id: "venue-3",
-      name: "Mountain View Studio",
-      description: "A versatile studio space with floor-to-ceiling windows offering breathtaking mountain views.",
-      category: "Studio",
-      street: "42 Remarkables Road",
-      city: "Queenstown",
-      state: "Otago",
-      zip_code: "9300",
-      max_capacity: 60,
-      isPaused: true,
-      images: [
-        { 
-          url: "https://images.unsplash.com/photo-1604014056084-c96b1daefbaf?q=80&w=2070&auto=format&fit=crop",
-          isPrimary: true 
-        }
-      ],
-      layouts: [
-        { name: "Workshop", capacity: 60 },
-        { name: "Seminar", capacity: 50 },
-        { name: "Yoga/Dance", capacity: 40 }
-      ],
-      pricing: {
-        standard: { amount: 350, unit: "day" },
-        commercial: { amount: 450, unit: "day" },
-        community: { amount: 250, unit: "day" }
-      },
-      amenities: [
-        "Sprung wooden floor",
-        "Mirror wall",
-        "Sound system",
-        "Kitchenette",
-        "Changing rooms"
-      ],
-      accessibility_features: [
-        "Wheelchair access",
-        "Accessible restrooms"
-      ],
-      ratings: {
-        average: 4.7,
-        count: 32
-      },
-      bookings: {
-        total: 210,
-        upcoming: 0
-      }
-    },
-    {
       id: "venue-4",
       name: "Arrowtown Community Hall",
       description: "A rustic heritage hall in the heart of historic Arrowtown, ideal for community events and gatherings.",
@@ -213,6 +168,286 @@ const ManageVenues = () => {
       bookings: {
         total: 320,
         upcoming: 5
+      }
+    },
+    {
+      id: "venue-5",
+      name: "Waterfront Gallery",
+      description: "A contemporary art gallery with adaptable exhibition spaces, ideal for art shows and creative events.",
+      category: "Gallery",
+      street: "8 Beach Road",
+      city: "Queenstown",
+      state: "Otago",
+      zip_code: "9300",
+      max_capacity: 120,
+      isPaused: false,
+      images: [
+        { 
+          url: "https://images.unsplash.com/photo-1526306063970-d5498ad00f1c?q=80&w=2070&auto=format&fit=crop",
+          isPrimary: true 
+        }
+      ],
+      layouts: [
+        { name: "Exhibition", capacity: 120 },
+        { name: "Reception", capacity: 100 }
+      ],
+      pricing: {
+        standard: { amount: 600, unit: "day" },
+        commercial: { amount: 800, unit: "day" },
+        community: { amount: 400, unit: "day" }
+      },
+      amenities: [
+        "Track lighting",
+        "White walls",
+        "High ceilings",
+        "Projection system",
+        "Reception area"
+      ],
+      accessibility_features: [
+        "Wheelchair access",
+        "Accessible restrooms"
+      ],
+      ratings: {
+        average: 4.6,
+        count: 38
+      },
+      bookings: {
+        total: 76,
+        upcoming: 4
+      }
+    },
+    {
+      id: "venue-6",
+      name: "Alpine Lodge Meeting Room",
+      description: "A cozy meeting space with rustic alpine decor, perfect for small business gatherings and workshops.",
+      category: "Meeting Room",
+      street: "56 Mountain View Road",
+      city: "Queenstown",
+      state: "Otago",
+      zip_code: "9300",
+      max_capacity: 30,
+      isPaused: false,
+      images: [
+        { 
+          url: "https://images.unsplash.com/photo-1594122230689-45899d9e6f69?q=80&w=2070&auto=format&fit=crop",
+          isPrimary: true 
+        }
+      ],
+      layouts: [
+        { name: "Boardroom", capacity: 20 },
+        { name: "U-shape", capacity: 18 },
+        { name: "Classroom", capacity: 30 }
+      ],
+      pricing: {
+        standard: { amount: 200, unit: "day" },
+        commercial: { amount: 250, unit: "day" },
+        community: { amount: 150, unit: "day" }
+      },
+      amenities: [
+        "Video conferencing",
+        "Whiteboard",
+        "Coffee service",
+        "High-speed WiFi",
+        "Natural lighting"
+      ],
+      accessibility_features: [
+        "Wheelchair access"
+      ],
+      ratings: {
+        average: 4.4,
+        count: 26
+      },
+      bookings: {
+        total: 145,
+        upcoming: 8
+      }
+    },
+    {
+      id: "venue-7",
+      name: "Lakeside Outdoor Amphitheater",
+      description: "A stunning open-air venue with tiered seating overlooking the lake, perfect for concerts and performances.",
+      category: "Outdoor Venue",
+      street: "30 Esplanade",
+      city: "Queenstown",
+      state: "Otago",
+      zip_code: "9300",
+      max_capacity: 450,
+      isPaused: true,
+      images: [
+        { 
+          url: "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=2070&auto=format&fit=crop",
+          isPrimary: true 
+        }
+      ],
+      layouts: [
+        { name: "Concert", capacity: 450 },
+        { name: "Theater", capacity: 400 }
+      ],
+      pricing: {
+        standard: { amount: 1500, unit: "day" },
+        commercial: { amount: 2000, unit: "day" },
+        community: { amount: 1000, unit: "day" }
+      },
+      amenities: [
+        "Sound system",
+        "Stage lighting",
+        "Backstage area",
+        "Lake views",
+        "Covered stage"
+      ],
+      accessibility_features: [
+        "Accessible seating",
+        "Paved pathways"
+      ],
+      ratings: {
+        average: 4.9,
+        count: 87
+      },
+      bookings: {
+        total: 58,
+        upcoming: 0
+      }
+    },
+    {
+      id: "venue-11",
+      name: "Business Innovation Hub",
+      description: "A modern, technology-enabled space designed for corporate training, hackathons, and innovation workshops.",
+      category: "Business Hub",
+      street: "15 Enterprise Street",
+      city: "Queenstown",
+      state: "Otago",
+      zip_code: "9300",
+      max_capacity: 80,
+      isPaused: false,
+      images: [
+        { 
+          url: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=2069&auto=format&fit=crop",
+          isPrimary: true 
+        }
+      ],
+      layouts: [
+        { name: "Workshop", capacity: 80 },
+        { name: "Open Plan", capacity: 60 },
+        { name: "Classroom", capacity: 40 }
+      ],
+      pricing: {
+        standard: { amount: 600, unit: "day" },
+        commercial: { amount: 800, unit: "day" },
+        community: { amount: 400, unit: "day" }
+      },
+      amenities: [
+        "High-speed internet",
+        "Interactive displays",
+        "Modular furniture",
+        "Breakout spaces",
+        "Refreshment station"
+      ],
+      accessibility_features: [
+        "Wheelchair access",
+        "Accessible restrooms",
+        "Height-adjustable desks"
+      ],
+      ratings: {
+        average: 4.7,
+        count: 53
+      },
+      bookings: {
+        total: 187,
+        upcoming: 11
+      }
+    },
+    {
+      id: "venue-13",
+      name: "Creative Studios",
+      description: "A collection of versatile studio spaces designed for creative workshops, photography sessions, and small productions.",
+      category: "Creative Space",
+      street: "78 Artists Lane",
+      city: "Queenstown",
+      state: "Otago",
+      zip_code: "9300",
+      max_capacity: 40,
+      isPaused: false,
+      images: [
+        { 
+          url: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop",
+          isPrimary: true 
+        }
+      ],
+      layouts: [
+        { name: "Open Studio", capacity: 40 },
+        { name: "Workshop", capacity: 30 },
+        { name: "Photography", capacity: 20 }
+      ],
+      pricing: {
+        standard: { amount: 350, unit: "day" },
+        commercial: { amount: 450, unit: "day" },
+        community: { amount: 250, unit: "day" }
+      },
+      amenities: [
+        "Natural lighting",
+        "Blackout options",
+        "Basic equipment",
+        "Storage space",
+        "Work tables"
+      ],
+      accessibility_features: [
+        "Ground floor access",
+        "Accessible restrooms"
+      ],
+      ratings: {
+        average: 4.6,
+        count: 42
+      },
+      bookings: {
+        total: 168,
+        upcoming: 7
+      }
+    },
+    {
+      id: "venue-14",
+      name: "Mountain Retreat Conference Center",
+      description: "A secluded conference center nestled in the mountains, offering a distraction-free environment for retreats and team building.",
+      category: "Retreat Center",
+      street: "120 Alpine Way",
+      city: "Queenstown",
+      state: "Otago",
+      zip_code: "9300",
+      max_capacity: 100,
+      isPaused: true,
+      images: [
+        { 
+          url: "https://images.unsplash.com/photo-1531058020387-3be344556be6?q=80&w=2070&auto=format&fit=crop",
+          isPrimary: true 
+        }
+      ],
+      layouts: [
+        { name: "Conference", capacity: 100 },
+        { name: "Workshop", capacity: 80 },
+        { name: "Breakout Groups", capacity: 20 }
+      ],
+      pricing: {
+        standard: { amount: 2500, unit: "day" },
+        commercial: { amount: 3000, unit: "day" },
+        community: { amount: 2000, unit: "day" }
+      },
+      amenities: [
+        "Accommodation on-site",
+        "Dining facilities",
+        "Outdoor spaces",
+        "Team building area",
+        "Meditation room"
+      ],
+      accessibility_features: [
+        "Some accessible rooms",
+        "Main floor accessible"
+      ],
+      ratings: {
+        average: 4.8,
+        count: 35
+      },
+      bookings: {
+        total: 62,
+        upcoming: 0
       }
     }
   ];
@@ -269,9 +504,21 @@ const ManageVenues = () => {
       <div className="container">
         <div className="page-header">
           <h1>Manage Venues</h1>
-          <Link to="/manage-venues/create" className="btn btn-primary">
-            Add New Venue
-          </Link>
+          <div className="page-actions">
+            <div className="view-toggle">
+              <select 
+                className="form-select view-mode-select" 
+                value={viewMode} 
+                onChange={(e) => setViewMode(e.target.value)}
+              >
+                <option value="cards">Card View</option>
+                <option value="table">Table View</option>
+              </select>
+            </div>
+            <Link to="/manage-venues/create" className="btn btn-primary">
+              Add New Venue
+            </Link>
+          </div>
         </div>
         
         {loading ? (
@@ -285,7 +532,7 @@ const ManageVenues = () => {
               Add Your First Venue
             </Link>
           </div>
-        ) : (
+        ) : viewMode === 'cards' ? (
           <div className="venues-list">
             {venues.map(venue => (
               <div key={venue.id} className="venue-card">
@@ -307,123 +554,52 @@ const ManageVenues = () => {
                   </div>
                   
                   <div className="venue-details">
-                    <p><strong>Category:</strong> {venue.category}</p>
                     <p><strong>Description:</strong> {venue.description}</p>
-                    <p><strong>Address:</strong> {venue.street}, {venue.city}, {venue.state} {venue.zip_code}</p>
-                    <p><strong>Capacity:</strong> Up to {venue.max_capacity} people</p>
-                    {venue.layouts && venue.layouts.length > 0 && (
-                      <p><strong>Layouts:</strong> {venue.layouts.map(layout => `${layout.name} (${layout.capacity})`).join(', ')}</p>
-                    )}
-                    
-                    {/* Display pricing tiers if they exist */}
-                    {venue.pricing && (
-                      <div className="pricing-section">
-                        <p><strong>Pricing:</strong></p>
-                        <ul className="pricing-list">
-                          {venue.pricing.standard && (
-                            <li>Standard: ${venue.pricing.standard.amount}/{venue.pricing.standard.unit}</li>
-                          )}
-                          {venue.pricing.commercial && (
-                            <li>Commercial: ${venue.pricing.commercial.amount}/{venue.pricing.commercial.unit}</li>
-                          )}
-                          {venue.pricing.community && (
-                            <li>Community: ${venue.pricing.community.amount}/{venue.pricing.community.unit}</li>
-                          )}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="venue-features">
-                    {venue.amenities && venue.amenities.length > 0 && (
-                      <div className="feature-section">
-                        <h4>Amenities</h4>
-                        <ul>
-                          {venue.amenities.map((amenity, index) => (
-                            <li key={index}>{amenity}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    
-                    {venue.accessibility_features && venue.accessibility_features.length > 0 && (
-                      <div className="feature-section">
-                        <h4>Accessibility</h4>
-                        <ul>
-                          {venue.accessibility_features.map((feature, index) => (
-                            <li key={index}>{feature}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="venue-stats">
-                    {venue.ratings && (
-                      <>
-                        <div className="stat">
-                          <span className="stat-value">{venue.ratings.average}</span>
-                          <span className="stat-label">Rating</span>
-                        </div>
-                        <div className="stat">
-                          <span className="stat-value">{venue.ratings.count}</span>
-                          <span className="stat-label">Reviews</span>
-                        </div>
-                      </>
-                    )}
-                    {venue.bookings && (
-                      <>
-                        <div className="stat">
-                          <span className="stat-value">{venue.bookings.total}</span>
-                          <span className="stat-label">Bookings</span>
-                        </div>
-                        <div className="stat">
-                          <span className="stat-value">{venue.bookings.upcoming}</span>
-                          <span className="stat-label">Upcoming</span>
-                        </div>
-                      </>
-                    )}
+                    <p><strong>Address:</strong> {venue.street}, {venue.city}, {venue.state}</p>
+                    <p><strong>Capacity:</strong> {venue.max_capacity} people</p>
                   </div>
                 </div>
                 
                 <div className="venue-actions">
-                  <Link to={`/manage-venues/edit/${venue.id}`} className="btn btn-secondary">
-                    Edit Venue
+                  <Link to={`/manage-venues/${venue.id}`} className="btn btn-primary btn-block">
+                    Manage Venue
                   </Link>
-                  <Link to={`/manage-venues/${venue.id}/layouts`} className="btn btn-info">
-                    Manage Layouts
-                  </Link>
-                  <Link to={`/manage-venues/${venue.id}/equipment`} className="btn btn-info">
-                    Manage Equipment
-                  </Link>
-                  <Link to={`/manage-venues/${venue.id}/bonds`} className="btn btn-info">
-                    Manage Bonds
-                  </Link>
-                  <Link to={`/manage-venues/${venue.id}/availability`} className="btn btn-info">
-                    Set Availability
-                  </Link>
-                  <Link to={`/manage-venues/${venue.id}/images`} className="btn btn-info">
-                    Manage Images
-                  </Link>
-                  <button 
-                    className={`btn ${venue.isPaused ? 'btn-success' : 'btn-warning'}`}
-                    onClick={() => handleToggleStatus(venue.id, venue.isPaused)}
-                  >
-                    {venue.isPaused ? 'Activate' : 'Pause'}
-                  </button>
-                  <button 
-                    className="btn btn-danger"
-                    onClick={() => handleDeleteVenue(venue.id)}
-                    disabled={venue.bookings && venue.bookings.upcoming > 0}
-                  >
-                    Delete
-                  </button>
-                  {venue.bookings && venue.bookings.upcoming > 0 && (
-                    <p className="delete-warning">Cannot delete venue with upcoming bookings</p>
-                  )}
                 </div>
               </div>
             ))}
+          </div>
+        ) : (
+          <div className="venues-table-container">
+            <table className="venues-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Status</th>
+                  <th>Description</th>
+                  <th>Address</th>
+                  <th>Capacity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {venues.map(venue => (
+                  <tr key={venue.id}>
+                    <td>
+                      <Link to={`/manage-venues/${venue.id}`} className="venue-name-link">
+                        {venue.name}
+                      </Link>
+                    </td>
+                    <td>
+                      <span className={`status-badge ${venue.isPaused ? 'status-paused' : 'status-active'}`}>
+                        {venue.isPaused ? 'Paused' : 'Active'}
+                      </span>
+                    </td>
+                    <td>{venue.description.substring(0, 50)}...</td>
+                    <td>{venue.street}, {venue.city}, {venue.state}</td>
+                    <td>{venue.max_capacity} people</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>

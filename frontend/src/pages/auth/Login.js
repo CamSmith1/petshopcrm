@@ -64,7 +64,7 @@ const Login = () => {
       <div className="auth-card">
         <div className="auth-logo">
           <span style={{ fontSize: '2rem' }}>📅</span>
-          <h2>BookingPro</h2>
+          <h2>VenueHub</h2>
         </div>
         
         <h1 className="auth-title">Welcome Back</h1>

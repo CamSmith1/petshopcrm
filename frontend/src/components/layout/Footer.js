@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
+import { CalendarMonth } from '@mui/icons-material';
 
 /**
  * Footer component - more minimalist design for dashboard
@@ -13,7 +14,8 @@ const Footer = () => {
     <footer>
       <div className="footer-content">
         <div className="footer-logo">
-          <span>📅</span> BookingPro
+          <span className="logo-icon"><CalendarMonth /></span>
+          <span className="logo-text">VenueHub</span>
         </div>
         
         <div className="footer-links">
@@ -24,7 +26,7 @@ const Footer = () => {
         </div>
         
         <div className="footer-copyright">
-          &copy; {currentYear} BookingPro. All rights reserved.
+          &copy; {currentYear} VenueHub. All rights reserved.
         </div>
       </div>
     </footer>

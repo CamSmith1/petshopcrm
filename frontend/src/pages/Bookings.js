@@ -238,7 +238,7 @@ const Bookings = () => {
               <p>No {activeTab} bookings found.</p>
               {activeTab === 'upcoming' && (
                 <Link to="/services" className="btn btn-primary">
-                  Browse Services
+                  Browse Bookings
                 </Link>
               )}
             </div>

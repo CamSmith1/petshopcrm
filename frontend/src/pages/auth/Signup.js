@@ -100,11 +100,11 @@ const Signup = () => {
       <div className="auth-card" style={{ maxWidth: '500px' }}>
         <div className="auth-logo">
           <span style={{ fontSize: '2rem' }}>🐾</span>
-          <h2>BookingPro</h2>
+          <h2>VenueHub</h2>
         </div>
         
         <h1 className="auth-title">Create an Account</h1>
-        <p className="auth-subtitle">Get started with BookingPro</p>
+        <p className="auth-subtitle">Get started with VenueHub</p>
         
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
